@@ -8,15 +8,15 @@ export function TopNav() {
   const { user } = useAuth();
 
   return (
-    <nav className="border-b">
-      <div className="container flex h-16 items-center justify-between">
+    <nav className="border-b w-full">
+      <div className="flex h-16 items-center justify-between w-full px-8">
         <Link href="/" className="text-xl font-bold">
           Social Ecom
         </Link>
 
         <div className="flex items-center gap-4">
           {user ? (
-            <Button asChild variant="ghost">
+            <Button asChild variant={"primary"}>
               <Link href="/dashboard">Dashboard</Link>
             </Button>
           ) : (
