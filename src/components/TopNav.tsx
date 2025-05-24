@@ -16,7 +16,7 @@ export function TopNav() {
 
         <div className="flex items-center gap-4">
           {user ? (
-            <Button asChild variant={"primary"}>
+            <Button asChild>
               <Link href="/dashboard">Dashboard</Link>
             </Button>
           ) : (
