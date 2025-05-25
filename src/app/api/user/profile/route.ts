@@ -1,26 +1,17 @@
 import { getTokenData } from "@/lib/jwt";
-import {
-  BUCKET_NAME,
-  getPresignedUrl,
-  minioClient,
-  uploadToMinio,
-} from "@/lib/minio";
+import { getPresignedUrl, uploadToMinio } from "@/lib/minio";
 import prisma from "@/lib/prisma";
 import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
-import sharp, { ResizeOptions, SharpOptions } from "sharp";
+import sharp, { ResizeOptions } from "sharp";
 
 export async function PATCH(request: NextRequest) {
-  console.log("PROFILE_UPDATE_REQUEST");
-
   try {
     const payload = await getTokenData(request);
     if (!payload || !payload.id) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
-    console.log("PROFILE_UPDATE_REQUEST_PAYLOAD", payload);
 
     let name: string | undefined;
     let email: string | undefined;
@@ -39,10 +30,6 @@ export async function PATCH(request: NextRequest) {
       ({ name, email } = body);
     }
 
-    console.log("PROFILE_UPDATE_REQUEST_NAME", name);
-    console.log("PROFILE_UPDATE_REQUEST_EMAIL", email);
-    console.log("PROFILE_UPDATE_REQUEST_FILE", file);
-
     // Get the current user
     const user = await prisma.user.findUnique({
       where: { id: payload.id as string },
@@ -51,8 +38,6 @@ export async function PATCH(request: NextRequest) {
         email: true,
       },
     });
-
-    console.log("PROFILE_UPDATE_REQUEST_USER", user);
 
     if (!user) {
       return new NextResponse("User not found", { status: 404 });
@@ -68,8 +53,6 @@ export async function PATCH(request: NextRequest) {
         return new NextResponse("Email already taken", { status: 400 });
       }
     }
-
-    console.log("PROFILE_UPDATE_REQUEST_EMAIL_CHECK_DONE");
 
     // Handle file upload
     if (file) {
@@ -103,8 +86,6 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    console.log("PROFILE_UPDATE_REQUEST_FILE_UPLOAD_DONE");
-
     // Update user
     const updatedUser = await prisma.user.update({
       where: { id: payload.id as string },
@@ -114,8 +95,6 @@ export async function PATCH(request: NextRequest) {
         ...(avatarUrl && { avatarUrl }),
       },
     });
-
-    console.log("PROFILE_UPDATE_REQUEST_UPDATED_USER", updatedUser);
 
     return updateUserTokenAndReturnNextResponse(updatedUser);
   } catch (error) {
