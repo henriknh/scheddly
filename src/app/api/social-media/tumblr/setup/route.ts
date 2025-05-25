@@ -22,8 +22,8 @@ export async function POST(request: Request) {
         id: userId,
       },
       data: {
-        tumblrOAuthConsumerKey: consumerKey,
-        tumblrOAuthConsumerSecret: consumerSecret,
+        tumblrClientId: consumerKey,
+        tumblrClientSecret: consumerSecret,
       },
     });
 

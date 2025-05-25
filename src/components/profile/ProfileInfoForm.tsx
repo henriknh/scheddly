@@ -15,28 +15,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { UserAvatar } from "@/components/common/UserAvatar";
+import { useAuth } from "@/lib/auth-context";
 
-interface UserProfileFormProps {
-  user: {
-    id: string;
-    name?: string | null;
-    email: string;
-    image?: string | null;
-  };
-}
-
-export function UserProfileForm({ user }: UserProfileFormProps) {
-  console.log(user);
-
+export function ProfileInfoForm() {
+  const { user } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: user.name || "",
-    email: user.email,
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-    image: user.image || "",
+    name: user?.name || "",
+    email: user?.email || "",
+    image: user?.image || "",
   });
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,22 +75,6 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
     setIsLoading(true);
 
     try {
-      // Validate password fields if attempting to change password
-      if (
-        formData.newPassword ||
-        formData.confirmPassword ||
-        formData.currentPassword
-      ) {
-        if (formData.newPassword !== formData.confirmPassword) {
-          toast.error("New passwords do not match");
-          return;
-        }
-        if (!formData.currentPassword) {
-          toast.error("Current password is required to change password");
-          return;
-        }
-      }
-
       const response = await fetch("/api/user/profile", {
         method: "PATCH",
         headers: {
@@ -111,8 +83,6 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
-          currentPassword: formData.currentPassword || undefined,
-          newPassword: formData.newPassword || undefined,
           image: formData.image,
         }),
       });
@@ -133,7 +103,7 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit}>
       <Card>
         <CardHeader>
           <CardTitle>Profile Information</CardTitle>
@@ -182,62 +152,6 @@ export function UserProfileForm({ user }: UserProfileFormProps) {
                 setFormData((prev) => ({ ...prev, email: e.target.value }))
               }
               placeholder="Enter your email"
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Change Password</CardTitle>
-          <CardDescription>
-            Update your password. Leave blank to keep your current password.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="currentPassword">Current Password</Label>
-            <Input
-              id="currentPassword"
-              type="password"
-              value={formData.currentPassword}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  currentPassword: e.target.value,
-                }))
-              }
-              placeholder="Enter your current password"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="newPassword">New Password</Label>
-            <Input
-              id="newPassword"
-              type="password"
-              value={formData.newPassword}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  newPassword: e.target.value,
-                }))
-              }
-              placeholder="Enter your new password"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm New Password</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  confirmPassword: e.target.value,
-                }))
-              }
-              placeholder="Confirm your new password"
             />
           </div>
         </CardContent>
