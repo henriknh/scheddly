@@ -1,12 +1,18 @@
 import { User } from "@/generated/prisma";
 import { NextResponse } from "next/server";
 import { createToken, setTokenCookie } from "./jwt";
+import { USER_SECRET_REPLACEMENT } from "./user-secret-replacement";
 
 export const cleanUserData = async (user: User) => {
   return {
     ...user,
     password: undefined,
-    tumblrClientSecret: !!user.tumblrClientSecret,
+    tumblrClientSecret: user.tumblrClientSecret
+      ? USER_SECRET_REPLACEMENT
+      : null,
+    pinterestClientSecret: user.pinterestClientSecret
+      ? USER_SECRET_REPLACEMENT
+      : null,
   };
 };
 

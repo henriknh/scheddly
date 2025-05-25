@@ -15,10 +15,11 @@ import { useAuth } from "@/lib/auth-context";
 import { ExternalLink, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Platform } from "./SocialMediaIntegrations";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { USER_SECRET_REPLACEMENT } from "@/lib/user-secret-replacement";
 
 interface FormData {
   clientId?: string | null;
@@ -80,6 +81,15 @@ export function SocialMediaIntegrationsEditModal({
     accessToken,
   });
 
+  useEffect(() => {
+    setFormData({
+      clientId,
+      clientSecret,
+      accessToken,
+    });
+    setShowSecret(false);
+  }, [clientId, clientSecret, accessToken]);
+
   const handleSave = async () => {
     if (!platform) return;
 
@@ -91,7 +101,10 @@ export function SocialMediaIntegrationsEditModal({
         body: JSON.stringify({
           platform: platform.id,
           clientId: formData.clientId,
-          clientSecret: formData.clientSecret,
+          clientSecret:
+            formData.clientSecret !== USER_SECRET_REPLACEMENT
+              ? formData.clientSecret
+              : undefined,
           accessToken: formData.accessToken,
         }),
       });
