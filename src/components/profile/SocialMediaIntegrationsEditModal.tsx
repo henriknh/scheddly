@@ -4,19 +4,21 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SocialMedia } from "@/generated/prisma";
+import { useAuth } from "@/lib/auth-context";
+import { ExternalLink, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Platform } from "./SocialMediaIntegrations";
-import Link from "next/link";
-import { ExternalLink, Link2 } from "lucide-react";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 interface FormData {
   clientId?: string | null;
@@ -30,18 +32,52 @@ type SocialMediaIntegrationsCardModalProps = {
   platform: Platform;
 };
 
-export function SocialMediaIntegrationsCardModal({
+export function SocialMediaIntegrationsEditModal({
   isDialogOpen,
   setIsDialogOpen,
   platform,
 }: SocialMediaIntegrationsCardModalProps) {
+  const { user, reloadUser } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
+  const [showSecret, setShowSecret] = useState(false);
+
+  const clientId = useMemo(() => {
+    switch (platform.id) {
+      case SocialMedia.TUMBLR:
+        return user?.tumblrClientId;
+      case SocialMedia.PINTEREST:
+        return user?.pinterestClientId;
+      default:
+        return null;
+    }
+  }, [platform.id, user?.tumblrClientId, user?.pinterestClientId]);
+
+  const clientSecret = useMemo(() => {
+    switch (platform.id) {
+      case SocialMedia.TUMBLR:
+        return user?.tumblrClientSecret;
+      case SocialMedia.PINTEREST:
+        return user?.pinterestClientSecret;
+      default:
+        return null;
+    }
+  }, [platform.id, user?.tumblrClientSecret, user?.pinterestClientSecret]);
+
+  const accessToken = useMemo(() => {
+    switch (platform.id) {
+      default:
+        return null;
+    }
+  }, [platform.id]);
+
+  const isConfigured: boolean = !!(clientId && clientSecret);
+
   const [formData, setFormData] = useState<FormData>({
-    clientId: platform.clientIdAndSecretConfig?.clientId,
-    clientSecret: platform.clientIdAndSecretConfig?.clientSecret,
-    accessToken: platform.accessTokenConfig?.accessToken,
+    clientId,
+    clientSecret,
+    accessToken,
   });
 
   const handleSave = async () => {
@@ -49,10 +85,15 @@ export function SocialMediaIntegrationsCardModal({
 
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/social-media/${platform.id}/setup`, {
-        method: "POST",
+      const response = await fetch(`/api/user/integation`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          platform: platform.id,
+          clientId: formData.clientId,
+          clientSecret: formData.clientSecret,
+          accessToken: formData.accessToken,
+        }),
       });
 
       if (!response.ok)
@@ -60,6 +101,7 @@ export function SocialMediaIntegrationsCardModal({
 
       toast.success(`${platform.name} configuration saved successfully`);
       setIsDialogOpen(false);
+      reloadUser();
       router.refresh();
     } catch (error) {
       console.error(`Failed to save ${platform.name} config:`, error);
@@ -74,15 +116,19 @@ export function SocialMediaIntegrationsCardModal({
 
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/social-media/${platform.id}/setup`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/user/integation?platform=${platform.id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok)
         throw new Error(`Failed to delete ${platform.name} configuration`);
 
       toast.success(`${platform.name} configuration removed successfully`);
       setIsDialogOpen(false);
+      reloadUser();
       router.refresh();
     } catch (error) {
       console.error(`Failed to delete ${platform.name} config:`, error);
@@ -98,18 +144,16 @@ export function SocialMediaIntegrationsCardModal({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {platform.isConfigured ? "Update" : "Setup"} {platform.name}{" "}
-              integration
+              {isConfigured ? "Update" : "Setup"} {platform.name} integration
             </DialogTitle>
+            <DialogDescription>{platform.description}</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
-            {platform.clientIdAndSecretConfig && (
+            {platform.clientIdLabel && platform.clientSecretLabel && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="clientId">
-                    {platform.clientIdAndSecretConfig.clientIdLabel}
-                  </Label>
+                  <Label htmlFor="clientId">{platform.clientIdLabel}</Label>
                   <Input
                     id="clientId"
                     type="text"
@@ -125,28 +169,40 @@ export function SocialMediaIntegrationsCardModal({
 
                 <div className="space-y-2">
                   <Label htmlFor="clientSecret">
-                    {platform.clientIdAndSecretConfig.clientSecretLabel}
+                    {platform.clientSecretLabel}
                   </Label>
-                  <Input
-                    id="clientSecret"
-                    type="text"
-                    value={formData.clientSecret || ""}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        clientSecret: e.target.value,
-                      }))
-                    }
-                  />
+
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="clientSecret"
+                      type={showSecret ? "text" : "password"}
+                      value={formData.clientSecret || ""}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          clientSecret: e.target.value,
+                        }))
+                      }
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowSecret(!showSecret)}
+                    >
+                      {showSecret ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </>
             )}
 
-            {platform.accessTokenConfig && (
+            {platform.accessTokenLabel && (
               <div className="space-y-2">
-                <Label htmlFor="accessToken">
-                  {platform.accessTokenConfig.accessTokenLabel}
-                </Label>
+                <Label htmlFor="accessToken">{platform.accessTokenLabel}</Label>
                 <Input
                   id="accessToken"
                   type="text"
@@ -174,7 +230,7 @@ export function SocialMediaIntegrationsCardModal({
             </div>
           </div>
           <DialogFooter className="flex gap-2">
-            {platform.isConfigured && (
+            {isConfigured && (
               <Button
                 variant="ghost"
                 onClick={handleDelete}

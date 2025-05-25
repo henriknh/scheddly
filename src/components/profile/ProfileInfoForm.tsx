@@ -18,7 +18,7 @@ import { UserAvatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/lib/auth-context";
 
 export function ProfileInfoForm() {
-  const { user, refreshUser } = useAuth();
+  const { user, reloadUser } = useAuth();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -77,7 +77,7 @@ export function ProfileInfoForm() {
       }
 
       toast.success("Profile updated successfully");
-      refreshUser();
+      reloadUser();
       router.refresh();
     } catch (error) {
       console.error("Failed to update profile:", error);

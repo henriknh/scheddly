@@ -14,8 +14,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
 
 export function PasswordChangeForm() {
+  const { reloadUser } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -56,6 +58,7 @@ export function PasswordChangeForm() {
         newPassword: "",
         confirmPassword: "",
       });
+      reloadUser();
       router.refresh();
     } catch (error) {
       console.error("Failed to update password:", error);

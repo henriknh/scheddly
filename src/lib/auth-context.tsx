@@ -1,14 +1,14 @@
 "use client";
 
+import { User } from "@/generated/prisma";
+import { useRouter } from "next/navigation";
 import {
   createContext,
+  ReactNode,
   useContext,
   useEffect,
   useState,
-  ReactNode,
 } from "react";
-import { useRouter } from "next/navigation";
-import { User } from "@/generated/prisma";
 
 interface AuthContextType {
   user: User | null;
@@ -16,6 +16,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (email: string, name: string, password: string) => Promise<void>;
+  reloadUser: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
@@ -32,10 +33,10 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
   const router = useRouter();
 
   useEffect(() => {
-    checkUser();
+    reloadUser();
   }, []);
 
-  async function checkUser() {
+  async function reloadUser() {
     try {
       const response = await fetch("/api/auth/me");
       if (response.ok) {
@@ -48,6 +49,10 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function refreshUser() {
+    console.log(document.cookie);
   }
 
   async function login(email: string, password: string) {
@@ -113,7 +118,15 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, logout, register, refreshUser: checkUser }}
+      value={{
+        user,
+        loading,
+        login,
+        logout,
+        register,
+        reloadUser,
+        refreshUser,
+      }}
     >
       {children}
     </AuthContext.Provider>
