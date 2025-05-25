@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { createToken, setTokenCookie } from "@/lib/jwt";
+import { User } from "@/generated/prisma";
+import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
 
 export async function POST(req: Request) {
   try {
@@ -28,12 +30,7 @@ export async function POST(req: Request) {
       return new NextResponse("Invalid credentials", { status: 401 });
     }
 
-    const token = await createToken(user);
-    await setTokenCookie(token);
-
-    return NextResponse.json({
-      user,
-    });
+    return updateUserTokenAndReturnNextResponse(user);
   } catch (error) {
     console.error("LOGIN_ERROR", error);
     return new NextResponse("Internal Error", { status: 500 });

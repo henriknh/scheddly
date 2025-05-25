@@ -16,6 +16,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (email: string, name: string, password: string) => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,10 +32,8 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!initialUser) {
-      checkUser();
-    }
-  }, [initialUser]);
+    checkUser();
+  }, []);
 
   async function checkUser() {
     try {
@@ -42,6 +41,7 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
+        console.log("User data:", data.user);
       }
     } catch (error) {
       console.error("Failed to fetch user", error);
@@ -112,7 +112,9 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, logout, register, refreshUser: checkUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

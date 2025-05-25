@@ -3,12 +3,10 @@ import { getPresignedUrl } from "@/lib/minio";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { key: string } }
+  { params }: { params: Promise<{ key: string }> }
 ) {
   try {
-    console.log(params);
-
-    const { key } = params;
+    const { key } = await params;
     if (!key) {
       return new NextResponse("File key is required", { status: 400 });
     }

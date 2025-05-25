@@ -1,52 +1,47 @@
 import { Client } from "minio";
 
-if (!process.env.MINIO_ENDPOINT) {
-  throw new Error("MINIO_ENDPOINT is not defined");
-}
-
-if (!process.env.MINIO_PORT) {
-  throw new Error("MINIO_PORT is not defined");
-}
-
-if (!process.env.MINIO_ACCESS_KEY) {
-  throw new Error("MINIO_ACCESS_KEY is not defined");
-}
-
-if (!process.env.MINIO_SECRET_KEY) {
-  throw new Error("MINIO_SECRET_KEY is not defined");
-}
-
-if (!process.env.MINIO_BUCKET_NAME) {
-  throw new Error("MINIO_BUCKET_NAME is not defined");
-}
-
-export const MINIO_BUCKET_NAME = process.env.MINIO_BUCKET_NAME;
+if (!process.env.MINIO_ENDPOINT) throw new Error("MINIO_ENDPOINT is required");
+if (!process.env.MINIO_PORT) throw new Error("MINIO_PORT is required");
+if (!process.env.MINIO_ACCESS_KEY)
+  throw new Error("MINIO_ACCESS_KEY is required");
+if (!process.env.MINIO_SECRET_KEY)
+  throw new Error("MINIO_SECRET_KEY is required");
+if (!process.env.MINIO_BUCKET_NAME)
+  throw new Error("MINIO_BUCKET_NAME is required");
 
 export const minioClient = new Client({
   endPoint: process.env.MINIO_ENDPOINT,
-  port: parseInt(process.env.MINIO_PORT || "9000"),
-  useSSL: false,
+  port: parseInt(process.env.MINIO_PORT),
+  useSSL: process.env.NODE_ENV === "production",
   accessKey: process.env.MINIO_ACCESS_KEY,
   secretKey: process.env.MINIO_SECRET_KEY,
 });
 
-// Initialize bucket if it doesn&apos;t exist
-export async function initializeBucket() {
-  try {
-    const bucketExists = await minioClient.bucketExists(MINIO_BUCKET_NAME);
-    if (!bucketExists) {
-      await minioClient.makeBucket(MINIO_BUCKET_NAME, "us-east-1");
-      console.log(`Bucket ${MINIO_BUCKET_NAME} created successfully`);
-    }
-  } catch (error) {
-    console.error("Error initializing MinIO bucket:", error);
-    throw error;
+export const BUCKET_NAME = process.env.MINIO_BUCKET_NAME;
+
+export async function ensureBucketExists() {
+  const bucketExists = await minioClient.bucketExists(BUCKET_NAME);
+  if (!bucketExists) {
+    await minioClient.makeBucket(BUCKET_NAME, "us-east-1");
+    // Make the bucket public
+    const policy = {
+      Version: "2012-10-17",
+      Statement: [
+        {
+          Effect: "Allow",
+          Principal: { AWS: ["*"] },
+          Action: ["s3:GetObject"],
+          Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`],
+        },
+      ],
+    };
+    await minioClient.setBucketPolicy(BUCKET_NAME, JSON.stringify(policy));
   }
 }
 
 export async function getPresignedUrl(key: string): Promise<string> {
   try {
-    return await minioClient.presignedGetObject(MINIO_BUCKET_NAME, key, 3600); // 1 hour expiration
+    return await minioClient.presignedGetObject(BUCKET_NAME, key, 3600); // 1 hour expiration
   } catch (error) {
     console.error("Error generating presigned URL:", error);
     throw error;
@@ -59,15 +54,10 @@ export async function uploadToMinio(
   contentType: string
 ): Promise<string> {
   try {
-    await minioClient.putObject(
-      MINIO_BUCKET_NAME,
-      filename,
-      buffer,
-      buffer.length,
-      {
-        "Content-Type": contentType,
-      }
-    );
+    await ensureBucketExists();
+    await minioClient.putObject(BUCKET_NAME, filename, buffer, buffer.length, {
+      "Content-Type": contentType,
+    });
     return filename;
   } catch (error) {
     console.error("Error uploading to MinIO:", error);

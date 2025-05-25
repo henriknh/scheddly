@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -18,56 +18,25 @@ import { UserAvatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/lib/auth-context";
 
 export function ProfileInfoForm() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
-    image: user?.image || "",
+    avatarUrl: user?.avatarUrl || "",
   });
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to upload image");
-      }
-
-      const data = await response.json();
-      setFormData((prev) => ({ ...prev, image: data.url }));
-
-      // Update user profile with new image using the dedicated endpoint
-      const updateResponse = await fetch("/api/user/profile/image", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          image: data.url,
-        }),
-      });
-
-      if (!updateResponse.ok) {
-        throw new Error("Failed to update profile image");
-      }
-
-      toast.success("Profile image updated successfully");
-      router.refresh();
-    } catch (error) {
-      console.error("Failed to handle image:", error);
-      toast.error("Failed to update profile image");
-    }
+    setSelectedImage(file);
+    // Create a temporary URL for preview
+    const previewUrl = URL.createObjectURL(file);
+    setFormData((prev) => ({ ...prev, avatarUrl: previewUrl }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -75,17 +44,32 @@ export function ProfileInfoForm() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/user/profile", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          image: formData.image,
-        }),
-      });
+      let response;
+
+      if (selectedImage) {
+        // If we have a new image, use FormData
+        const formDataToSend = new FormData();
+        formDataToSend.append("name", formData.name);
+        formDataToSend.append("email", formData.email);
+        formDataToSend.append("avatarUrl", selectedImage);
+
+        response = await fetch("/api/user/profile", {
+          method: "PATCH",
+          body: formDataToSend,
+        });
+      } else {
+        // If no new image, send JSON
+        response = await fetch("/api/user/profile", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+          }),
+        });
+      }
 
       if (!response.ok) {
         const error = await response.text();
@@ -93,6 +77,7 @@ export function ProfileInfoForm() {
       }
 
       toast.success("Profile updated successfully");
+      refreshUser();
       router.refresh();
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -100,6 +85,10 @@ export function ProfileInfoForm() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
   };
 
   return (
@@ -113,23 +102,31 @@ export function ProfileInfoForm() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
-            <UserAvatar
-              src={formData.image}
-              fallback={formData.name}
-              className="h-20 w-20"
-            />
-            <div className="flex-1">
-              <Label htmlFor="image" className="block mb-2">
-                Profile Image
-              </Label>
-              <Input
-                id="image"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="w-full"
-              />
+            <div
+              onClick={handleAvatarClick}
+              className="relative cursor-pointer group"
+              role="button"
+              aria-label="Change profile image"
+            >
+              <div className="relative">
+                <UserAvatar
+                  src={formData.avatarUrl}
+                  fallback={formData.name}
+                  className="h-20 w-20"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-medium rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-center text-xs">
+                  Update avatar
+                </div>
+              </div>
             </div>
+            <Input
+              ref={fileInputRef}
+              id="image"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>

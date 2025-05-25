@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTokenData } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
+import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
       return new NextResponse("User not found", { status: 404 });
     }
 
-    return NextResponse.json({ user });
+    return updateUserTokenAndReturnNextResponse(user);
   } catch (error) {
     console.error("GET_USER_ERROR", error);
     return new NextResponse("Internal Error", { status: 500 });

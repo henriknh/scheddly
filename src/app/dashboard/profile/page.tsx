@@ -35,8 +35,8 @@ export default function ProfilePage() {
       <Tabs defaultValue="profile-settings" className="space-y-2">
         <TabsList className="">
           <TabsTrigger value="profile-settings">Profile settings</TabsTrigger>
-          <TabsTrigger value="social-media-settings">
-            Social media settings
+          <TabsTrigger value="social-media-integrations">
+            Social media integrations
           </TabsTrigger>
         </TabsList>
         <TabsContent value="profile-settings" className="space-y-4">
@@ -52,7 +52,7 @@ export default function ProfilePage() {
             </Button>
           </div>
         </TabsContent>
-        <TabsContent value="social-media-settings">
+        <TabsContent value="social-media-integrations">
           <SocialMediaIntegrations />
         </TabsContent>
       </Tabs>
