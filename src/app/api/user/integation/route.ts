@@ -126,8 +126,6 @@ export async function DELETE(request: NextRequest) {
       data: updateData,
     });
 
-    console.log("delete", updatedUser);
-
     return updateUserTokenAndReturnNextResponse(updatedUser);
   } catch (error) {
     console.error("[SOCIAL_MEDIA_INTEGRATION_DELETE_ERROR]", error);

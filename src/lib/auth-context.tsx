@@ -17,7 +17,6 @@ interface AuthContextType {
   logout: () => Promise<void>;
   register: (email: string, name: string, password: string) => Promise<void>;
   reloadUser: () => Promise<void>;
-  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -49,10 +48,6 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     } finally {
       setLoading(false);
     }
-  }
-
-  async function refreshUser() {
-    console.log(document.cookie);
   }
 
   async function login(email: string, password: string) {
@@ -125,7 +120,6 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
         logout,
         register,
         reloadUser,
-        refreshUser,
       }}
     >
       {children}
