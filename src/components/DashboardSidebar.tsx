@@ -162,7 +162,7 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
                 className="flex items-center gap-2"
               >
                 <UserAvatar
-                  src={user?.image || undefined}
+                  src={user?.avatarUrl || undefined}
                   fallback={user?.name || undefined}
                   className="h-4 w-4"
                 />
