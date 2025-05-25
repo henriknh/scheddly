@@ -14,8 +14,8 @@ export default function DashboardLayout({
   return (
     <div className="flex w-full">
       <DashboardSidebar />
-      <main className="flex-1 flex justify-center p-4">
-        <div className="container flex flex-col space-y-4">{children}</div>
+      <main className="flex-1 flex justify-center">
+        <div className="container flex flex-col space-y-4 py-8">{children}</div>
       </main>
     </div>
   );

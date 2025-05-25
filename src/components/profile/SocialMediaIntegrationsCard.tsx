@@ -20,8 +20,8 @@ export function SocialMediaIntegrationsCard({
 
   return (
     <Card key={platform.id}>
-      <CardContent className="flex items-center justify-between p-6">
-        <div className="flex items-center gap-4">
+      <CardContent className="w-full flex items-center justify-between p-6">
+        <div className="flex-1 flex items-center gap-4">
           <Image
             src={platform.icon}
             alt={platform.name}
@@ -29,24 +29,28 @@ export function SocialMediaIntegrationsCard({
             height={40}
             className="h-10 w-10"
           />
-          <div>
-            <h3 className="font-semibold">{platform.name}</h3>
-            <p className="text-sm text-muted-foreground">
-              {platform.description}
-            </p>
+
+          <div className="flex-1 flex flex-col lg:flex-row lg:justify-between gap-2">
+            <div>
+              <h3 className="font-semibold">{platform.name}</h3>
+              <p className="text-sm text-muted-foreground">
+                {platform.description}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Badge variant={platform.isConfigured ? "success" : "secondary"}>
+                {platform.isConfigured ? "Configured" : "Not Configured"}
+              </Badge>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsDialogOpen(true)}
+              >
+                <Settings2 className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant={platform.isConfigured ? "success" : "secondary"}>
-            {platform.isConfigured ? "Configured" : "Not Configured"}
-          </Badge>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsDialogOpen(true)}
-          >
-            <Settings2 className="h-4 w-4" />
-          </Button>
         </div>
       </CardContent>
 

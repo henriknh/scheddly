@@ -20,6 +20,7 @@ export type Platform = {
     accessToken?: string | null;
     accessTokenLabel: string;
   };
+  configurationGuideUrl: string;
 };
 
 export function SocialMediaIntegrations() {
@@ -37,6 +38,7 @@ export function SocialMediaIntegrations() {
         clientSecret: user?.tumblrClientSecret,
         clientSecretLabel: "OAuth consumer secret",
       },
+      configurationGuideUrl: "https://www.tumblr.com/oauth/apps",
     },
   ].map((platform: Platform) => ({
     ...platform,

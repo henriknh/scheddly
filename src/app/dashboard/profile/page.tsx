@@ -31,7 +31,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="container relative space-y-4 py-8">
+    <div className="space-y-4">
       <Tabs defaultValue="profile-settings" className="space-y-2">
         <TabsList className="">
           <TabsTrigger value="profile-settings">Profile settings</TabsTrigger>

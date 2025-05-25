@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Platform } from "./SocialMediaIntegrations";
+import Link from "next/link";
+import { ExternalLink, Link2 } from "lucide-react";
 
 interface FormData {
   clientId?: string | null;
@@ -96,13 +98,12 @@ export function SocialMediaIntegrationsCardModal({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {platform.isConfigured ? "Update" : "Connect"} {platform.name}
+              {platform.isConfigured ? "Update" : "Setup"} {platform.name}{" "}
+              integration
             </DialogTitle>
-            <DialogDescription>
-              Configure your {platform.name} integration settings
-            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+
+          <div className="space-y-4">
             {platform.clientIdAndSecretConfig && (
               <>
                 <div className="space-y-2">
@@ -159,6 +160,18 @@ export function SocialMediaIntegrationsCardModal({
                 />
               </div>
             )}
+
+            <div className="flex flex-col">
+              <div>How to setup integration:</div>
+              <Link
+                href={platform.configurationGuideUrl}
+                target="_blank"
+                className="flex items-center gap-2"
+              >
+                <ExternalLink className="w-4 h-4" />
+                {platform.configurationGuideUrl}
+              </Link>
+            </div>
           </div>
           <DialogFooter className="flex gap-2">
             {platform.isConfigured && (
