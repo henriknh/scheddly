@@ -29,10 +29,12 @@ export function SocialMediaIntegrationsCard({
     switch (platform.id) {
       case SocialMedia.PINTEREST:
         return user?.oauth2PinterestCode;
+      case SocialMedia.TUMBLR:
+        return user?.oauth2TumblrCode;
       default:
         return false;
     }
-  }, [platform.id, user?.oauth2PinterestCode]);
+  }, [platform.id, user?.oauth2PinterestCode, user?.oauth2TumblrCode]);
 
   const openOauth2Window = () => {
     if (!oauth2Url) {
@@ -73,6 +75,13 @@ export function SocialMediaIntegrationsCard({
           process.env
             .NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_REDIRECT_URI
           ? `https://www.pinterest.com/oauth/?client_id=${process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_REDIRECT_URI}&response_type=code&scope=boards:read,pins:read`
+          : null;
+
+      case SocialMedia.TUMBLR:
+        return process.env
+          .NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_TUMBLR_CLIENT_ID &&
+          process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_TUMBLR_REDIRECT_URI
+          ? `https://www.tumblr.com/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_TUMBLR_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_TUMBLR_REDIRECT_URI}&response_type=code&scope=write&state=1`
           : null;
     }
   }, [platform.id]);
