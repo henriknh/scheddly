@@ -60,4 +60,7 @@ enum SocialMedia {
   PINTEREST
   THREADS
   TIKTOK
+  X
+  FACEBOOK
+  LINKEDIN
 }

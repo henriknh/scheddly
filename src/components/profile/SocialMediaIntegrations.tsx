@@ -35,6 +35,55 @@ export function SocialMediaIntegrations() {
       clientSecretLabel: "App secret key",
       configurationGuideUrl: "https://developers.pinterest.com/apps/",
     },
+    {
+      id: SocialMedia.FACEBOOK,
+      name: "Facebook",
+      description: "Share your products and content on Facebook",
+      icon: "/icons/facebook.svg",
+      configurationGuideUrl: "https://developers.facebook.com/apps/",
+    },
+    {
+      id: SocialMedia.INSTAGRAM,
+      name: "Instagram",
+      description: "Share your products and content on Instagram",
+      icon: "/icons/instagram.svg",
+      configurationGuideUrl: "https://developers.instagram.com/apps/",
+    },
+    {
+      id: SocialMedia.YOUTUBE,
+      name: "YouTube",
+      description: "Share your products and content on YouTube",
+      icon: "/icons/youtube.svg",
+      configurationGuideUrl: "https://developers.youtube.com/apps/",
+    },
+    {
+      id: SocialMedia.TIKTOK,
+      name: "TikTok",
+      description: "Share your products and content on TikTok",
+      icon: "/icons/tiktok.svg",
+      configurationGuideUrl: "https://developers.tiktok.com/apps/",
+    },
+    {
+      id: SocialMedia.THREADS,
+      name: "Threads",
+      description: "Share your products and content on Threads",
+      icon: "/icons/threads.svg",
+      configurationGuideUrl: "https://developers.threads.com/apps/",
+    },
+    {
+      id: SocialMedia.X,
+      name: "X",
+      description: "Share your products and content on X",
+      icon: "/icons/x.svg",
+      configurationGuideUrl: "https://developers.x.com/apps/",
+    },
+    {
+      id: SocialMedia.LINKEDIN,
+      name: "LinkedIn",
+      description: "Share your products and content on LinkedIn",
+      icon: "/icons/linkedin.svg",
+      configurationGuideUrl: "https://developers.linkedin.com/apps/",
+    },
   ].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
