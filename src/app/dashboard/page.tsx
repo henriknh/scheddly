@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ImageIcon, TextIcon, VideoIcon } from "lucide-react";
+import { SocialMedia } from "@/generated/prisma";
 
 export type Platform = {
   name: string;
@@ -19,29 +20,52 @@ export type Platform = {
 
 type PostType = "text" | "image" | "video";
 
-export const platforms: Record<string, Platform> = {
-  instagram: {
+export const platforms: Record<SocialMedia, Platform> = {
+  [SocialMedia.INSTAGRAM]: {
     name: "Instagram",
     icon: "/icons/instagram.svg",
     supports: ["image", "video"],
   },
-  youtube: { name: "YouTube", icon: "/icons/youtube.svg", supports: ["video"] },
-  tumblr: {
+  [SocialMedia.YOUTUBE]: {
+    name: "YouTube",
+    icon: "/icons/youtube.svg",
+    supports: ["video"],
+  },
+  [SocialMedia.TUMBLR]: {
     name: "Tumblr",
     icon: "/icons/tumblr.svg",
     supports: ["text", "image"],
   },
-  pinterest: {
+  [SocialMedia.PINTEREST]: {
     name: "Pinterest",
     icon: "/icons/pinterest.svg",
     supports: ["image"],
   },
-  threads: {
+  [SocialMedia.THREADS]: {
     name: "Threads",
     icon: "/icons/threads.svg",
     supports: ["text", "image"],
   },
-  tiktok: { name: "TikTok", icon: "/icons/tiktok.svg", supports: ["video"] },
+  [SocialMedia.TIKTOK]: {
+    name: "TikTok",
+    icon: "/icons/tiktok.svg",
+    supports: ["video"],
+  },
+  [SocialMedia.X]: {
+    name: "X",
+    icon: "/icons/x.svg",
+    supports: ["text", "image", "video"],
+  },
+  [SocialMedia.FACEBOOK]: {
+    name: "Facebook",
+    icon: "/icons/facebook.svg",
+    supports: ["text", "image", "video"],
+  },
+  [SocialMedia.LINKEDIN]: {
+    name: "LinkedIn",
+    icon: "/icons/linkedin.svg",
+    supports: ["text", "image", "video"],
+  },
 };
 
 export default function DashboardPage() {
