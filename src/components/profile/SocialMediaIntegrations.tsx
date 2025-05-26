@@ -1,14 +1,7 @@
 "use client";
 
 import { SocialMedia } from "@/generated/prisma";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
-import { SocialMediaIntegrationsRow } from "./SocialMediaIntegrationsRow";
+import { SocialMediaIntegrationsCard } from "./SocialMediaIntegrationsCard";
 
 export type Platform = {
   id: SocialMedia;
@@ -46,23 +39,10 @@ export function SocialMediaIntegrations() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead className="text-right">Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {platforms.map((platform) => (
-              <SocialMediaIntegrationsRow
-                key={platform.id}
-                platform={platform}
-              />
-            ))}
-          </TableBody>
-        </Table>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        {platforms.map((platform) => (
+          <SocialMediaIntegrationsCard key={platform.id} platform={platform} />
+        ))}
       </div>
     </div>
   );

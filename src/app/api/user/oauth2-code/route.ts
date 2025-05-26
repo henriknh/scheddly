@@ -4,14 +4,12 @@ import prisma from "@/lib/prisma";
 import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
 import { NextRequest, NextResponse } from "next/server";
 
-export interface SocialMediaIntegrationBody {
+export interface Oauth2CodeBody {
   platform: SocialMedia;
-  clientId?: string;
-  clientSecret?: string;
-  accessToken?: string;
+  code: string;
 }
 
-export async function PATCH(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const payload = await getTokenData(request);
     if (!payload || !payload.id) {
@@ -27,43 +25,29 @@ export async function PATCH(request: NextRequest) {
       return new NextResponse("User not found", { status: 404 });
     }
 
-    const body: SocialMediaIntegrationBody = await request.json();
-    const { platform, clientId, clientSecret, accessToken } = body;
+    const body: Oauth2CodeBody = await request.json();
+    const { platform, code } = body;
 
-    if (!platform) {
-      return new NextResponse("Platform is required", { status: 400 });
-    }
-
-    // Validate that either clientId+clientSecret OR accessToken is provided
-    if ((!clientId || !clientSecret) && !accessToken) {
-      return new NextResponse(
-        "Either clientId and clientSecret, or accessToken must be provided",
-        { status: 400 }
-      );
+    if (!platform || !code) {
+      return new NextResponse("Platform and code are required", {
+        status: 400,
+      });
     }
 
     // Update user based on platform
-    const updateData: Record<string, string> = {};
+    const updateData: Record<string, string | null> = {};
 
     switch (platform) {
       case SocialMedia.TUMBLR:
-        if (clientId && clientSecret) {
-          updateData.tumblrClientId = clientId;
-          updateData.tumblrClientSecret = clientSecret;
-        }
+        updateData.oauth2TumblrCode = code;
         break;
       case SocialMedia.PINTEREST:
-        if (clientId && clientSecret) {
-          updateData.pinterestClientId = clientId;
-          updateData.pinterestClientSecret = clientSecret;
-        }
+        updateData.oauth2PinterestCode = code;
         break;
-      // Add cases for other platforms here as they are implemented
       default:
-        return new NextResponse(
-          `Integration for ${platform} is not yet supported`,
-          { status: 400 }
-        );
+        return new NextResponse(`Oauth2 for ${platform} is not yet supported`, {
+          status: 400,
+        });
     }
 
     const updatedUser = await prisma.user.update({
@@ -73,7 +57,7 @@ export async function PATCH(request: NextRequest) {
 
     return updateUserTokenAndReturnNextResponse(updatedUser);
   } catch (error) {
-    console.error("[SOCIAL_MEDIA_INTEGRATION_ERROR]", error);
+    console.error("[OAUTH2_CODE_REGISTRATION_ERROR]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
@@ -98,27 +82,25 @@ export async function DELETE(request: NextRequest) {
     const platform = searchParams.get("platform") as SocialMedia;
 
     if (!platform) {
-      return new NextResponse("Platform is required", { status: 400 });
+      return new NextResponse("Platform is required", {
+        status: 400,
+      });
     }
 
-    // Clear platform specific credentials
-    const updateData: Record<string, null> = {};
+    // Update user based on platform
+    const updateData: Record<string, string | null> = {};
 
     switch (platform) {
       case SocialMedia.TUMBLR:
-        updateData.tumblrClientId = null;
-        updateData.tumblrClientSecret = null;
+        updateData.oauth2TumblrCode = null;
         break;
       case SocialMedia.PINTEREST:
-        updateData.pinterestClientId = null;
-        updateData.pinterestClientSecret = null;
+        updateData.oauth2PinterestCode = null;
         break;
-      // Add cases for other platforms here as they are implemented
       default:
-        return new NextResponse(
-          `Integration for ${platform} is not yet supported`,
-          { status: 400 }
-        );
+        return new NextResponse(`Oauth2 for ${platform} is not yet supported`, {
+          status: 400,
+        });
     }
 
     const updatedUser = await prisma.user.update({
@@ -128,7 +110,7 @@ export async function DELETE(request: NextRequest) {
 
     return updateUserTokenAndReturnNextResponse(updatedUser);
   } catch (error) {
-    console.error("[SOCIAL_MEDIA_INTEGRATION_DELETE_ERROR]", error);
+    console.error("[OAUTH2_CODE_REMOVAL_ERROR]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

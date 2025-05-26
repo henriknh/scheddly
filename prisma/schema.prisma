@@ -42,10 +42,8 @@ model User {
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
   avatarUrl            String?
-  tumblrClientId       String?
-  tumblrClientSecret   String?
-  pinterestClientId    String?
-  pinterestClientSecret String?
+  oauth2PinterestCode  String?
+  oauth2TumblrCode     String?
   posts                Post[]
 }
 
