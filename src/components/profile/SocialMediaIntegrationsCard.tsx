@@ -48,10 +48,10 @@ export function SocialMediaIntegrationsCard({
       const oauth2Success = event?.data === "oauth2-success";
 
       if (oauth2Success) {
-        toast.success("Oauth2 code saved");
+        toast.success(`Connection established to ${platform.name}`);
         reloadUser();
       } else {
-        toast.error("Oauth2 code not saved");
+        toast.error(`Connection failed to ${platform.name}`);
       }
 
       channel.close();
@@ -62,7 +62,7 @@ export function SocialMediaIntegrationsCard({
     fetch(`/api/user/oauth2-code?platform=${platform.id}`, {
       method: "DELETE",
     }).then(() => {
-      toast.success("Oauth2 code removed");
+      toast.success(`Connection removed to ${platform.name}`);
       reloadUser();
     });
   };
