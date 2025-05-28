@@ -2,11 +2,13 @@
 
 import { useAuth } from "@/lib/auth-context";
 import {
+  Blocks,
   ChevronLeft,
   Home,
   ImageIcon,
   LayoutDashboard,
   Plus,
+  Tag,
   TextIcon,
   VideoIcon,
 } from "lucide-react";
@@ -101,7 +103,7 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
             <DropdownMenuContent side="right" align="start" className="w-48">
               <DropdownMenuItem asChild>
                 <Link
-                  href="/dashboard/create/text"
+                  href="/dashboard/create-new-post/text"
                   className="flex items-center gap-2"
                 >
                   <TextIcon className="h-4 w-4" />
@@ -110,7 +112,7 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  href="/dashboard/create/image"
+                  href="/dashboard/create-new-post/image"
                   className="flex items-center gap-2"
                 >
                   <ImageIcon className="h-4 w-4" />
@@ -119,7 +121,7 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  href="/dashboard/create/video"
+                  href="/dashboard/create-new-post/video"
                   className="flex items-center gap-2"
                 >
                   <VideoIcon className="h-4 w-4" />
@@ -148,6 +150,24 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
+
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/dashboard/brands">
+                  <Tag />
+                  <span>Brands</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/dashboard/integrations">
+                  <Blocks />
+                  <span>Integrations</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

@@ -1,3 +1,4 @@
+import { Breadcrumbs } from "@/components/common/breadcrumbs";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { Metadata } from "next";
 
@@ -15,7 +16,10 @@ export default function DashboardLayout({
     <div className="flex w-full">
       <DashboardSidebar />
       <main className="flex-1 flex justify-center">
-        <div className="container flex flex-col space-y-4 py-8">{children}</div>
+        <div className="container flex flex-col space-y-4 py-8">
+          <Breadcrumbs />
+          {children}
+        </div>
       </main>
     </div>
   );

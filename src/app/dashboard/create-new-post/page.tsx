@@ -2,6 +2,6 @@
 
 import { CreateNewPost } from "@/components/dashboard/create-new-post";
 
-export default function DashboardPage() {
+export default function CreateNewPostPage() {
   return <CreateNewPost />;
 }

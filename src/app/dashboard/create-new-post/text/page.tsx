@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,16 +13,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { platforms, type Platform } from "../../page";
+import {
+  platforms,
+  type Platform,
+} from "@/components/dashboard/create-new-post";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Plus, X } from "lucide-react";
-import { SocialMedia } from "../../../../generated/prisma";
+import Image from "next/image";
+import { SocialMedia } from "@/generated/prisma";
 
-export default function ImagePostPage() {
+export default function TextPostPage() {
   const router = useRouter();
-  const [caption, setCaption] = useState("");
-  const [images, setImages] = useState<File[]>([]);
+  const [content, setContent] = useState("");
   const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
     undefined
   );
@@ -49,26 +50,15 @@ export default function ImagePostPage() {
     fetchConnectedPlatforms();
   }, []);
 
-  const imagePlatforms = Object.entries(platforms).filter(([, platform]) =>
-    (platform as Platform).supports.includes("image")
+  const textPlatforms = Object.entries(platforms).filter(([, platform]) =>
+    (platform as Platform).supports.includes("text")
   );
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImages([...images, ...Array.from(e.target.files)]);
-    }
-  };
-
-  const removeImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index));
-  };
 
   const handleSubmit = async () => {
     try {
       // TODO: Implement post creation
       console.log({
-        caption,
-        images,
+        content,
         scheduledDate,
         platforms: selectedPlatforms,
       });
@@ -81,62 +71,23 @@ export default function ImagePostPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create Image Post</CardTitle>
+        <CardTitle>Create Text Post</CardTitle>
         <CardDescription>
-          Upload images and add a caption to share across platforms
+          Write your text content and choose where to share it
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {images.map((image, index) => (
-            <div
-              key={index}
-              className="relative aspect-square rounded-lg border-2 border-border"
-            >
-              <Image
-                src={URL.createObjectURL(image)}
-                alt={`Upload ${index + 1}`}
-                fill
-                className="object-cover rounded-lg"
-                unoptimized
-              />
-              <Button
-                variant="destructive"
-                size="icon"
-                className="absolute top-2 right-2 h-6 w-6"
-                onClick={() => removeImage(index)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
-          <label className="flex items-center justify-center aspect-square rounded-lg border-2 border-dashed border-border hover:border-primary cursor-pointer">
-            <div className="flex flex-col items-center gap-2 text-muted-foreground">
-              <Plus className="h-8 w-8" />
-              <span className="text-sm">Add Image</span>
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageUpload}
-                multiple
-              />
-            </div>
-          </label>
-        </div>
-
         <Textarea
-          placeholder="Write a caption for your images..."
-          value={caption}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-            setCaption(e.target.value)
-          }
+          placeholder="Write your post content here..."
+          className="min-h-[200px]"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
         />
 
         <div className="space-y-2">
           <Label>Select Platforms</Label>
           <div className="flex flex-wrap gap-4">
-            {imagePlatforms.map(([id, platform]) => {
+            {textPlatforms.map(([id, platform]) => {
               const isConnected = connectedPlatforms.includes(
                 id as SocialMedia
               );
@@ -189,7 +140,7 @@ export default function ImagePostPage() {
         </Button>
         <Button
           onClick={handleSubmit}
-          disabled={images.length === 0 || selectedPlatforms.length === 0}
+          disabled={!content || selectedPlatforms.length === 0}
         >
           {scheduledDate ? "Schedule Post" : "Post Now"}
         </Button>

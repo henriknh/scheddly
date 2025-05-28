@@ -45,6 +45,33 @@ model User {
   oauth2PinterestCode  String?
   oauth2TumblrCode     String?
   posts                Post[]
+  brandId              String?
+  brand                Brand?    @relation(fields: [brandId], references: [id])
+  createdBrands        Brand[]   @relation("BrandCreator")
+  createdIntegrations  SocialMediaIntegration[] @relation("SocialMediaIntegrationCreator")
+}
+
+model SocialMediaIntegration {
+  id          String      @id @default(cuid())
+  socialMedia SocialMedia
+  code        String
+  brandId     String
+  brand       Brand       @relation(fields: [brandId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  createdById String
+  createdBy   User        @relation("SocialMediaIntegrationCreator", fields: [createdById], references: [id])
+}
+
+model Brand {
+  id                    String                  @id @default(cuid())
+  name                  String
+  socialMediaIntegrations SocialMediaIntegration[]
+  users                 User[]
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  createdById           String
+  createdBy             User                    @relation("BrandCreator", fields: [createdById], references: [id])
 }
 
 enum PostType {

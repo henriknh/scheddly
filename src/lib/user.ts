@@ -1,6 +1,10 @@
+"use server";
+
 import { User } from "@/generated/prisma";
 import { NextResponse } from "next/server";
-import { createToken, setTokenCookie } from "./jwt";
+import { createToken, setTokenCookie, verifyToken } from "./jwt";
+import { cookies } from "next/headers";
+import prisma from "./prisma";
 
 export const cleanUserData = async (user: User) => {
   return {
@@ -25,5 +29,19 @@ export const updateUserTokenAndReturnNextResponse = async (user: User) => {
 
   return NextResponse.json({
     user: cleanedUser,
+  });
+};
+
+export const getUserFromToken = async () => {
+  const token = (await cookies()).get("token")?.value;
+  if (!token) return null;
+
+  const payload = await verifyToken(token);
+  if (!payload || !payload.id) {
+    return null;
+  }
+
+  return prisma.user.findUnique({
+    where: { id: payload.id as string },
   });
 };

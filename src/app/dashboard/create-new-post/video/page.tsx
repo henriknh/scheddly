@@ -13,7 +13,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { platforms, type Platform } from "../../page";
+import {
+  platforms,
+  type Platform,
+} from "@/components/dashboard/create-new-post";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Video, X } from "lucide-react";
