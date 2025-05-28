@@ -1,6 +1,7 @@
 "use client";
 
 import { SocialMedia } from "@/generated/prisma";
+import { addSocialMediaIntegration } from "@/app/api/user/social-media-integration";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -14,27 +15,11 @@ export default function TumblrRedirectPage() {
     if (code) {
       const createTumblrIntegration = async () => {
         try {
-          const response = await fetch("/api/user/oauth2-code", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              platform: SocialMedia.TUMBLR,
-              code,
-            }),
-          });
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || "Failed to create Tumblr integration");
-          }
-
+          await addSocialMediaIntegration(SocialMedia.TUMBLR, code);
           const channel = new BroadcastChannel("oauth2_integration_complete");
           channel.postMessage("oauth2-success");
         } catch (error) {
           console.error("[TUMBLR_INTEGRATION_ERROR]", error);
-
           const channel = new BroadcastChannel("oauth2_integration_complete");
           channel.postMessage("oauth2-error");
         } finally {

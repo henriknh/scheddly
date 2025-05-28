@@ -1,5 +1,6 @@
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
+import { deleteSocialMediaIntegration } from "@/app/api/user/social-media-integration";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,6 +13,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 interface DeleteIntegrationDialogProps {
   integrationId: string;
@@ -20,18 +22,13 @@ interface DeleteIntegrationDialogProps {
 export function DeleteIntegrationDialog({
   integrationId,
 }: DeleteIntegrationDialogProps) {
+  const router = useRouter();
+
   const deleteIntegration = async (id: string) => {
     try {
-      const response = await fetch(
-        `/api/user/social-media-integrations?id=${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to delete integration");
-      }
+      await deleteSocialMediaIntegration(id);
 
+      router.refresh();
       toast.success("Integration removed successfully");
     } catch (error) {
       console.error(error);
