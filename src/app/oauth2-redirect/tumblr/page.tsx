@@ -12,7 +12,7 @@ export default function TumblrRedirectPage() {
     const code = params.get("code");
 
     if (code) {
-      const updateTumblrCode = async () => {
+      const createTumblrIntegration = async () => {
         try {
           const response = await fetch("/api/user/oauth2-code", {
             method: "POST",
@@ -26,13 +26,14 @@ export default function TumblrRedirectPage() {
           });
 
           if (!response.ok) {
-            throw new Error("Failed to update Tumblr code");
+            const errorText = await response.text();
+            throw new Error(errorText || "Failed to create Tumblr integration");
           }
 
           const channel = new BroadcastChannel("oauth2_integration_complete");
           channel.postMessage("oauth2-success");
         } catch (error) {
-          console.error("[TUMBLR_CODE_UPDATE_ERROR]", error);
+          console.error("[TUMBLR_INTEGRATION_ERROR]", error);
 
           const channel = new BroadcastChannel("oauth2_integration_complete");
           channel.postMessage("oauth2-error");
@@ -41,7 +42,7 @@ export default function TumblrRedirectPage() {
         }
       };
 
-      updateTumblrCode();
+      createTumblrIntegration();
     }
   }, [params, router]);
 

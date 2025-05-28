@@ -2,20 +2,15 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/lib/auth-context";
+import { Header } from "@/components/common/Header";
+import { HeaderGroup } from "@/components/common/HeaderGroup";
+import { Description } from "@/components/common/Description";
 
 export function ProfileInfoForm() {
   const { user, reloadUser } = useAuth();
@@ -92,72 +87,72 @@ export function ProfileInfoForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Profile Information</CardTitle>
-          <CardDescription>
-            Update your profile information and email address
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center gap-4">
-            <div
-              onClick={handleAvatarClick}
-              className="relative cursor-pointer group"
-              role="button"
-              aria-label="Change profile image"
-            >
-              <div className="relative">
-                <UserAvatar
-                  src={formData.avatarUrl}
-                  fallback={formData.name}
-                  className="h-20 w-20"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-medium rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-center text-xs">
-                  Update avatar
-                </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <HeaderGroup>
+        <Header>Profile Information</Header>
+        <Description>
+          Update your profile information and email address
+        </Description>
+      </HeaderGroup>
+
+      <div className="space-y-2">
+        <div className="flex items-center gap-4">
+          <div
+            onClick={handleAvatarClick}
+            className="relative cursor-pointer group"
+            role="button"
+            aria-label="Change profile image"
+          >
+            <div className="relative">
+              <UserAvatar
+                src={formData.avatarUrl}
+                fallback={formData.name}
+                className="h-20 w-20"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-medium rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-center text-xs">
+                Update avatar
               </div>
             </div>
-            <Input
-              ref={fileInputRef}
-              id="image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, name: e.target.value }))
-              }
-              placeholder="Enter your name"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, email: e.target.value }))
-              }
-              placeholder="Enter your email"
-            />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save Changes"}
-          </Button>
-        </CardFooter>
-      </Card>
+          <Input
+            ref={fileInputRef}
+            id="image"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="hidden"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="name">Name</Label>
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, name: e.target.value }))
+            }
+            placeholder="Enter your name"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, email: e.target.value }))
+            }
+            placeholder="Enter your email"
+          />
+        </div>
+      </div>
+
+      <div>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Saving..." : "Save Changes"}
+        </Button>
+      </div>
     </form>
   );
 }

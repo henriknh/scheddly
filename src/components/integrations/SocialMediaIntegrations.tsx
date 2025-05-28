@@ -1,6 +1,5 @@
 import { getSocialMediaIntegrations } from "@/app/api/user/social-media-integration";
 import { SocialMedia } from "@/generated/prisma";
-import { SocialMediaIntegrationsCard } from "./SocialMediaIntegrationsCard";
 import { SocialMediaIntegrationsList } from "./SocialMediaIntegrationsList";
 
 export type Platform = {
@@ -90,12 +89,6 @@ export async function SocialMediaIntegrations() {
   return (
     <div className="space-y-4">
       <SocialMediaIntegrationsList integrations={integrations} />
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {platforms.map((platform) => (
-          <SocialMediaIntegrationsCard key={platform.id} platform={platform} />
-        ))}
-      </div>
     </div>
   );
 }

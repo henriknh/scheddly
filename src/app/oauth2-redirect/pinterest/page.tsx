@@ -12,7 +12,7 @@ export default function PinterestRedirectPage() {
     const code = params.get("code");
 
     if (code) {
-      const updatePinterestCode = async () => {
+      const createPinterestIntegration = async () => {
         try {
           const response = await fetch("/api/user/oauth2-code", {
             method: "POST",
@@ -26,13 +26,16 @@ export default function PinterestRedirectPage() {
           });
 
           if (!response.ok) {
-            throw new Error("Failed to update Pinterest code");
+            const errorText = await response.text();
+            throw new Error(
+              errorText || "Failed to create Pinterest integration"
+            );
           }
 
           const channel = new BroadcastChannel("oauth2_integration_complete");
           channel.postMessage("oauth2-success");
         } catch (error) {
-          console.error("[PINTEREST_CODE_UPDATE_ERROR]", error);
+          console.error("[PINTEREST_INTEGRATION_ERROR]", error);
 
           const channel = new BroadcastChannel("oauth2_integration_complete");
           channel.postMessage("oauth2-error");
@@ -41,7 +44,7 @@ export default function PinterestRedirectPage() {
         }
       };
 
-      updatePinterestCode();
+      createPinterestIntegration();
     }
   }, [params, router]);
 

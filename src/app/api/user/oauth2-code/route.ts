@@ -1,7 +1,6 @@
 import { SocialMedia } from "@/generated/prisma";
 import { getTokenData } from "@/lib/jwt";
 import prisma from "@/lib/prisma";
-import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
 import { NextRequest, NextResponse } from "next/server";
 
 export interface Oauth2CodeBody {
@@ -16,15 +15,6 @@ export async function POST(request: NextRequest) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { id: payload.id as string },
-    });
-
-    if (!user) {
-      return new NextResponse("User not found", { status: 404 });
-    }
-
     const body: Oauth2CodeBody = await request.json();
     const { platform, code } = body;
 
@@ -34,28 +24,16 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Update user based on platform
-    const updateData: Record<string, string | null> = {};
-
-    switch (platform) {
-      case SocialMedia.TUMBLR:
-        updateData.oauth2TumblrCode = code;
-        break;
-      case SocialMedia.PINTEREST:
-        updateData.oauth2PinterestCode = code;
-        break;
-      default:
-        return new NextResponse(`Oauth2 for ${platform} is not yet supported`, {
-          status: 400,
-        });
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { id: user.id },
-      data: updateData,
+    // Create social media integration
+    await prisma.socialMediaIntegration.create({
+      data: {
+        socialMedia: platform,
+        code,
+        createdById: payload.id,
+      },
     });
 
-    return updateUserTokenAndReturnNextResponse(updatedUser);
+    return new NextResponse("Integration created successfully");
   } catch (error) {
     console.error("[OAUTH2_CODE_REGISTRATION_ERROR]", error);
     return new NextResponse("Internal Error", { status: 500 });
@@ -69,15 +47,6 @@ export async function DELETE(request: NextRequest) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { id: payload.id as string },
-    });
-
-    if (!user) {
-      return new NextResponse("User not found", { status: 404 });
-    }
-
     const { searchParams } = new URL(request.url);
     const platform = searchParams.get("platform") as SocialMedia;
 
@@ -87,28 +56,15 @@ export async function DELETE(request: NextRequest) {
       });
     }
 
-    // Update user based on platform
-    const updateData: Record<string, string | null> = {};
-
-    switch (platform) {
-      case SocialMedia.TUMBLR:
-        updateData.oauth2TumblrCode = null;
-        break;
-      case SocialMedia.PINTEREST:
-        updateData.oauth2PinterestCode = null;
-        break;
-      default:
-        return new NextResponse(`Oauth2 for ${platform} is not yet supported`, {
-          status: 400,
-        });
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { id: user.id },
-      data: updateData,
+    // Delete the integration
+    await prisma.socialMediaIntegration.deleteMany({
+      where: {
+        socialMedia: platform,
+        createdById: payload.id,
+      },
     });
 
-    return updateUserTokenAndReturnNextResponse(updatedUser);
+    return new NextResponse("Integration deleted successfully");
   } catch (error) {
     console.error("[OAUTH2_CODE_REMOVAL_ERROR]", error);
     return new NextResponse("Internal Error", { status: 500 });

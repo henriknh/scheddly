@@ -10,8 +10,6 @@ export const cleanUserData = async (user: User) => {
   return {
     ...user,
     password: undefined,
-    oauth2PinterestCode: !!user.oauth2PinterestCode,
-    oauth2TumblrCode: !!user.oauth2TumblrCode,
   };
 };
 
