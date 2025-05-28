@@ -18,7 +18,7 @@ import { DeleteIntegrationDialog } from "./DeleteIntegrationDialog";
 
 interface SocialMediaIntegrationsListProps {
   integrations: (SocialMediaIntegration & {
-    brand?: Brand;
+    brand?: Brand | null;
   })[];
 }
 
