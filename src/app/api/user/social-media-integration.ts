@@ -6,7 +6,7 @@ import { getUserFromToken } from "@/lib/user";
 
 export async function getSocialMediaIntegrations(): Promise<
   (SocialMediaIntegration & {
-    brand?: Brand;
+    brand?: Brand | null;
   })[]
 > {
   try {
