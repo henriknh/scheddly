@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   Home,
   ImageIcon,
+  Users,
   LayoutDashboard,
   Plus,
   Tag,
@@ -187,6 +188,14 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
                   className="h-4 w-4"
                 />
                 <span className="truncate">{user?.name || "User"}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/dashboard/team" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span>Team</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

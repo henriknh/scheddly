@@ -1,8 +1,7 @@
-import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
-import { createToken, setTokenCookie } from "@/lib/jwt";
-import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
+import { getUser, updateUserTokenAndReturnNextResponse } from "@/lib/user";
+import bcrypt from "bcryptjs";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
@@ -25,15 +24,37 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: {
-        email,
-        name,
-        password: hashedPassword,
-      },
+    // Create user and team in a transaction to ensure both operations succeed
+    const result = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email,
+          name,
+          password: hashedPassword,
+        },
+      });
+
+      // Create a team for the user
+      await tx.team.create({
+        data: {
+          name: `${name}'s Team`,
+          owner: {
+            connect: {
+              id: user.id,
+            },
+          },
+          members: {
+            connect: {
+              id: user.id,
+            },
+          },
+        },
+      });
+
+      return user;
     });
 
-    return updateUserTokenAndReturnNextResponse(user);
+    return updateUserTokenAndReturnNextResponse(result);
   } catch (error) {
     console.error("REGISTRATION_ERROR", error);
     return new NextResponse("Internal Error", { status: 500 });

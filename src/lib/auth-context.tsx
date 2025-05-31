@@ -9,6 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { getUser } from "./user";
 
 interface AuthContextType {
   user: User | null;
@@ -37,12 +38,9 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
 
   async function reloadUser() {
     try {
-      const response = await fetch("/api/auth/me");
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user);
-        console.log("User data:", data.user);
-      }
+      const user = await getUser();
+      setUser(user);
+      console.log("User data:", user);
     } catch (error) {
       console.error("Failed to fetch user", error);
     } finally {
