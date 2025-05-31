@@ -17,7 +17,7 @@ export function LogoutButton() {
         throw new Error("Failed to logout");
       }
 
-      router.push("/login");
+      router.push("/");
       toast.success("Logged out successfully");
     } catch (error) {
       console.error("Logout error:", error);
