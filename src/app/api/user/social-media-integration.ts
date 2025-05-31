@@ -11,13 +11,13 @@ export async function getSocialMediaIntegrations(): Promise<
 > {
   try {
     const user = await getUserFromToken();
-    if (!user || !user.id) {
+    if (!user || !user.id || !user.teamId) {
       throw new Error("Unauthorized");
     }
 
     const integrations = await prisma.socialMediaIntegration.findMany({
       where: {
-        createdById: user.id,
+        teamId: user.teamId,
       },
       include: {
         brand: true,
@@ -40,12 +40,12 @@ export async function deleteSocialMediaIntegration(
     }
 
     const user = await getUserFromToken();
-    if (!user || !user.id) {
+    if (!user || !user.id || !user.teamId) {
       throw new Error("Unauthorized");
     }
 
     await prisma.socialMediaIntegration.delete({
-      where: { id: socialMediaIntegrationId, createdById: user.id },
+      where: { id: socialMediaIntegrationId, teamId: user.teamId },
     });
   } catch (error) {
     console.error(error);
@@ -63,7 +63,7 @@ export async function addSocialMediaIntegration(
     }
 
     const user = await getUserFromToken();
-    if (!user || !user.id) {
+    if (!user || !user.id || !user.teamId) {
       throw new Error("Unauthorized");
     }
 
@@ -71,7 +71,7 @@ export async function addSocialMediaIntegration(
       data: {
         socialMedia: platform,
         code,
-        createdById: user.id,
+        teamId: user.teamId,
       },
     });
 

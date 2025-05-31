@@ -3,5 +3,5 @@ export default function TeamLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="container space-y-4 py-4">{children}</div>;
+  return <div className="space-y-4">{children}</div>;
 }
