@@ -1,12 +1,19 @@
 "use server";
 
-import { Brand, SocialMedia, SocialMediaIntegration } from "@/generated/prisma";
+import {
+  Brand,
+  SocialMedia,
+  SocialMediaIntegration,
+  SocialMediaIntegrationAccountInfo,
+} from "@/generated/prisma";
 import prisma from "@/lib/prisma";
+import { pinterest } from "@/lib/social-media-api-functions/pinterest";
 import { getUserFromToken } from "@/lib/user";
 
 export async function getSocialMediaIntegrations(): Promise<
   (SocialMediaIntegration & {
     brand?: Brand | null;
+    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
   })[]
 > {
   try {
@@ -21,6 +28,7 @@ export async function getSocialMediaIntegrations(): Promise<
       },
       include: {
         brand: true,
+        socialMediaIntegrationAccountInfo: true,
       },
     });
 
@@ -46,6 +54,10 @@ export async function deleteSocialMediaIntegration(
 
     await prisma.socialMediaIntegration.delete({
       where: { id: socialMediaIntegrationId, teamId: user.teamId },
+      include: {
+        token: true,
+        socialMediaIntegrationAccountInfo: true,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -67,11 +79,55 @@ export async function addSocialMediaIntegration(
       throw new Error("Unauthorized");
     }
 
+    const getTokens = async () => {
+      switch (platform) {
+        case SocialMedia.PINTEREST:
+          return pinterest.consumeAuthorizationCode(code);
+      }
+
+      throw new Error("Invalid platform");
+    };
+
+    const {
+      accessToken,
+      accessTokenExpiresAt,
+      refreshToken,
+      refreshTokenExpiresAt,
+    } = await getTokens();
+
+    const getAccountInfo = async () => {
+      switch (platform) {
+        case SocialMedia.PINTEREST:
+          return pinterest.fetchAccountInfoByAccessToken(accessToken);
+      }
+      throw new Error("Invalid platform");
+    };
+
+    const { accountId, name, avatarUrl } = await getAccountInfo();
+
     const integration = await prisma.socialMediaIntegration.create({
       data: {
         socialMedia: platform,
-        code,
-        teamId: user.teamId,
+        team: {
+          connect: {
+            id: user.teamId,
+          },
+        },
+        token: {
+          create: {
+            accessToken,
+            accessTokenExpiresAt,
+            refreshToken,
+            refreshTokenExpiresAt,
+          },
+        },
+        socialMediaIntegrationAccountInfo: {
+          create: {
+            accountId,
+            name,
+            avatarUrl,
+          },
+        },
       },
     });
 

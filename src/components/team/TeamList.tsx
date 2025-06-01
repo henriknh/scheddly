@@ -25,7 +25,6 @@ export function TeamList({ team }: TeamListProps) {
             <UserAvatar
               src={user.avatarUrl || undefined}
               fallback={user.name || undefined}
-              className="h-8 w-8"
             />
             <span>{user.name}</span>
           </div>

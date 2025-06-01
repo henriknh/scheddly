@@ -61,15 +61,39 @@ model Team {
 }
 
 model SocialMediaIntegration {
-  id          String      @id @default(cuid())
-  socialMedia SocialMedia
-  code        String
-  brandId     String?
-  brand       Brand?      @relation(fields: [brandId], references: [id])
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  teamId      String
-  team        Team        @relation(fields: [teamId], references: [id])
+  id                                String      @id @default(cuid())
+  socialMedia                       SocialMedia
+  token                             Token      @relation(fields: [tokenId], references: [id])
+  tokenId                           String     @unique
+  brandId                           String?
+  brand                             Brand?      @relation(fields: [brandId], references: [id])
+  createdAt                         DateTime    @default(now())
+  updatedAt                         DateTime    @updatedAt
+  teamId                            String
+  team                              Team        @relation(fields: [teamId], references: [id])
+  socialMediaIntegrationAccountInfo SocialMediaIntegrationAccountInfo? @relation(fields: [socialMediaIntegrationAccountInfoId], references: [id])
+  socialMediaIntegrationAccountInfoId String?    @unique
+}
+
+model SocialMediaIntegrationAccountInfo {
+  id                    String      @id @default(cuid())
+  accountId             String
+  name                  String
+  avatarUrl             String?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  socialMediaIntegration SocialMediaIntegration?
+}
+
+model Token {
+  id                    String      @id @default(cuid())
+  accessToken           String
+  accessTokenExpiresAt  DateTime
+  refreshToken          String
+  refreshTokenExpiresAt DateTime
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  socialMediaIntegration SocialMediaIntegration?
 }
 
 model Brand {

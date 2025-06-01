@@ -1,16 +1,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 import { User } from "lucide-react";
 
 interface UserAvatarProps {
-  src?: string;
+  src?: string | null;
   fallback?: string;
-  className?: string;
+  isBig?: boolean;
 }
 
-export function UserAvatar({ src, fallback, className }: UserAvatarProps) {
+export function UserAvatar({ src, fallback, isBig = false }: UserAvatarProps) {
   return (
-    <Avatar className={className}>
-      <AvatarImage src={src} alt="user avatar" />
+    <Avatar className={cn(isBig ? "h-16 w-16" : "h-4 w-4")}>
+      <AvatarImage src={src!} alt="user avatar" />
       <AvatarFallback>
         {fallback ? (
           <span className="font-medium">

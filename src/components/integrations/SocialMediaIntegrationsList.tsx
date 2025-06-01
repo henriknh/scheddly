@@ -1,9 +1,19 @@
 "use client";
 
-import { Brand, SocialMediaIntegration } from "@/generated/prisma";
+import {
+  Brand,
+  SocialMediaIntegration,
+  SocialMediaIntegrationAccountInfo,
+} from "@/generated/prisma";
+import { socialMediaPlatforms } from "@/lib/social-media-platforms";
+import { RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Header } from "../common/Header";
+import { UserAvatar } from "../common/UserAvatar";
+import { Button } from "../ui/button";
 import {
   Table,
   TableBody,
@@ -12,13 +22,13 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { platforms } from "./SocialMediaIntegrations";
 import { AddIntegrationModal } from "./AddIntegrationModal";
 import { DeleteIntegrationDialog } from "./DeleteIntegrationDialog";
 
 interface SocialMediaIntegrationsListProps {
   integrations: (SocialMediaIntegration & {
     brand?: Brand | null;
+    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
   })[];
 }
 
@@ -26,6 +36,7 @@ export function SocialMediaIntegrationsList({
   integrations,
 }: SocialMediaIntegrationsListProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <div className="space-y-4">
@@ -38,6 +49,7 @@ export function SocialMediaIntegrationsList({
         <TableHeader>
           <TableRow>
             <TableHead>Platform</TableHead>
+            <TableHead>Account</TableHead>
             <TableHead>Brand</TableHead>
             <TableHead>Created</TableHead>
             <TableHead className="w-[40px] text-right"></TableHead>
@@ -46,24 +58,61 @@ export function SocialMediaIntegrationsList({
         <TableBody>
           {integrations.length > 0 ? (
             integrations.map((integration) => {
-              const platform = platforms.find(
+              const socialMediaPlatform = socialMediaPlatforms.find(
                 (p) => p.id === integration.socialMedia
               );
 
-              if (!platform) return null;
+              if (!socialMediaPlatform) return null;
 
               return (
                 <TableRow key={integration.id}>
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-2">
                       <Image
-                        src={platform.icon}
-                        alt={platform.name}
+                        src={socialMediaPlatform.icon}
+                        alt={socialMediaPlatform.name}
                         width={16}
                         height={16}
                         className="h-4 w-4"
                       />
-                      {platform.name}
+                      {socialMediaPlatform.name}
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <UserAvatar
+                        src={
+                          integration.socialMediaIntegrationAccountInfo
+                            ?.avatarUrl
+                        }
+                        fallback={
+                          integration.socialMediaIntegrationAccountInfo?.name
+                        }
+                      />
+
+                      {integration.socialMediaIntegrationAccountInfo?.name ?? (
+                        <span>&mdash;</span>
+                      )}
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          socialMediaPlatform.socialMediaApiFunctions
+                            .updateAccountInfo(integration.id)
+                            .then(() => {
+                              toast.success("Account info updated");
+                              router.refresh();
+                            })
+                            .catch((error) => {
+                              toast.error("Failed to update account info");
+                              console.error(error);
+                            });
+                        }}
+                      >
+                        <RefreshCcwIcon className="h-4 w-4" />
+                      </Button>
                     </div>
                   </TableCell>
                   <TableCell>

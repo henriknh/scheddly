@@ -1,7 +1,7 @@
 "use client";
 
 import { SocialMedia } from "@/generated/prisma";
-import { addSocialMediaIntegration } from "@/app/api/user/social-media-integration";
+import { addSocialMediaIntegration } from "@/app/api/social-media-integration/social-media-integration";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 

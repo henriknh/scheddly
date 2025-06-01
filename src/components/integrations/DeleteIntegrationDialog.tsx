@@ -1,6 +1,6 @@
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
-import { deleteSocialMediaIntegration } from "@/app/api/user/social-media-integration";
+import { deleteSocialMediaIntegration } from "@/app/api/social-media-integration/social-media-integration";
 import {
   AlertDialog,
   AlertDialogAction,

@@ -104,11 +104,7 @@ export function ProfileInfoForm() {
             aria-label="Change profile image"
           >
             <div className="relative">
-              <UserAvatar
-                src={formData.avatarUrl}
-                fallback={formData.name}
-                className="h-20 w-20"
-              />
+              <UserAvatar src={formData.avatarUrl} fallback={formData.name} />
               <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-medium rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-center text-xs">
                 Update avatar
               </div>
