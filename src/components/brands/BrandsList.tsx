@@ -15,17 +15,6 @@ const columns: DataTableColumnDef<Brand, unknown>[] = [
     header: "Brand Name",
   },
   {
-    accessorKey: "website",
-    header: "Website",
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Added",
-    cell: ({ row }) => {
-      return new Date(row.getValue("createdAt")).toLocaleDateString();
-    },
-  },
-  {
     id: "actions",
     cell: ({ row }) => {
       return <DeleteBrandDialog brandId={row.original.id} />;
