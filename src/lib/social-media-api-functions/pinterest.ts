@@ -164,8 +164,6 @@ export const pinterest: SocialMediaApiFunctions = {
   fetchAccountInfoByAccessToken: async (
     accessToken: string
   ): Promise<AccountInfo> => {
-    console.log("accessToken", accessToken);
-
     const response = await fetch(`${pinterestApiUrl}/user_account`, {
       method: "GET",
       headers: {
@@ -174,8 +172,6 @@ export const pinterest: SocialMediaApiFunctions = {
         Accept: "application/json",
       },
     });
-
-    console.log("response", response);
 
     if (!response.ok) {
       throw new Error("Failed to fetch account info");

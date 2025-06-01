@@ -1,15 +1,15 @@
 "use client";
 
-import { Brand } from "@/generated/prisma";
-import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
-import { Plus } from "lucide-react";
-import { Header } from "@/components/common/Header";
-import { useState } from "react";
 import { AddBrandModal } from "@/components/brands/AddBrandModal";
+import { DeleteBrandDialog } from "@/components/brands/DeleteBrandDialog";
+import { Header } from "@/components/common/Header";
+import { Button } from "@/components/ui/button";
+import { DataTable, DataTableColumnDef } from "@/components/ui/data-table";
+import { Brand } from "@/generated/prisma";
+import { Plus } from "lucide-react";
+import { useState } from "react";
 
-const columns: ColumnDef<Brand>[] = [
+const columns: DataTableColumnDef<Brand, unknown>[] = [
   {
     accessorKey: "name",
     header: "Brand Name",
@@ -24,6 +24,14 @@ const columns: ColumnDef<Brand>[] = [
     cell: ({ row }) => {
       return new Date(row.getValue("createdAt")).toLocaleDateString();
     },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      return <DeleteBrandDialog brandId={row.original.id} />;
+    },
+    size: 0,
+    align: "end",
   },
 ];
 

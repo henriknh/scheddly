@@ -16,7 +16,7 @@ export async function getBrands(): Promise<Brand[]> {
         teamId: user.teamId,
       },
       orderBy: {
-        createdAt: "desc",
+        name: "asc",
       },
     });
 

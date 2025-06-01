@@ -6,25 +6,29 @@ import {
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
-import { updateAccountInfo } from "@/app/actions/social-media-integrations";
+import {
+  updateAccountInfo,
+  updateIntegrationBrand,
+} from "@/app/actions/social-media-integrations";
 import { RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Header } from "../common/Header";
 import { UserAvatar } from "../common/UserAvatar";
 import { Button } from "../ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
+import { DataTable, DataTableColumnDef } from "../ui/data-table";
 import { AddIntegrationModal } from "./AddIntegrationModal";
 import { DeleteIntegrationDialog } from "./DeleteIntegrationDialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { getBrands } from "@/app/api/brand/get-brands";
 
 interface SocialMediaIntegrationsListProps {
   integrations: (SocialMediaIntegration & {
@@ -37,7 +41,142 @@ export function SocialMediaIntegrationsList({
   integrations,
 }: SocialMediaIntegrationsListProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const router = useRouter();
+
+  // Fetch brands when component mounts
+  useEffect(() => {
+    getBrands()
+      .then((brands) => setBrands(brands))
+      .catch((error) => {
+        console.error("Error fetching brands:", error);
+        toast.error("Failed to fetch brands");
+      });
+  }, []);
+
+  const handleBrandChange = async (
+    integrationId: string,
+    brandId: string | null
+  ) => {
+    try {
+      await updateIntegrationBrand(integrationId, brandId);
+      toast.success("Brand updated successfully");
+      router.refresh();
+    } catch (error) {
+      console.error("Error updating brand:", error);
+      toast.error("Failed to update brand");
+    }
+  };
+
+  const columns: DataTableColumnDef<
+    SocialMediaIntegration & {
+      brand?: Brand | null;
+      socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
+    },
+    unknown
+  >[] = [
+    {
+      accessorKey: "socialMedia",
+      header: "Platform",
+      cell: ({ row }) => {
+        const socialMediaPlatform = socialMediaPlatforms.find(
+          (p) => p.id === row.original.socialMedia
+        );
+
+        if (!socialMediaPlatform) return null;
+
+        return (
+          <div className="flex items-center gap-2">
+            <Image
+              src={socialMediaPlatform.icon}
+              alt={socialMediaPlatform.name}
+              width={16}
+              height={16}
+              className="h-4 w-4"
+            />
+            {socialMediaPlatform.name}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "socialMediaIntegrationAccountInfo",
+      header: "Account",
+      cell: ({ row }) => {
+        const accountInfo = row.original.socialMediaIntegrationAccountInfo;
+        return (
+          <div className="flex items-center gap-2">
+            <UserAvatar
+              src={accountInfo?.avatarUrl}
+              fallback={accountInfo?.name}
+            />
+            {accountInfo?.name ?? <span>&mdash;</span>}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                updateAccountInfo(row.original.id)
+                  .then(() => {
+                    toast.success("Account info updated");
+                    router.refresh();
+                  })
+                  .catch((error) => {
+                    toast.error("Failed to update account info");
+                    console.error(error);
+                  });
+              }}
+            >
+              <RefreshCcwIcon className="h-4 w-4" />
+            </Button>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "brand",
+      header: "Brand",
+      cell: ({ row }) => {
+        return (
+          <Select
+            value={row.original.brand?.id ?? "none"}
+            onValueChange={(value) =>
+              handleBrandChange(
+                row.original.id,
+                value === "none" ? null : value
+              )
+            }
+          >
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Select a brand" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">No brand</SelectItem>
+              {brands.map((brand) => (
+                <SelectItem key={brand.id} value={brand.id}>
+                  {brand.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+      },
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Created",
+      cell: ({ row }) => {
+        return new Date(row.original.createdAt).toLocaleDateString();
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        return <DeleteIntegrationDialog integrationId={row.original.id} />;
+      },
+      size: 36,
+      align: "end",
+    },
+  ];
 
   return (
     <div className="space-y-4">
@@ -45,97 +184,7 @@ export function SocialMediaIntegrationsList({
         <Header>Social media integrations</Header>
         <AddIntegrationModal isOpen={isOpen} onOpenChange={setIsOpen} />
       </div>
-
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Platform</TableHead>
-            <TableHead>Account</TableHead>
-            <TableHead>Brand</TableHead>
-            <TableHead>Created</TableHead>
-            <TableHead className="w-[40px] text-right"></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {integrations.length > 0 ? (
-            integrations.map((integration) => {
-              const socialMediaPlatform = socialMediaPlatforms.find(
-                (p) => p.id === integration.socialMedia
-              );
-
-              if (!socialMediaPlatform) return null;
-
-              return (
-                <TableRow key={integration.id}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-2">
-                      <Image
-                        src={socialMediaPlatform.icon}
-                        alt={socialMediaPlatform.name}
-                        width={16}
-                        height={16}
-                        className="h-4 w-4"
-                      />
-                      {socialMediaPlatform.name}
-                    </div>
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <UserAvatar
-                        src={
-                          integration.socialMediaIntegrationAccountInfo
-                            ?.avatarUrl
-                        }
-                        fallback={
-                          integration.socialMediaIntegrationAccountInfo?.name
-                        }
-                      />
-
-                      {integration.socialMediaIntegrationAccountInfo?.name ?? (
-                        <span>&mdash;</span>
-                      )}
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          updateAccountInfo(integration.id)
-                            .then(() => {
-                              toast.success("Account info updated");
-                              router.refresh();
-                            })
-                            .catch((error) => {
-                              toast.error("Failed to update account info");
-                              console.error(error);
-                            });
-                        }}
-                      >
-                        <RefreshCcwIcon className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {integration.brand?.name ?? <span>&mdash;</span>}
-                  </TableCell>
-                  <TableCell>
-                    {new Date(integration.createdAt).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="w-[40px] text-right">
-                    <DeleteIntegrationDialog integrationId={integration.id} />
-                  </TableCell>
-                </TableRow>
-              );
-            })
-          ) : (
-            <TableRow>
-              <TableCell colSpan={4} className="text-center">
-                No integrations found
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      <DataTable columns={columns} data={integrations} />
     </div>
   );
 }

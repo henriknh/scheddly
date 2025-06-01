@@ -1,8 +1,7 @@
 "use client";
 
 import { Team, User } from "@/generated/prisma";
-import { DataTable } from "@/components/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
+import { DataTable, DataTableColumnDef } from "@/components/ui/data-table";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { Header } from "@/components/common/Header";
 
@@ -14,7 +13,7 @@ interface TeamListProps {
 }
 
 export function TeamList({ team }: TeamListProps) {
-  const columns: ColumnDef<User>[] = [
+  const columns: DataTableColumnDef<User, unknown>[] = [
     {
       accessorKey: "name",
       header: "Name",
