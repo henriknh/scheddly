@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 
-export function formatDateToString(date: Date) {
+export function formatDateAgo(date: Date) {
   const isLessThanOneMinuteAgo = new Date().getTime() - date.getTime() < 60000;
   if (isLessThanOneMinuteAgo) {
     const secondsAgo = Math.floor(
@@ -26,4 +26,8 @@ export function formatDateToString(date: Date) {
   }
 
   return format(new Date(date), "MMM d, yyyy");
+}
+
+export function formatDate(date: Date) {
+  return format(date, "MMM d, yyyy");
 }

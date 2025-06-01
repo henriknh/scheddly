@@ -1,5 +1,6 @@
 "use client";
 
+import { PostWithRelations } from "@/app/api/post/types";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -15,20 +16,18 @@ import {
   SocialMedia,
   SocialMediaPost,
 } from "@/generated/prisma";
-import { formatDateToString } from "@/lib/format-date-to-string";
+import { formatDate, formatDateAgo } from "@/lib/format-date";
 import { getPostTypeName } from "@/lib/post-type-name";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { cn } from "@/lib/utils";
-import { VideoIcon } from "lucide-react";
-import { ImageIcon } from "lucide-react";
-import { TextIcon } from "lucide-react";
+import { ImageIcon, TextIcon, VideoIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { PostsGridImageCarousel } from "./PostsGridImageCarousel";
 
 interface PostGridProps {
-  posts: (Post & {
-    socialMediaPosts: SocialMediaPost[];
-  })[];
+  posts: PostWithRelations[];
   brands: Brand[];
 }
 
@@ -63,9 +62,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
   };
 
   const getCreatedAtBadge = (post: Post) => {
-    return (
-      <Badge variant="secondary">{formatDateToString(post.createdAt)}</Badge>
-    );
+    return <Badge variant="secondary">{formatDateAgo(post.createdAt)}</Badge>;
   };
 
   const getStatusBadge = (
@@ -77,27 +74,97 @@ export function PostGrid({ posts, brands }: PostGridProps) {
       (post: SocialMediaPost) => post.failedAt || post.failedReason
     );
     if (hasFailed) {
-      return <Badge variant="destructive">Failed</Badge>;
+      const failedAt = socialMediaPosts.map(
+        (post: SocialMediaPost) => post.failedAt
+      );
+      const lastFailedAt = failedAt.sort((a, b) => {
+        if (a && b) {
+          return a.getTime() - b.getTime();
+        } else if (a) {
+          return 1;
+        } else if (b) {
+          return -1;
+        }
+        return 0;
+      })[0];
+
+      return (
+        <Tooltip>
+          <TooltipTrigger>
+            <Badge variant="destructive">Failed</Badge>
+          </TooltipTrigger>
+          <TooltipContent>
+            {lastFailedAt ? (
+              <>
+                The post has failed to be posted at {formatDate(lastFailedAt)}
+              </>
+            ) : (
+              <>The post has failed to be posted</>
+            )}
+          </TooltipContent>
+        </Tooltip>
+      );
     }
 
     const allPosted = socialMediaPosts.every(
       (post: SocialMediaPost) => post.postedAt
     );
     if (allPosted) {
-      return <Badge variant="success">Success</Badge>;
+      const postedAt = socialMediaPosts.map(
+        (post: SocialMediaPost) => post.postedAt
+      );
+      const lastPostedAt = postedAt.sort((a, b) => {
+        if (a && b) {
+          return a.getTime() - b.getTime();
+        } else if (a) {
+          return 1;
+        } else if (b) {
+          return -1;
+        }
+        return 0;
+      })[0];
+
+      return (
+        <Tooltip>
+          <TooltipTrigger>
+            <Badge variant="success">Success</Badge>
+          </TooltipTrigger>
+          <TooltipContent>
+            {lastPostedAt ? (
+              <>All posts have been posted at {formatDate(lastPostedAt)}</>
+            ) : (
+              <>All posts have been posted</>
+            )}
+          </TooltipContent>
+        </Tooltip>
+      );
     }
 
     if (post.scheduledAt) {
       const scheduledDate = new Date(post.scheduledAt);
       if (scheduledDate > new Date()) {
-        return <Badge variant="info">Scheduled</Badge>;
+        return (
+          <Tooltip>
+            <TooltipTrigger>
+              <Badge variant="info">Scheduled</Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              Scheduled for {formatDate(post.scheduledAt)}
+            </TooltipContent>
+          </Tooltip>
+        );
       }
     }
 
     return (
-      <Badge variant="warning" className="animate-pulse">
-        Pending
-      </Badge>
+      <Tooltip>
+        <TooltipTrigger>
+          <Badge variant="warning" className="animate-pulse">
+            Pending
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>The post is pending to be posted</TooltipContent>
+      </Tooltip>
     );
   };
 
@@ -182,7 +249,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         {posts.length > 0 ? (
-          posts.map((post) => (
+          posts.map((post: PostWithRelations) => (
             <Link
               key={post.id}
               href={`/dashboard/posts/${post.id}`}
@@ -201,7 +268,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
                     "space-x-2 flex justify-between items-center",
                     post.postType === PostType.TEXT
                       ? "p-4 pb-2"
-                      : "absolute left-4 top-4 right-4"
+                      : "absolute left-4 top-4 right-4 z-10"
                   )}
                 >
                   <div className="flex items-center gap-2">
@@ -232,13 +299,10 @@ export function PostGrid({ posts, brands }: PostGridProps) {
                   />
                 )}
 
-                {post.postType === PostType.IMAGE && (
-                  <img
-                    src={post.imageUrls[0]}
-                    alt={post.description}
-                    className="rounded-xl w-full h-full object-cover"
-                  />
-                )}
+                {post.postType === PostType.IMAGE &&
+                  post.imageUrls.length > 0 && (
+                    <PostsGridImageCarousel post={post} />
+                  )}
 
                 {post.postType === PostType.TEXT ? (
                   <div className="pb-4 px-4">
