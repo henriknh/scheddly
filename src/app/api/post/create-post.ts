@@ -1,3 +1,5 @@
+"use server";
+
 import { PostType, SocialMediaIntegration } from "@/generated/prisma";
 import { uploadImagesToMinio, uploadVideoToMinio } from "@/lib/minio";
 import prisma from "@/lib/prisma";
