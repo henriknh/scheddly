@@ -10,16 +10,16 @@ datasource db {
 
 model SocialMediaPost {
   id                    String              @id @default(cuid())
+  post                  Post                @relation(fields: [postId], references: [id])
+  postId                String
   socialMediaIntegration SocialMediaIntegration @relation(fields: [socialMediaIntegrationId], references: [id])
   socialMediaIntegrationId String
-  failedReason          String?
+  socialMediaPostId     String?
   postedAt              DateTime?
   failedAt              DateTime?
+  failedReason          String?
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
-  postId                String
-  socialMediaPostId     String?
-  post                  Post                @relation(fields: [postId], references: [id])
 }
 
 model Post {

@@ -64,3 +64,25 @@ export async function uploadToMinio(
     throw error;
   }
 }
+
+export const uploadImagesToMinio = async (images?: File[] | null) => {
+  if (images) {
+    return await Promise.all(
+      images.map(async (image) => {
+        const bytes = await image.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        return await uploadToMinio(buffer, image.name, image.type);
+      })
+    );
+  }
+  return [];
+};
+
+export const uploadVideoToMinio = async (video?: File | null) => {
+  if (video) {
+    const videoBytes = await video.arrayBuffer();
+    const videoBuffer = Buffer.from(videoBytes);
+    return await uploadToMinio(videoBuffer, video.name, video.type);
+  }
+  return null;
+};

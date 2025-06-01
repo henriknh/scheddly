@@ -7,9 +7,11 @@ import { PostScheduler } from "@/components/post-scheduler";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import {
   Brand,
+  PostType,
   SocialMediaIntegration,
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
+import { createPost } from "@/app/api/post/create-post";
 
 interface TextPostFormProps {
   integrations: (SocialMediaIntegration & {
@@ -27,8 +29,21 @@ export function TextPostForm({ integrations }: TextPostFormProps) {
     string[]
   >([]);
 
-  const handleSubmit = () => {
-    // TODO: Implement function call
+  const handleSubmit = async () => {
+    try {
+      const selectedIntegrations = integrations.filter((integration) =>
+        selectedIntegrationIds.includes(integration.id)
+      );
+
+      await createPost({
+        description: content,
+        postType: PostType.TEXT,
+        scheduledAt: scheduledDate,
+        socialMediaIntegrations: selectedIntegrations,
+      });
+    } catch (error) {
+      console.error("Failed to create post:", error);
+    }
   };
 
   return (

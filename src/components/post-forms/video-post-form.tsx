@@ -8,9 +8,11 @@ import { Video, X } from "lucide-react";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import {
   Brand,
+  PostType,
   SocialMediaIntegration,
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
+import { createPost } from "@/app/api/post/create-post";
 
 interface VideoPostFormProps {
   integrations: (SocialMediaIntegration & {
@@ -39,9 +41,24 @@ export function VideoPostForm({ integrations }: VideoPostFormProps) {
     setVideo(null);
   };
 
-  const handleSubmit = () => {
-    // TODO: Implement function call
-    if (!video) return;
+  const handleSubmit = async () => {
+    try {
+      if (!video) return;
+
+      const selectedIntegrations = integrations.filter((integration) =>
+        selectedIntegrationIds.includes(integration.id)
+      );
+
+      await createPost({
+        description,
+        postType: PostType.VIDEO,
+        video,
+        scheduledAt: scheduledDate,
+        socialMediaIntegrations: selectedIntegrations,
+      });
+    } catch (error) {
+      console.error("Failed to create post:", error);
+    }
   };
 
   return (

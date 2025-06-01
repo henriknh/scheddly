@@ -9,9 +9,11 @@ import { Plus, X } from "lucide-react";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import {
   Brand,
+  PostType,
   SocialMediaIntegration,
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
+import { createPost } from "@/app/api/post/create-post";
 
 interface ImagePostFormProps {
   integrations: (SocialMediaIntegration & {
@@ -40,8 +42,22 @@ export function ImagePostForm({ integrations }: ImagePostFormProps) {
     setImages(images.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = () => {
-    // TODO: Implement function call
+  const handleSubmit = async () => {
+    try {
+      const selectedIntegrations = integrations.filter((integration) =>
+        selectedIntegrationIds.includes(integration.id)
+      );
+
+      await createPost({
+        description: caption,
+        postType: PostType.IMAGE,
+        images,
+        scheduledAt: scheduledDate,
+        socialMediaIntegrations: selectedIntegrations,
+      });
+    } catch (error) {
+      console.error("Failed to create post:", error);
+    }
   };
 
   return (
