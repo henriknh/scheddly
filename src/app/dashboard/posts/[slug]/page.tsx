@@ -4,7 +4,7 @@ import { Header } from "@/components/common/Header";
 import { ImagePostForm } from "@/components/post-forms/image-post-form";
 import { TextPostForm } from "@/components/post-forms/text-post-form";
 import { VideoPostForm } from "@/components/post-forms/video-post-form";
-import { PostDetails } from "@/components/posts/PostDetails";
+import { PostDetails } from "@/components/post/PostDetails";
 import { PostType } from "@/generated/prisma";
 import { postIsEditable } from "@/lib/post";
 import { notFound } from "next/navigation";

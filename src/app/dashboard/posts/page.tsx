@@ -3,7 +3,7 @@
 import { getBrands } from "@/app/api/brand/get-brands";
 import { getPosts, GetPostsFilter } from "@/app/api/post/get-posts";
 import { Header } from "@/components/common/Header";
-import { PostGrid } from "@/components/posts/PostsGrid";
+import { PostGrid } from "@/components/post/PostsGrid";
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };

@@ -30,6 +30,8 @@ export async function createPost({
 }: CreatePostParams) {
   const user = await getUserFromToken();
 
+  console.log("images", images);
+
   if (!user || !user.id || !user.teamId) {
     throw new Error("Unauthorized");
   }

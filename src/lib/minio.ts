@@ -67,9 +67,10 @@ export async function uploadToMinio(
 
 export const uploadImageToMinio = async (
   image?: File | null
-): Promise<string> => {
+): Promise<string | null> => {
+  console.log("uploading image to minio", image);
   if (!image) {
-    throw new Error("Image is required");
+    return null;
   }
 
   const imageBytes = await image.arrayBuffer();
@@ -83,19 +84,21 @@ export const uploadImageToMinio = async (
 export const uploadImagesToMinio = async (
   images?: File[] | null
 ): Promise<string[]> => {
-  if (images) {
-    return await Promise.all(
-      images.map(async (image) => uploadImageToMinio(image))
-    );
+  console.log("uploading images to minio", images);
+
+  if (images && images.length > 0) {
+    return (await Promise.all(images.map(uploadImageToMinio))).filter(
+      (url) => url !== null
+    ) as string[];
   }
   return [];
 };
 
 export const uploadVideoToMinio = async (
   video?: File | null
-): Promise<string> => {
+): Promise<string | null> => {
   if (!video) {
-    throw new Error("Video is required");
+    return null;
   }
 
   const videoBytes = await video.arrayBuffer();
