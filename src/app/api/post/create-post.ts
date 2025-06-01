@@ -48,8 +48,8 @@ export async function createPost({
       teamId: user.teamId,
       description,
       postType,
-      images: imageUrls,
-      video: videoUrl,
+      imageUrls,
+      videoUrl,
       scheduledAt,
     },
   });

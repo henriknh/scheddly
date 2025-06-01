@@ -52,9 +52,9 @@ export function PostDetails({ post }: PostDetailsProps) {
         <CardContent className="space-y-4">
           <p className="text-sm">{post.description}</p>
 
-          {post.postType === "IMAGE" && post.images.length > 0 && (
+          {post.postType === "IMAGE" && post.imageUrls.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {post.images.map((image, index) => (
+              {post.imageUrls.map((image, index) => (
                 <div key={index} className="relative aspect-square">
                   <img
                     src={image}
@@ -66,10 +66,10 @@ export function PostDetails({ post }: PostDetailsProps) {
             </div>
           )}
 
-          {post.postType === "VIDEO" && post.video && (
+          {post.postType === "VIDEO" && post.videoUrl && (
             <div className="relative aspect-video">
               <video
-                src={post.video}
+                src={post.videoUrl}
                 controls
                 className="w-full h-full rounded-lg"
               />

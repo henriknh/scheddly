@@ -2,25 +2,25 @@
 
 import { Badge } from "@/components/ui/badge";
 import {
-  Brand,
-  Post,
-  PostType,
-  SocialMediaPost,
-  SocialMedia,
-} from "@/generated/prisma";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { socialMediaPlatforms } from "@/lib/social-media-platforms";
+import {
+  Brand,
+  Post,
+  PostType,
+  SocialMedia,
+  SocialMediaPost,
+} from "@/generated/prisma";
+import { formatDateToString } from "@/lib/format-date-to-string";
 import { getPostTypeName } from "@/lib/post-type-name";
+import { socialMediaPlatforms } from "@/lib/social-media-platforms";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface PostGridProps {
   posts: (Post & {
@@ -170,9 +170,6 @@ export function PostGrid({ posts, brands }: PostGridProps) {
               key={post.id}
               href={`/dashboard/posts/${post.id}`}
               className={cn(
-                // post.postType === PostType.VIDEO
-                //   ? "aspect-video"
-                //   : "aspect-square"
                 "col-span-1",
 
                 post.postType === PostType.VIDEO ? "row-span-2" : "row-span-1",
@@ -191,7 +188,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
                   )}
                 >
                   <Badge variant="secondary" className="space-x-1">
-                    {format(new Date(post.createdAt), "MMM d, yyyy")}
+                    {formatDateToString(post.createdAt)}
                   </Badge>
 
                   {getStatusBadge(post)}
@@ -199,7 +196,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
 
                 {post.postType === PostType.VIDEO && (
                   <video
-                    src={post.video || ""}
+                    src={post.videoUrl || ""}
                     className="rounded-xl w-full h-full object-cover"
                     autoPlay
                     muted
@@ -210,7 +207,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
 
                 {post.postType === PostType.IMAGE && (
                   <img
-                    src={post.images[0]}
+                    src={post.imageUrls[0]}
                     alt={post.description}
                     className="rounded-xl w-full h-full object-cover"
                   />

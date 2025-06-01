@@ -26,8 +26,8 @@ model Post {
   id               String            @id @default(cuid())
   description      String
   postType         PostType
-  images           String[]          @default([])
-  video            String?
+  imageUrls        String[]          @default([])
+  videoUrl         String?
   scheduledAt      DateTime?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
