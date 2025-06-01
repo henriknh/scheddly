@@ -1,6 +1,6 @@
 import { Header } from "@/components/common/Header";
 import { ImagePostForm } from "@/components/post-forms/image-post-form";
-import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/social-media-integration";
+import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/get-social-media-integrations";
 
 export default async function ImagePostPage() {
   const integrations = await getSocialMediaIntegrations();

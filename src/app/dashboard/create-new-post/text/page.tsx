@@ -1,6 +1,6 @@
 import { TextPostForm } from "@/components/post-forms/text-post-form";
 import { Header } from "@/components/common/Header";
-import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/social-media-integration";
+import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/get-social-media-integrations";
 
 export default async function TextPostPage() {
   const integrations = await getSocialMediaIntegrations();

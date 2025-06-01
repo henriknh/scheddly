@@ -1,4 +1,4 @@
-import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/social-media-integration";
+import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/get-social-media-integrations";
 import { getBrands } from "@/app/api/brand/get-brands";
 import { SocialMediaIntegrationsList } from "./SocialMediaIntegrationsList";
 

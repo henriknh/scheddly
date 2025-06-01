@@ -4,7 +4,7 @@ import { Team, User } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 import { getUser } from "@/lib/user";
 
-export async function getCurrentTeam(): Promise<
+export async function getTeamWithMembers(): Promise<
   | (Team & {
       owner: User;
       members: User[];

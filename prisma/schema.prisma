@@ -9,14 +9,17 @@ datasource db {
 }
 
 model SocialMediaPost {
-  id                String      @id @default(cuid())
-  socialMedia       SocialMedia
-  failedReason      String?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  postId            String
-  socialMediaPostId String?
-  post              Post        @relation(fields: [postId], references: [id])
+  id                    String              @id @default(cuid())
+  socialMediaIntegration SocialMediaIntegration @relation(fields: [socialMediaIntegrationId], references: [id])
+  socialMediaIntegrationId String
+  failedReason          String?
+  postedAt              DateTime?
+  failedAt              DateTime?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  postId                String
+  socialMediaPostId     String?
+  post                  Post                @relation(fields: [postId], references: [id])
 }
 
 model Post {
@@ -73,6 +76,7 @@ model SocialMediaIntegration {
   team                              Team        @relation(fields: [teamId], references: [id])
   socialMediaIntegrationAccountInfo SocialMediaIntegrationAccountInfo? @relation(fields: [socialMediaIntegrationAccountInfoId], references: [id])
   socialMediaIntegrationAccountInfoId String?    @unique
+  socialMediaPosts                  SocialMediaPost[]
 }
 
 model SocialMediaIntegrationAccountInfo {

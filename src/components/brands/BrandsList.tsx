@@ -2,11 +2,12 @@
 
 import { AddBrandModal } from "@/components/brands/AddBrandModal";
 import { DeleteBrandDialog } from "@/components/brands/DeleteBrandDialog";
+import { EditBrandModal } from "@/components/brands/EditBrandModal";
 import { Header } from "@/components/common/Header";
 import { Button } from "@/components/ui/button";
 import { DataTable, DataTableColumnDef } from "@/components/ui/data-table";
 import { Brand } from "@/generated/prisma";
-import { Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { useState } from "react";
 
 const columns: DataTableColumnDef<Brand, unknown>[] = [
@@ -17,12 +18,38 @@ const columns: DataTableColumnDef<Brand, unknown>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      return <DeleteBrandDialog brandId={row.original.id} />;
+      return (
+        <div className="flex justify-end gap-2">
+          <EditBrandButton brand={row.original} />
+          <DeleteBrandDialog brandId={row.original.id} />
+        </div>
+      );
     },
     size: 0,
     align: "end",
   },
 ];
+
+interface EditBrandButtonProps {
+  brand: Brand;
+}
+
+function EditBrandButton({ brand }: EditBrandButtonProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button variant="ghost" size="icon" onClick={() => setIsOpen(true)}>
+        <Pencil className="h-4 w-4" />
+      </Button>
+      <EditBrandModal
+        brand={brand}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
+    </>
+  );
+}
 
 interface BrandsListProps {
   brands: Brand[];

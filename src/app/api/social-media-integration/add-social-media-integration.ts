@@ -1,69 +1,9 @@
 "use server";
 
-import {
-  Brand,
-  SocialMedia,
-  SocialMediaIntegration,
-  SocialMediaIntegrationAccountInfo,
-} from "@/generated/prisma";
+import { SocialMedia } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
-import { pinterest } from "@/lib/social-media-api-functions/pinterest";
 import { getUserFromToken } from "@/lib/user";
-
-export async function getSocialMediaIntegrations(): Promise<
-  (SocialMediaIntegration & {
-    brand?: Brand | null;
-    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
-  })[]
-> {
-  try {
-    const user = await getUserFromToken();
-    if (!user || !user.id || !user.teamId) {
-      throw new Error("Unauthorized");
-    }
-
-    const integrations = await prisma.socialMediaIntegration.findMany({
-      where: {
-        teamId: user.teamId,
-      },
-      include: {
-        brand: true,
-        socialMediaIntegrationAccountInfo: true,
-      },
-    });
-
-    return integrations;
-  } catch (error) {
-    console.error(error);
-    throw new Error("Internal Server Error");
-  }
-}
-
-export async function deleteSocialMediaIntegration(
-  socialMediaIntegrationId: string
-) {
-  try {
-    if (!socialMediaIntegrationId) {
-      throw new Error("SocialMediaIntegration ID is required");
-    }
-
-    const user = await getUserFromToken();
-    if (!user || !user.id || !user.teamId) {
-      throw new Error("Unauthorized");
-    }
-
-    await prisma.socialMediaIntegration.delete({
-      where: { id: socialMediaIntegrationId, teamId: user.teamId },
-      include: {
-        token: true,
-        socialMediaIntegrationAccountInfo: true,
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    throw new Error("Internal Server Error");
-  }
-}
+import { pinterest } from "@/lib/social-media-api-functions/pinterest";
 
 export async function addSocialMediaIntegration(
   platform: SocialMedia,

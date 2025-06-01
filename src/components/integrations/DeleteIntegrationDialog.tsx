@@ -1,6 +1,5 @@
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
-import { deleteSocialMediaIntegration } from "@/app/api/social-media-integration/social-media-integration";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,6 +13,7 @@ import {
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { deleteSocialMediaIntegration } from "@/app/api/social-media-integration/delete-social-media-integration";
 
 interface DeleteIntegrationDialogProps {
   integrationId: string;

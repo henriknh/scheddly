@@ -6,6 +6,8 @@ import {
 import prisma from "@/lib/prisma";
 
 const pinterestApiUrl = "https://api.pinterest.com/v5";
+const scope =
+  "boards:read,pins:read,user_accounts:read,boards:read,boards:write,pins:read,pins:write";
 
 export const pinterest: SocialMediaApiFunctions = {
   oauthPageUrl: () => {
@@ -22,8 +24,6 @@ export const pinterest: SocialMediaApiFunctions = {
     if (!redirectUri) {
       throw new Error("Missing Pinterest redirect URI");
     }
-
-    const scope = "boards:read,pins:read,user_accounts:read";
 
     return `https://www.pinterest.com/oauth/?client_id=${process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
   },
@@ -97,6 +97,7 @@ export const pinterest: SocialMediaApiFunctions = {
       body: JSON.stringify({
         grant_type: "refresh_token",
         refresh_token: token.refreshToken,
+        scope,
       }),
     });
 
@@ -153,12 +154,40 @@ export const pinterest: SocialMediaApiFunctions = {
     return integration.accessToken;
   },
 
-  revokeAccessToken: async (id: string): Promise<void> => {
-    // TODO: Implement
-  },
+  revokeTokens: async (id: string): Promise<void> => {
+    const token = await prisma.token.findFirst({
+      where: {
+        socialMediaIntegration: {
+          id,
+        },
+      },
+    });
 
-  revokeRefreshToken: async (id: string): Promise<void> => {
-    // TODO: Implement
+    if (!token) {
+      throw new Error("Integration not found or missing access token");
+    }
+
+    await fetch(`${pinterestApiUrl}/oauth/token/revoke`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify({
+        token: token.accessToken,
+        token_type_hint: "access_token",
+      }),
+    });
+
+    await fetch(`${pinterestApiUrl}/oauth/token/revoke`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify({
+        token: token.refreshToken,
+        token_type_hint: "refresh_token",
+      }),
+    });
   },
 
   fetchAccountInfoByAccessToken: async (

@@ -20,8 +20,7 @@ export interface SocialMediaApiFunctions {
   oauthPageUrl: () => string;
   consumeAuthorizationCode: (code: string) => Promise<Tokens>;
   refreshAccessToken: (id: string) => Promise<Tokens>;
-  revokeAccessToken: (id: string) => Promise<void>;
-  revokeRefreshToken: (id: string) => Promise<void>;
+  revokeTokens: (id: string) => Promise<void>;
   getValidAccessToken: (id: string) => Promise<string>;
 
   fetchAccountInfoByAccessToken: (accessToken: string) => Promise<AccountInfo>;
