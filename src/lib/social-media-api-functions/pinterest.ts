@@ -1,3 +1,4 @@
+import { Post } from "@/generated/prisma";
 import {
   AccountInfo,
   SocialMediaApiFunctions,
@@ -234,5 +235,17 @@ export const pinterest: SocialMediaApiFunctions = {
         },
       },
     });
+  },
+
+  postText: async (post: Post) => {
+    console.log("postText", post);
+  },
+
+  postImage: async (post: Post) => {
+    console.log("postImage", post);
+  },
+
+  postVideo: async (post: Post) => {
+    console.log("postVideo", post);
   },
 };

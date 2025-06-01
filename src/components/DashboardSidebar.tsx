@@ -12,6 +12,7 @@ import {
   Tag,
   TextIcon,
   VideoIcon,
+  StickyNote,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -151,6 +152,15 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
+
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/dashboard/posts">
+                  <StickyNote />
+                  <span>Posts</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
 
             <SidebarMenuItem>
               <SidebarMenuButton asChild>

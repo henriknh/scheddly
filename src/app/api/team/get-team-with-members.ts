@@ -2,7 +2,7 @@
 
 import { Team, User } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
-import { getUser } from "@/lib/user";
+import { getUserFromToken } from "@/lib/user";
 
 export async function getTeamWithMembers(): Promise<
   | (Team & {
@@ -12,7 +12,7 @@ export async function getTeamWithMembers(): Promise<
   | null
 > {
   try {
-    const user = await getUser();
+    const user = await getUserFromToken();
     if (!user?.teamId) {
       return null;
     }

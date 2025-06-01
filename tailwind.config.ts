@@ -19,6 +19,15 @@ const config = {
       },
     },
     extend: {
+      aspectRatio: {
+        video: "9/16",
+      },
+      lineClamp: {
+        7: "7",
+        8: "8",
+        9: "9",
+        10: "10",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

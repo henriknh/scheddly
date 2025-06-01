@@ -16,7 +16,7 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
     name: "Pinterest",
     icon: "/icons/pinterest.svg",
     socialMediaApiFunctions: pinterest,
-    supportsPostTypes: [PostType.IMAGE],
+    supportsPostTypes: [PostType.IMAGE, PostType.VIDEO],
   },
   //   {
   //     id: SocialMedia.TUMBLR,

@@ -1,3 +1,4 @@
+import { CleanedUser } from "@/lib/user";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
@@ -6,16 +7,15 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "default_secret_please_change"
 );
 
-interface TokenPayload {
-  id: string;
-  email: string;
-  name?: string | null;
-  role?: string;
-  [key: string]: unknown;
-}
+export async function createToken(user: CleanedUser) {
+  const tokenPayload = {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    avatarUrl: user.avatarUrl,
+  };
 
-export async function createToken(payload: TokenPayload) {
-  return await new SignJWT(payload)
+  return await new SignJWT(tokenPayload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("24h")

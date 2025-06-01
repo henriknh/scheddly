@@ -1,3 +1,5 @@
+import { Post } from "@/generated/prisma";
+
 export interface Tokens {
   accessToken: string;
   accessTokenExpiresAt: Date;
@@ -25,7 +27,7 @@ export interface SocialMediaApiFunctions {
 
   fetchAccountInfoByAccessToken: (accessToken: string) => Promise<AccountInfo>;
   updateAccountInfo: (id: string) => Promise<void>;
-  postText?: (text: string) => Promise<void>;
-  postImage?: (image: string) => Promise<void>;
-  postVideo?: (video: string) => Promise<void>;
+  postText: (post: Post) => Promise<void>;
+  postImage: (post: Post) => Promise<void>;
+  postVideo: (post: Post) => Promise<void>;
 }

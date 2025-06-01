@@ -14,6 +14,8 @@ import {
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
 import { createPost } from "@/app/api/post/create-post";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface ImagePostFormProps {
   integrations: (SocialMediaIntegration & {
@@ -23,6 +25,7 @@ interface ImagePostFormProps {
 }
 
 export function ImagePostForm({ integrations }: ImagePostFormProps) {
+  const router = useRouter();
   const [caption, setCaption] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
@@ -54,7 +57,21 @@ export function ImagePostForm({ integrations }: ImagePostFormProps) {
         images,
         scheduledAt: scheduledDate,
         socialMediaIntegrations: selectedIntegrations,
-      });
+      })
+        .then(() => {
+          toast.success("Post created successfully");
+          router.push("/dashboard/posts");
+        })
+        .catch((error) => {
+          toast.error("Failed to create post");
+          console.error("Failed to create post:", error);
+        })
+        .finally(() => {
+          setImages([]);
+          setCaption("");
+          setScheduledDate(undefined);
+          setSelectedIntegrationIds([]);
+        });
     } catch (error) {
       console.error("Failed to create post:", error);
     }

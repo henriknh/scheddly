@@ -12,6 +12,8 @@ import {
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
 import { createPost } from "@/app/api/post/create-post";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface TextPostFormProps {
   integrations: (SocialMediaIntegration & {
@@ -21,6 +23,7 @@ interface TextPostFormProps {
 }
 
 export function TextPostForm({ integrations }: TextPostFormProps) {
+  const router = useRouter();
   const [content, setContent] = useState("");
   const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
     undefined
@@ -40,7 +43,20 @@ export function TextPostForm({ integrations }: TextPostFormProps) {
         postType: PostType.TEXT,
         scheduledAt: scheduledDate,
         socialMediaIntegrations: selectedIntegrations,
-      });
+      })
+        .then(() => {
+          toast.success("Post created successfully");
+          router.push("/dashboard/posts");
+        })
+        .catch((error) => {
+          toast.error("Failed to create post");
+          console.error("Failed to create post:", error);
+        })
+        .finally(() => {
+          setContent("");
+          setScheduledDate(undefined);
+          setSelectedIntegrationIds([]);
+        });
     } catch (error) {
       console.error("Failed to create post:", error);
     }

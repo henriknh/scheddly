@@ -13,6 +13,8 @@ import {
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
 import { createPost } from "@/app/api/post/create-post";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface VideoPostFormProps {
   integrations: (SocialMediaIntegration & {
@@ -22,6 +24,7 @@ interface VideoPostFormProps {
 }
 
 export function VideoPostForm({ integrations }: VideoPostFormProps) {
+  const router = useRouter();
   const [description, setDescription] = useState("");
   const [video, setVideo] = useState<File | null>(null);
   const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
@@ -55,7 +58,21 @@ export function VideoPostForm({ integrations }: VideoPostFormProps) {
         video,
         scheduledAt: scheduledDate,
         socialMediaIntegrations: selectedIntegrations,
-      });
+      })
+        .then(() => {
+          toast.success("Post created successfully");
+          router.push("/dashboard/posts");
+        })
+        .catch((error) => {
+          toast.error("Failed to create post");
+          console.error("Failed to create post:", error);
+        })
+        .finally(() => {
+          setDescription("");
+          setVideo(null);
+          setScheduledDate(undefined);
+          setSelectedIntegrationIds([]);
+        });
     } catch (error) {
       console.error("Failed to create post:", error);
     }

@@ -71,7 +71,10 @@ export const uploadImagesToMinio = async (images?: File[] | null) => {
       images.map(async (image) => {
         const bytes = await image.arrayBuffer();
         const buffer = Buffer.from(bytes);
-        return await uploadToMinio(buffer, image.name, image.type);
+        const uniqueFilename = `post_images/${image.name}-${Date.now()}`;
+
+        await uploadToMinio(buffer, uniqueFilename, image.type);
+        return await getPresignedUrl(uniqueFilename);
       })
     );
   }
@@ -82,7 +85,10 @@ export const uploadVideoToMinio = async (video?: File | null) => {
   if (video) {
     const videoBytes = await video.arrayBuffer();
     const videoBuffer = Buffer.from(videoBytes);
-    return await uploadToMinio(videoBuffer, video.name, video.type);
+    const uniqueFilename = `post_videos/${video.name}-${Date.now()}`;
+
+    await uploadToMinio(videoBuffer, uniqueFilename, video.type);
+    return await getPresignedUrl(uniqueFilename);
   }
   return null;
 };

@@ -1,6 +1,5 @@
 "use client";
 
-import { User } from "@/generated/prisma";
 import { useRouter } from "next/navigation";
 import {
   createContext,
@@ -9,10 +8,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getUser } from "./user";
+import { CleanedUser, getUser } from "./user";
 
 interface AuthContextType {
-  user: User | null;
+  user: CleanedUser | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -24,11 +23,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
-  initialUser: User | null;
+  initialUser: CleanedUser | null;
 }
 
 export function AuthProvider({ children, initialUser }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(initialUser ?? null);
+  const [user, setUser] = useState<CleanedUser | null>(initialUser ?? null);
   const [loading, setLoading] = useState(!initialUser);
   const router = useRouter();
 
