@@ -185,7 +185,6 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
                 <UserAvatar
                   src={user?.avatarUrl || undefined}
                   fallback={user?.name || undefined}
-                  size="sm"
                 />
                 <span className="truncate">{user?.name || "User"}</span>
               </Link>
