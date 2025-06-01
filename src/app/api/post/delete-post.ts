@@ -1,8 +1,9 @@
 "use server";
 
+import { postIsEditable } from "@/lib/post";
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
-import { postIsEditable } from "@/lib/post-is-editable";
+import { getPost } from "./get-post";
 
 export async function deletePost(postId: string) {
   const user = await getUserFromToken();
@@ -11,13 +12,7 @@ export async function deletePost(postId: string) {
     throw new Error("Unauthorized");
   }
 
-  const post = await prisma.post.findUnique({
-    where: { id: postId, teamId: user.teamId },
-    include: {
-      socialMediaPosts: true,
-    },
-  });
-
+  const post = await getPost(postId);
   if (!post) {
     throw new Error("Post not found");
   }
