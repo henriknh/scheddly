@@ -10,8 +10,10 @@ interface PostPageProps {
 }
 
 export default async function PostPage({ params }: PostPageProps) {
+  const { slug } = await params;
+
   try {
-    const post = await getPost(params.slug);
+    const post = await getPost(slug);
     return (
       <div className="space-y-4">
         <Header>Post Details</Header>
