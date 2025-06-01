@@ -1,39 +1,52 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { createPost } from "@/app/api/post/create-post";
+import { PostWithRelations } from "@/app/api/post/types";
+import { ConfirmDeletePostModal } from "@/components/confirm-delete-post-modal";
+import { PostScheduler } from "@/components/post-scheduler";
+import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { PostScheduler } from "@/components/post-scheduler";
-import { Plus, X } from "lucide-react";
-import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import {
   Brand,
   PostType,
   SocialMediaIntegration,
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
-import { createPost } from "@/app/api/post/create-post";
-import { toast } from "sonner";
+import { Plus, X } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface ImagePostFormProps {
   integrations: (SocialMediaIntegration & {
     brand?: Brand | null;
     socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
   })[];
+  post?: PostWithRelations;
 }
 
-export function ImagePostForm({ integrations }: ImagePostFormProps) {
+export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
   const router = useRouter();
-  const [caption, setCaption] = useState("");
+  const [caption, setCaption] = useState(post?.description || "");
   const [images, setImages] = useState<File[]>([]);
   const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
-    undefined
+    post?.scheduledAt || undefined
   );
   const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
     string[]
-  >([]);
+  >(post?.socialMediaPosts.map((p) => p.socialMediaIntegrationId) || []);
+
+  useEffect(() => {
+    if (post) {
+      setCaption(post.description);
+      setScheduledDate(post.scheduledAt || undefined);
+      setSelectedIntegrationIds(
+        post.socialMediaPosts.map((p) => p.socialMediaIntegrationId)
+      );
+    }
+  }, [post]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -164,6 +177,7 @@ export function ImagePostForm({ integrations }: ImagePostFormProps) {
       </div>
 
       <div className="flex justify-end gap-2">
+        {post && <ConfirmDeletePostModal postId={post.id} />}
         <Button
           onClick={handleSubmit}
           disabled={images.length === 0 || selectedIntegrationIds.length === 0}

@@ -28,6 +28,7 @@ model Post {
   postType         PostType
   imageUrls        String[]          @default([])
   videoUrl         String?
+  videoCoverUrl    String?
   scheduledAt      DateTime?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt

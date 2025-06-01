@@ -1,36 +1,49 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { createPost } from "@/app/api/post/create-post";
+import { PostWithRelations } from "@/app/api/post/types";
+import { ConfirmDeletePostModal } from "@/components/confirm-delete-post-modal";
 import { PostScheduler } from "@/components/post-scheduler";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Brand,
   PostType,
   SocialMediaIntegration,
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
-import { createPost } from "@/app/api/post/create-post";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface TextPostFormProps {
   integrations: (SocialMediaIntegration & {
     brand?: Brand | null;
     socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
   })[];
+  post?: PostWithRelations;
 }
 
-export function TextPostForm({ integrations }: TextPostFormProps) {
+export function TextPostForm({ integrations, post }: TextPostFormProps) {
   const router = useRouter();
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(post?.description || "");
   const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
-    undefined
+    post?.scheduledAt || undefined
   );
   const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
     string[]
-  >([]);
+  >(post?.socialMediaPosts.map((p) => p.socialMediaIntegrationId) || []);
+
+  useEffect(() => {
+    if (post) {
+      setContent(post.description);
+      setScheduledDate(post.scheduledAt || undefined);
+      setSelectedIntegrationIds(
+        post.socialMediaPosts.map((p) => p.socialMediaIntegrationId)
+      );
+    }
+  }, [post]);
 
   const handleSubmit = async () => {
     try {
@@ -110,6 +123,7 @@ export function TextPostForm({ integrations }: TextPostFormProps) {
       </div>
 
       <div className="flex justify-end gap-2">
+        {post && <ConfirmDeletePostModal postId={post.id} />}
         <Button
           onClick={handleSubmit}
           disabled={!content || selectedIntegrationIds.length === 0}

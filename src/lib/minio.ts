@@ -65,30 +65,43 @@ export async function uploadToMinio(
   }
 }
 
-export const uploadImagesToMinio = async (images?: File[] | null) => {
+export const uploadImageToMinio = async (
+  image?: File | null
+): Promise<string> => {
+  if (!image) {
+    throw new Error("Image is required");
+  }
+
+  const imageBytes = await image.arrayBuffer();
+  const imageBuffer = Buffer.from(imageBytes);
+  const uniqueFilename = `post_images/${image.name}-${Date.now()}`;
+
+  await uploadToMinio(imageBuffer, uniqueFilename, image.type);
+  return await getPresignedUrl(uniqueFilename);
+};
+
+export const uploadImagesToMinio = async (
+  images?: File[] | null
+): Promise<string[]> => {
   if (images) {
     return await Promise.all(
-      images.map(async (image) => {
-        const bytes = await image.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-        const uniqueFilename = `post_images/${image.name}-${Date.now()}`;
-
-        await uploadToMinio(buffer, uniqueFilename, image.type);
-        return await getPresignedUrl(uniqueFilename);
-      })
+      images.map(async (image) => uploadImageToMinio(image))
     );
   }
   return [];
 };
 
-export const uploadVideoToMinio = async (video?: File | null) => {
-  if (video) {
-    const videoBytes = await video.arrayBuffer();
-    const videoBuffer = Buffer.from(videoBytes);
-    const uniqueFilename = `post_videos/${video.name}-${Date.now()}`;
-
-    await uploadToMinio(videoBuffer, uniqueFilename, video.type);
-    return await getPresignedUrl(uniqueFilename);
+export const uploadVideoToMinio = async (
+  video?: File | null
+): Promise<string> => {
+  if (!video) {
+    throw new Error("Video is required");
   }
-  return null;
+
+  const videoBytes = await video.arrayBuffer();
+  const videoBuffer = Buffer.from(videoBytes);
+  const uniqueFilename = `post_videos/${video.name}-${Date.now()}`;
+
+  await uploadToMinio(videoBuffer, uniqueFilename, video.type);
+  return await getPresignedUrl(uniqueFilename);
 };

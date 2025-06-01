@@ -1,6 +1,12 @@
 import { getPost } from "@/app/api/post/get-post";
+import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/get-social-media-integrations";
 import { Header } from "@/components/common/Header";
+import { ImagePostForm } from "@/components/post-forms/image-post-form";
+import { TextPostForm } from "@/components/post-forms/text-post-form";
+import { VideoPostForm } from "@/components/post-forms/video-post-form";
 import { PostDetails } from "@/components/posts/PostDetails";
+import { PostType } from "@/generated/prisma";
+import { postIsEditable } from "@/lib/post";
 import { notFound } from "next/navigation";
 
 interface PostPageProps {
@@ -13,11 +19,34 @@ export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
 
   try {
-    const post = await getPost(slug);
+    const [post, integrations] = await Promise.all([
+      getPost(slug),
+      getSocialMediaIntegrations(),
+    ]);
+
+    const canEditPost = postIsEditable(post);
+
     return (
       <div className="space-y-4">
-        <Header>Post Details</Header>
-        <PostDetails post={post} />
+        {canEditPost ? (
+          <>
+            <Header>Edit Post</Header>
+            {post.postType === PostType.TEXT && (
+              <TextPostForm integrations={integrations} post={post} />
+            )}
+            {post.postType === PostType.IMAGE && (
+              <ImagePostForm integrations={integrations} post={post} />
+            )}
+            {post.postType === PostType.VIDEO && (
+              <VideoPostForm integrations={integrations} post={post} />
+            )}
+          </>
+        ) : (
+          <>
+            <Header>Post Details</Header>
+            <PostDetails post={post} />
+          </>
+        )}
       </div>
     );
   } catch (error) {

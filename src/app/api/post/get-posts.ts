@@ -1,3 +1,5 @@
+"use server";
+
 import { PostType, SocialMedia } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";

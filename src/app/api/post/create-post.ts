@@ -1,7 +1,11 @@
 "use server";
 
 import { PostType, SocialMediaIntegration } from "@/generated/prisma";
-import { uploadImagesToMinio, uploadVideoToMinio } from "@/lib/minio";
+import {
+  uploadImagesToMinio,
+  uploadImageToMinio,
+  uploadVideoToMinio,
+} from "@/lib/minio";
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
 
@@ -10,6 +14,7 @@ export interface CreatePostParams {
   postType: PostType;
   images?: File[];
   video?: File | null;
+  videoCover?: File | null;
   scheduledAt?: Date | null;
   socialMediaIntegrations: SocialMediaIntegration[];
 }
@@ -19,6 +24,7 @@ export async function createPost({
   postType,
   images,
   video,
+  videoCover,
   scheduledAt,
   socialMediaIntegrations,
 }: CreatePostParams) {
@@ -31,6 +37,11 @@ export async function createPost({
   const imageUrls = await uploadImagesToMinio(images);
   if (postType === PostType.IMAGE && !imageUrls.length) {
     throw new Error("Images are required for image posts");
+  }
+
+  const videoCoverUrl = await uploadImageToMinio(videoCover);
+  if (postType === PostType.VIDEO && !videoCoverUrl) {
+    throw new Error("Video is required for video posts");
   }
 
   const videoUrl = await uploadVideoToMinio(video);
@@ -50,6 +61,7 @@ export async function createPost({
       postType,
       imageUrls,
       videoUrl,
+      videoCoverUrl,
       scheduledAt,
     },
   });

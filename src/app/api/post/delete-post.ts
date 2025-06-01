@@ -1,5 +1,8 @@
+"use server";
+
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
+import { postIsEditable } from "@/lib/post-is-editable";
 
 export async function deletePost(postId: string) {
   const user = await getUserFromToken();
@@ -19,22 +22,21 @@ export async function deletePost(postId: string) {
     throw new Error("Post not found");
   }
 
-  const someSocialMediaPostsPosted = post.socialMediaPosts.some(
-    (socialMediaPost) =>
-      socialMediaPost.postedAt ||
-      socialMediaPost.socialMediaIntegrationId ||
-      socialMediaPost.failedAt ||
-      socialMediaPost.failedReason
-  );
-
-  if (someSocialMediaPostsPosted) {
-    throw new Error("Post has already been posted");
+  const canEditPost = postIsEditable(post);
+  if (!canEditPost) {
+    throw new Error("Post is not editable");
   }
 
-  await prisma.post.delete({
-    where: { id: post.id },
-    include: {
-      socialMediaPosts: true,
-    },
+  // Use a transaction to ensure atomic operations
+  await prisma.$transaction(async (tx) => {
+    // First delete all related social media posts
+    await tx.socialMediaPost.deleteMany({
+      where: { postId: post.id },
+    });
+
+    // Then delete the main post
+    await tx.post.delete({
+      where: { id: post.id },
+    });
   });
 }

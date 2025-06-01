@@ -19,6 +19,9 @@ import { formatDateToString } from "@/lib/format-date-to-string";
 import { getPostTypeName } from "@/lib/post-type-name";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { cn } from "@/lib/utils";
+import { VideoIcon } from "lucide-react";
+import { ImageIcon } from "lucide-react";
+import { TextIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -43,46 +46,60 @@ export function PostGrid({ posts, brands }: PostGridProps) {
     router.push(`?${params.toString()}`);
   };
 
+  const getPostTypeBadge = (post: Post) => {
+    const icon = {
+      [PostType.TEXT]: <TextIcon className="h-4 w-4" />,
+      [PostType.IMAGE]: <ImageIcon className="h-4 w-4" />,
+      [PostType.VIDEO]: <VideoIcon className="h-4 w-4" />,
+    };
+
+    return (
+      <Badge variant="secondary" className="h-5 inline-flex items-center gap-1">
+        <span className="overflow-hidden h-4 w-4">{icon[post.postType]}</span>
+
+        {getPostTypeName(post.postType)}
+      </Badge>
+    );
+  };
+
+  const getCreatedAtBadge = (post: Post) => {
+    return (
+      <Badge variant="secondary">{formatDateToString(post.createdAt)}</Badge>
+    );
+  };
+
   const getStatusBadge = (
     post: Post & { socialMediaPosts: SocialMediaPost[] }
   ) => {
     const socialMediaPosts = post.socialMediaPosts || [];
 
-    if (socialMediaPosts.length === 0) {
-      return <Badge variant="secondary">Draft</Badge>;
-    }
-
-    const hasFailed = socialMediaPosts.some((p: SocialMediaPost) => p.failedAt);
-    const allPosted = socialMediaPosts.every(
-      (p: SocialMediaPost) => p.postedAt
+    const hasFailed = socialMediaPosts.some(
+      (post: SocialMediaPost) => post.failedAt || post.failedReason
     );
-    const somePosted = socialMediaPosts.some(
-      (p: SocialMediaPost) => p.postedAt
-    );
-
     if (hasFailed) {
-      return <Badge variant="destructive">Error</Badge>;
+      return <Badge variant="destructive">Failed</Badge>;
     }
 
+    const allPosted = socialMediaPosts.every(
+      (post: SocialMediaPost) => post.postedAt
+    );
     if (allPosted) {
       return <Badge variant="success">Success</Badge>;
-    }
-
-    if (somePosted) {
-      return <Badge variant="warning">Partial</Badge>;
     }
 
     if (post.scheduledAt) {
       const scheduledDate = new Date(post.scheduledAt);
       if (scheduledDate > new Date()) {
-        return <Badge variant="secondary">Scheduled</Badge>;
+        return <Badge variant="info">Scheduled</Badge>;
       }
     }
 
-    return <Badge variant="secondary">Pending</Badge>;
+    return (
+      <Badge variant="warning" className="animate-pulse">
+        Pending
+      </Badge>
+    );
   };
-
-  console.log(posts);
 
   return (
     <div className="space-y-4">
@@ -163,7 +180,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         {posts.length > 0 ? (
           posts.map((post) => (
             <Link
@@ -178,23 +195,25 @@ export function PostGrid({ posts, brands }: PostGridProps) {
                   : "aspect-square"
               )}
             >
-              <div className="group relative rounded-xl bg-red-500 overflow-hidden border h-full">
+              <div className="group relative rounded-xl bg-card overflow-hidden border h-full">
                 <div
                   className={cn(
-                    "space-x-2",
+                    "space-x-2 flex justify-between items-center",
                     post.postType === PostType.TEXT
-                      ? "flex justify-end p-4"
-                      : "absolute top-4 right-4"
+                      ? "p-4 pb-2"
+                      : "absolute left-4 top-4 right-4"
                   )}
                 >
-                  <Badge variant="secondary" className="space-x-1">
-                    {formatDateToString(post.createdAt)}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    {getPostTypeBadge(post)}
+
+                    {getCreatedAtBadge(post)}
+                  </div>
 
                   {getStatusBadge(post)}
                 </div>
 
-                {post.postType === PostType.VIDEO && (
+                {post.postType === PostType.VIDEO && post.videoUrl && false && (
                   <video
                     src={post.videoUrl || ""}
                     className="rounded-xl w-full h-full object-cover"
@@ -202,6 +221,14 @@ export function PostGrid({ posts, brands }: PostGridProps) {
                     muted
                     loop
                     playsInline
+                  />
+                )}
+
+                {post.postType === PostType.VIDEO && post.videoCoverUrl && (
+                  <img
+                    src={post.videoCoverUrl}
+                    alt={post.description}
+                    className="rounded-xl w-full h-full object-cover"
                   />
                 )}
 

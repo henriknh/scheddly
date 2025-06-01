@@ -1,3 +1,5 @@
+"use server";
+
 import { PostType, SocialMedia } from "@/generated/prisma";
 import { pinterest } from "@/lib/social-media-api-functions/pinterest";
 import { getPost } from "./get-post";

@@ -1,3 +1,5 @@
+"use server";
+
 import { getUserFromToken } from "@/lib/user";
 import prisma from "@/lib/prisma";
 import { PostWithRelations } from "./types";
