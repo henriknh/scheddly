@@ -1,73 +1,37 @@
 "use client";
 
-import { Brand, SocialMediaIntegration } from "@/generated/prisma";
+import {
+  Brand,
+  SocialMediaIntegration,
+  SocialMediaIntegrationAccountInfo,
+} from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/social-media-integration";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface SocialMediaIntegrationSelectorProps {
   onSelectionChange: (integrationIds: string[]) => void;
   selectedIntegrationIds?: string[];
   postType?: "TEXT" | "IMAGE" | "VIDEO";
+  integrations: (SocialMediaIntegration & {
+    brand?: Brand | null;
+    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
+  })[];
 }
 
 export function SocialMediaIntegrationSelector({
   onSelectionChange,
   selectedIntegrationIds = [],
   postType,
+  integrations,
 }: SocialMediaIntegrationSelectorProps) {
-  const [integrations, setIntegrations] = useState<
-    (SocialMediaIntegration & {
-      brand?: Brand | null;
-    })[]
-  >([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const integrationsData = await getSocialMediaIntegrations();
-        setIntegrations(integrationsData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const handleIntegrationChange = (integrationId: string, checked: boolean) => {
     const newSelection = checked
       ? [...selectedIntegrationIds, integrationId]
       : selectedIntegrationIds.filter((id) => id !== integrationId);
     onSelectionChange(newSelection);
   };
-
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="space-y-2">
-            <Skeleton className="h-6 w-32" />
-            <div className="space-y-2">
-              {[1, 2].map((j) => (
-                <div key={j} className="flex items-center space-x-2">
-                  <Skeleton className="h-4 w-4" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
 
   // Group integrations by brand
   const integrationsByBrand = integrations.reduce((acc, integration) => {

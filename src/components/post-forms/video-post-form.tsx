@@ -6,18 +6,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { PostScheduler } from "@/components/post-scheduler";
 import { Video, X } from "lucide-react";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
+import {
+  Brand,
+  SocialMediaIntegration,
+  SocialMediaIntegrationAccountInfo,
+} from "@/generated/prisma";
 
 interface VideoPostFormProps {
-  onSubmit: (data: {
-    description: string;
-    video: File;
-    scheduledDate?: Date;
-    integrationIds: string[];
-  }) => void;
-  onCancel: () => void;
+  integrations: (SocialMediaIntegration & {
+    brand?: Brand | null;
+    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
+  })[];
 }
 
-export function VideoPostForm({ onSubmit, onCancel }: VideoPostFormProps) {
+export function VideoPostForm({ integrations }: VideoPostFormProps) {
   const [description, setDescription] = useState("");
   const [video, setVideo] = useState<File | null>(null);
   const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
@@ -38,13 +40,8 @@ export function VideoPostForm({ onSubmit, onCancel }: VideoPostFormProps) {
   };
 
   const handleSubmit = () => {
+    // TODO: Implement function call
     if (!video) return;
-    onSubmit({
-      description,
-      video,
-      scheduledDate,
-      integrationIds: selectedIntegrationIds,
-    });
   };
 
   return (
@@ -112,6 +109,7 @@ export function VideoPostForm({ onSubmit, onCancel }: VideoPostFormProps) {
             onSelectionChange={setSelectedIntegrationIds}
             selectedIntegrationIds={selectedIntegrationIds}
             postType="VIDEO"
+            integrations={integrations}
           />
         </div>
       </div>
@@ -128,9 +126,6 @@ export function VideoPostForm({ onSubmit, onCancel }: VideoPostFormProps) {
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
         <Button
           onClick={handleSubmit}
           disabled={!video || selectedIntegrationIds.length === 0}

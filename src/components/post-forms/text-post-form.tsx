@@ -5,17 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { PostScheduler } from "@/components/post-scheduler";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
+import {
+  Brand,
+  SocialMediaIntegration,
+  SocialMediaIntegrationAccountInfo,
+} from "@/generated/prisma";
 
 interface TextPostFormProps {
-  onSubmit: (data: {
-    content: string;
-    scheduledDate?: Date;
-    integrationIds: string[];
-  }) => void;
-  onCancel: () => void;
+  integrations: (SocialMediaIntegration & {
+    brand?: Brand | null;
+    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
+  })[];
 }
 
-export function TextPostForm({ onSubmit, onCancel }: TextPostFormProps) {
+export function TextPostForm({ integrations }: TextPostFormProps) {
   const [content, setContent] = useState("");
   const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
     undefined
@@ -25,11 +28,7 @@ export function TextPostForm({ onSubmit, onCancel }: TextPostFormProps) {
   >([]);
 
   const handleSubmit = () => {
-    onSubmit({
-      content,
-      scheduledDate,
-      integrationIds: selectedIntegrationIds,
-    });
+    // TODO: Implement function call
   };
 
   return (
@@ -63,6 +62,7 @@ export function TextPostForm({ onSubmit, onCancel }: TextPostFormProps) {
             onSelectionChange={setSelectedIntegrationIds}
             selectedIntegrationIds={selectedIntegrationIds}
             postType="TEXT"
+            integrations={integrations}
           />
         </div>
       </div>
@@ -79,9 +79,6 @@ export function TextPostForm({ onSubmit, onCancel }: TextPostFormProps) {
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
         <Button
           onClick={handleSubmit}
           disabled={!content || selectedIntegrationIds.length === 0}

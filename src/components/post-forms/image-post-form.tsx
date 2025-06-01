@@ -7,18 +7,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { PostScheduler } from "@/components/post-scheduler";
 import { Plus, X } from "lucide-react";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
+import {
+  Brand,
+  SocialMediaIntegration,
+  SocialMediaIntegrationAccountInfo,
+} from "@/generated/prisma";
 
 interface ImagePostFormProps {
-  onSubmit: (data: {
-    caption: string;
-    images: File[];
-    scheduledDate?: Date;
-    integrationIds: string[];
-  }) => void;
-  onCancel: () => void;
+  integrations: (SocialMediaIntegration & {
+    brand?: Brand | null;
+    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
+  })[];
 }
 
-export function ImagePostForm({ onSubmit, onCancel }: ImagePostFormProps) {
+export function ImagePostForm({ integrations }: ImagePostFormProps) {
   const [caption, setCaption] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
@@ -39,12 +41,7 @@ export function ImagePostForm({ onSubmit, onCancel }: ImagePostFormProps) {
   };
 
   const handleSubmit = () => {
-    onSubmit({
-      caption,
-      images,
-      scheduledDate,
-      integrationIds: selectedIntegrationIds,
-    });
+    // TODO: Implement function call
   };
 
   return (
@@ -117,6 +114,7 @@ export function ImagePostForm({ onSubmit, onCancel }: ImagePostFormProps) {
             onSelectionChange={setSelectedIntegrationIds}
             selectedIntegrationIds={selectedIntegrationIds}
             postType="IMAGE"
+            integrations={integrations}
           />
         </div>
       </div>
@@ -133,9 +131,6 @@ export function ImagePostForm({ onSubmit, onCancel }: ImagePostFormProps) {
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
         <Button
           onClick={handleSubmit}
           disabled={images.length === 0 || selectedIntegrationIds.length === 0}

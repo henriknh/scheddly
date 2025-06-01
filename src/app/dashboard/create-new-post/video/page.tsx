@@ -1,31 +1,14 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { VideoPostForm } from "@/components/post-forms/video-post-form";
 import { Header } from "@/components/common/Header";
+import { VideoPostForm } from "@/components/post-forms/video-post-form";
+import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/social-media-integration";
 
-export default function VideoPostPage() {
-  const router = useRouter();
-
-  const handleSubmit = async (data: {
-    description: string;
-    video: File;
-    scheduledDate?: Date;
-    integrationIds: string[];
-  }) => {
-    try {
-      // TODO: Implement post creation
-      console.log(data);
-      router.push("/dashboard");
-    } catch (error) {
-      console.error("Failed to create post:", error);
-    }
-  };
+export default async function VideoPostPage() {
+  const integrations = await getSocialMediaIntegrations();
 
   return (
     <div className="space-y-4">
       <Header>Create new video post</Header>
-      <VideoPostForm onSubmit={handleSubmit} onCancel={() => router.back()} />
+      <VideoPostForm integrations={integrations} />
     </div>
   );
 }
