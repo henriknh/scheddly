@@ -6,6 +6,7 @@ import {
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
+import { updateAccountInfo } from "@/app/actions/social-media-integrations";
 import { RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -99,8 +100,7 @@ export function SocialMediaIntegrationsList({
                         variant="ghost"
                         size="icon"
                         onClick={() => {
-                          socialMediaPlatform.socialMediaApiFunctions
-                            .updateAccountInfo(integration.id)
+                          updateAccountInfo(integration.id)
                             .then(() => {
                               toast.success("Account info updated");
                               router.refresh();

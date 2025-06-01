@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { getUser, updateUserTokenAndReturnNextResponse } from "@/lib/user";
+import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
