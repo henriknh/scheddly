@@ -1,26 +1,24 @@
 "use client";
 
 import {
+  updateAccountInfo,
+  updateIntegrationBrand,
+} from "@/app/actions/social-media-integrations";
+import {
   Brand,
   SocialMediaIntegration,
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
-import {
-  updateAccountInfo,
-  updateIntegrationBrand,
-} from "@/app/actions/social-media-integrations";
 import { RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Header } from "../common/Header";
 import { UserAvatar } from "../common/UserAvatar";
 import { Button } from "../ui/button";
 import { DataTable, DataTableColumnDef } from "../ui/data-table";
-import { AddIntegrationModal } from "./AddIntegrationModal";
-import { DeleteIntegrationDialog } from "./DeleteIntegrationDialog";
 import {
   Select,
   SelectContent,
@@ -28,31 +26,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { getBrands } from "@/app/api/brand/get-brands";
+import { AddIntegrationModal } from "./AddIntegrationModal";
+import { DeleteIntegrationDialog } from "./DeleteIntegrationDialog";
 
 interface SocialMediaIntegrationsListProps {
   integrations: (SocialMediaIntegration & {
     brand?: Brand | null;
     socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
   })[];
+  brands: Brand[];
 }
 
 export function SocialMediaIntegrationsList({
   integrations,
+  brands,
 }: SocialMediaIntegrationsListProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [brands, setBrands] = useState<Brand[]>([]);
   const router = useRouter();
-
-  // Fetch brands when component mounts
-  useEffect(() => {
-    getBrands()
-      .then((brands) => setBrands(brands))
-      .catch((error) => {
-        console.error("Error fetching brands:", error);
-        toast.error("Failed to fetch brands");
-      });
-  }, []);
 
   const handleBrandChange = async (
     integrationId: string,

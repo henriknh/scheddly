@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -9,63 +7,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { PostType } from "@/generated/prisma";
+import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { ImageIcon, TextIcon, VideoIcon } from "lucide-react";
-import { SocialMedia } from "@/generated/prisma";
+import Image from "next/image";
+import Link from "next/link";
 
 export type Platform = {
   name: string;
   icon: string;
   supports: PostType[];
-};
-
-type PostType = "text" | "image" | "video";
-
-export const platforms: Record<SocialMedia, Platform> = {
-  [SocialMedia.INSTAGRAM]: {
-    name: "Instagram",
-    icon: "/icons/instagram.svg",
-    supports: ["image", "video"],
-  },
-  [SocialMedia.YOUTUBE]: {
-    name: "YouTube",
-    icon: "/icons/youtube.svg",
-    supports: ["video"],
-  },
-  [SocialMedia.TUMBLR]: {
-    name: "Tumblr",
-    icon: "/icons/tumblr.svg",
-    supports: ["text", "image"],
-  },
-  [SocialMedia.PINTEREST]: {
-    name: "Pinterest",
-    icon: "/icons/pinterest.svg",
-    supports: ["image"],
-  },
-  [SocialMedia.THREADS]: {
-    name: "Threads",
-    icon: "/icons/threads.svg",
-    supports: ["text", "image"],
-  },
-  [SocialMedia.TIKTOK]: {
-    name: "TikTok",
-    icon: "/icons/tiktok.svg",
-    supports: ["video"],
-  },
-  [SocialMedia.X]: {
-    name: "X",
-    icon: "/icons/x.svg",
-    supports: ["text", "image", "video"],
-  },
-  [SocialMedia.FACEBOOK]: {
-    name: "Facebook",
-    icon: "/icons/facebook.svg",
-    supports: ["text", "image", "video"],
-  },
-  [SocialMedia.LINKEDIN]: {
-    name: "LinkedIn",
-    icon: "/icons/linkedin.svg",
-    supports: ["text", "image", "video"],
-  },
 };
 
 export function CreateNewPost() {
@@ -89,8 +40,10 @@ export function CreateNewPost() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                {Object.values(platforms)
-                  .filter((platform) => platform.supports.includes("text"))
+                {Object.values(socialMediaPlatforms)
+                  .filter((platform) =>
+                    platform.supportsPostTypes.includes(PostType.TEXT)
+                  )
                   .map((platform) => (
                     <div
                       key={platform.name}
@@ -124,8 +77,10 @@ export function CreateNewPost() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                {Object.values(platforms)
-                  .filter((platform) => platform.supports.includes("image"))
+                {Object.values(socialMediaPlatforms)
+                  .filter((platform) =>
+                    platform.supportsPostTypes.includes(PostType.IMAGE)
+                  )
                   .map((platform) => (
                     <div
                       key={platform.name}
@@ -159,8 +114,10 @@ export function CreateNewPost() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                {Object.values(platforms)
-                  .filter((platform) => platform.supports.includes("video"))
+                {Object.values(socialMediaPlatforms)
+                  .filter((platform) =>
+                    platform.supportsPostTypes.includes(PostType.VIDEO)
+                  )
                   .map((platform) => (
                     <div
                       key={platform.name}
