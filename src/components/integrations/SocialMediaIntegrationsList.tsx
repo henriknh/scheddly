@@ -152,13 +152,6 @@ export function SocialMediaIntegrationsList({
       },
     },
     {
-      accessorKey: "createdAt",
-      header: "Created",
-      cell: ({ row }) => {
-        return new Date(row.original.createdAt).toLocaleDateString();
-      },
-    },
-    {
       id: "actions",
       cell: ({ row }) => {
         return <DeleteIntegrationDialog integrationId={row.original.id} />;
