@@ -1,14 +1,16 @@
 "use client";
 
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import {
   Brand,
   SocialMediaIntegration,
   SocialMediaIntegrationAccountInfo,
 } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 interface SocialMediaIntegrationSelectorProps {
   onSelectionChange: (integrationIds: string[]) => void;
@@ -70,52 +72,94 @@ export function SocialMediaIntegrationSelector({
 
   return (
     <div className="space-y-4">
-      {Object.entries(filteredIntegrationsByBrand).map(([brandId, data]) => (
-        <div key={brandId} className="space-y-2">
-          <Label className="text-sm font-medium">
-            {data.brand?.name || "No Brand"}
-          </Label>
-          <div className="space-y-2">
-            {data.integrations.map((integration) => {
-              const platform = socialMediaPlatforms.find(
-                (p) => p.id === integration.socialMedia
-              );
-              if (!platform) return null;
+      {Object.entries(filteredIntegrationsByBrand).map(([brandId, data]) => {
+        const integrationsByBrand = data.integrations.filter(
+          (integration) => integration.brand?.id === data.brand?.id
+        );
 
-              return (
-                <div
-                  key={integration.id}
-                  className="flex items-center space-x-2"
-                >
-                  <Checkbox
-                    id={integration.id}
-                    checked={selectedIntegrationIds.includes(integration.id)}
-                    onCheckedChange={(checked) =>
-                      handleIntegrationChange(
-                        integration.id,
-                        checked as boolean
+        const allIntegrationsSelected = integrationsByBrand.every(
+          (integration) => selectedIntegrationIds.includes(integration.id)
+        );
+
+        return (
+          <Card key={brandId} className="space-y-2">
+            <CardHeader className="flex flex-row gap-2 items-center space-x-2 space-y-0">
+              <CardTitle className="space-x-4">
+                {data.brand?.name || "No Brand"}
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  if (allIntegrationsSelected) {
+                    onSelectionChange(
+                      selectedIntegrationIds.filter(
+                        (id) =>
+                          !integrationsByBrand.some(
+                            (integration) => integration.id === id
+                          )
                       )
-                    }
-                  />
-                  <Label
-                    htmlFor={integration.id}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <Image
-                      src={platform.icon}
-                      alt={platform.name}
-                      width={16}
-                      height={16}
-                      className="h-4 w-4"
-                    />
-                    {platform.name}
-                  </Label>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+                    );
+                  } else {
+                    onSelectionChange([
+                      ...selectedIntegrationIds,
+                      ...integrationsByBrand.map(
+                        (integration) => integration.id
+                      ),
+                    ]);
+                  }
+                }}
+              >
+                {allIntegrationsSelected ? "All selected" : "Select all"}
+              </Button>
+            </CardHeader>
+
+            <CardContent>
+              <div className="space-y-2">
+                {integrationsByBrand.map((integration) => {
+                  const platform = socialMediaPlatforms.find(
+                    (p) => p.id === integration.socialMedia
+                  );
+                  if (!platform) return null;
+
+                  return (
+                    <div
+                      key={integration.id}
+                      className="flex items-center space-x-2"
+                    >
+                      <Checkbox
+                        id={integration.id}
+                        checked={selectedIntegrationIds.includes(
+                          integration.id
+                        )}
+                        onCheckedChange={(checked) =>
+                          handleIntegrationChange(
+                            integration.id,
+                            checked as boolean
+                          )
+                        }
+                      />
+                      <Label
+                        htmlFor={integration.id}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <Image
+                          src={platform.icon}
+                          alt={platform.name}
+                          width={16}
+                          height={16}
+                          className="h-4 w-4"
+                        />
+                        {platform.name}
+                      </Label>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 }
