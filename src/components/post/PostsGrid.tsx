@@ -16,7 +16,12 @@ import {
   SocialMedia,
   SocialMediaPost,
 } from "@/generated/prisma";
-import { formatDate, formatDateAgo, formatDateTime } from "@/lib/format-date";
+import {
+  formatDate,
+  formatDateAgo,
+  formatDateIn,
+  formatDateTime,
+} from "@/lib/format-date";
 import { getPostTypeName } from "@/lib/post-type-name";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { cn } from "@/lib/utils";
@@ -182,7 +187,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
         return (
           <Tooltip>
             <TooltipTrigger>
-              <Badge variant="info">Scheduled</Badge>
+              <Badge variant="info">{formatDateIn(post.scheduledAt)}</Badge>
             </TooltipTrigger>
             <TooltipContent>
               Scheduled for {formatDateTime(post.scheduledAt)}
