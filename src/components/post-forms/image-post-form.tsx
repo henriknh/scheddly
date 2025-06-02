@@ -197,7 +197,13 @@ export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
           onClick={handleSubmit}
           disabled={images.length === 0 || selectedIntegrationIds.length === 0}
         >
-          {scheduledDate ? "Schedule Post" : "Post Now"}
+          {post
+            ? scheduledDate
+              ? "Update scheduled post"
+              : "Post immediately"
+            : scheduledDate
+            ? "Schedule Post"
+            : "Post Now"}
         </Button>
       </div>
     </div>

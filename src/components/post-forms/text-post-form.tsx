@@ -141,7 +141,13 @@ export function TextPostForm({ integrations, post }: TextPostFormProps) {
           onClick={handleSubmit}
           disabled={!content || selectedIntegrationIds.length === 0}
         >
-          {scheduledDate ? "Schedule Post" : "Post Now"}
+          {post
+            ? scheduledDate
+              ? "Update scheduled post"
+              : "Post immediately"
+            : scheduledDate
+            ? "Schedule Post"
+            : "Post Now"}
         </Button>
       </div>
     </div>

@@ -285,7 +285,13 @@ export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
           onClick={handleSubmit}
           disabled={!video || selectedIntegrationIds.length === 0}
         >
-          {scheduledDate ? "Schedule Post" : "Post Now"}
+          {post
+            ? scheduledDate
+              ? "Update scheduled post"
+              : "Post immediately"
+            : scheduledDate
+            ? "Schedule Post"
+            : "Post Now"}
         </Button>
       </div>
     </div>
