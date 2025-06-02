@@ -142,12 +142,6 @@ export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
             post ? "Failed to update post" : "Failed to create post",
             error
           );
-        })
-        .finally(() => {
-          setDescription("");
-          setVideo(null);
-          setScheduledDate(undefined);
-          setSelectedIntegrationIds([]);
         });
     } catch (error) {
       console.error("Failed to create post:", error);

@@ -74,11 +74,6 @@ export function TextPostForm({ integrations, post }: TextPostFormProps) {
             post ? "Failed to update post" : "Failed to create post",
             error
           );
-        })
-        .finally(() => {
-          setContent("");
-          setScheduledDate(undefined);
-          setSelectedIntegrationIds([]);
         });
     } catch (error) {
       console.error("Failed to create post:", error);

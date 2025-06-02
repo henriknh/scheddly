@@ -88,12 +88,6 @@ export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
             post ? "Failed to update post" : "Failed to create post",
             error
           );
-        })
-        .finally(() => {
-          setImages([]);
-          setCaption("");
-          setScheduledDate(undefined);
-          setSelectedIntegrationIds([]);
         });
     } catch (error) {
       console.error("Failed to create post:", error);

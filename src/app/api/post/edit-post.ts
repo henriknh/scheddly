@@ -3,6 +3,7 @@
 import { getUserFromToken } from "@/lib/user";
 import prisma from "@/lib/prisma";
 import { CreatePostParams } from "./create-post";
+import { uploadImagesToMinio, uploadVideoToMinio } from "@/lib/minio";
 
 export async function editPost(postId: string, data: CreatePostParams) {
   const user = await getUserFromToken();
@@ -19,5 +20,31 @@ export async function editPost(postId: string, data: CreatePostParams) {
     throw new Error("Post not found");
   }
 
-  throw new Error("Not implemented");
+  const {
+    description,
+    images,
+    video,
+    videoCover,
+    scheduledAt,
+    socialMediaIntegrations,
+  } = data;
+
+  await prisma.post.update({
+    where: { id: postId },
+    data: {
+      description,
+      imageUrls: images ? await uploadImagesToMinio(images) : undefined,
+      videoUrl: video ? await uploadVideoToMinio(video) : undefined,
+      videoCoverUrl: videoCover
+        ? await uploadVideoToMinio(videoCover)
+        : undefined,
+      scheduledAt,
+      socialMediaPosts: {
+        deleteMany: {},
+        create: socialMediaIntegrations.map((integration) => ({
+          socialMediaIntegrationId: integration.id,
+        })),
+      },
+    },
+  });
 }
