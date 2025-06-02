@@ -29,19 +29,15 @@ export function PostScheduler({
   const [date, setDate] = useState<Date | undefined>(
     initialDate ? new Date(initialDate) : undefined
   );
-  const [hour, setHour] = useState<string>(date ? format(date, "h") : "12");
+  const [hour, setHour] = useState<string>(date ? format(date, "HH") : "12");
   const [minute, setMinute] = useState<string>(
     date ? format(date, "mm") : "00"
   );
-  const [period, setPeriod] = useState<string>(date ? format(date, "a") : "am");
 
   const handleDateSelect = (newDate: Date | undefined) => {
     if (newDate) {
       const currentDate = new Date(newDate);
-      currentDate.setHours(
-        period === "pm" ? (parseInt(hour) % 12) + 12 : parseInt(hour) % 12,
-        parseInt(minute)
-      );
+      currentDate.setHours(parseInt(hour), parseInt(minute));
       setDate(currentDate);
       onScheduleChange(currentDate);
     } else {
@@ -50,22 +46,12 @@ export function PostScheduler({
     }
   };
 
-  const handleTimeChange = (
-    newHour: string,
-    newMinute: string,
-    newPeriod: string
-  ) => {
+  const handleTimeChange = (newHour: string, newMinute: string) => {
     setHour(newHour);
     setMinute(newMinute);
-    setPeriod(newPeriod);
     if (date) {
       const newDate = new Date(date);
-      newDate.setHours(
-        newPeriod === "pm"
-          ? (parseInt(newHour) % 12) + 12
-          : parseInt(newHour) % 12,
-        parseInt(newMinute)
-      );
+      newDate.setHours(parseInt(newHour), parseInt(newMinute));
       setDate(newDate);
       onScheduleChange(newDate);
     }
@@ -83,7 +69,7 @@ export function PostScheduler({
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "PPP p") : "Schedule post"}
+            {date ? format(date, "PPP HH:mm") : "Schedule post"}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
@@ -98,15 +84,17 @@ export function PostScheduler({
             <Select
               value={hour}
               onValueChange={(value) => {
-                handleTimeChange(value, minute, period);
+                handleTimeChange(value, minute);
               }}
             >
               <SelectTrigger className="w-[70px]">
                 <SelectValue placeholder="Hour" />
               </SelectTrigger>
               <SelectContent>
-                {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
-                  <SelectItem key={h} value={h.toString()}>
+                {Array.from({ length: 24 }, (_, i) =>
+                  i.toString().padStart(2, "0")
+                ).map((h) => (
+                  <SelectItem key={h} value={h}>
                     {h}
                   </SelectItem>
                 ))}
@@ -115,7 +103,7 @@ export function PostScheduler({
             <Select
               value={minute}
               onValueChange={(value) => {
-                handleTimeChange(hour, value, period);
+                handleTimeChange(hour, value);
               }}
             >
               <SelectTrigger className="w-[70px]">
@@ -129,20 +117,6 @@ export function PostScheduler({
                     {m}
                   </SelectItem>
                 ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={period}
-              onValueChange={(value) => {
-                handleTimeChange(hour, minute, value);
-              }}
-            >
-              <SelectTrigger className="w-[70px]">
-                <SelectValue placeholder="AM/PM" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="am">AM</SelectItem>
-                <SelectItem value="pm">PM</SelectItem>
               </SelectContent>
             </Select>
           </div>
