@@ -16,7 +16,7 @@ import {
   SocialMedia,
   SocialMediaPost,
 } from "@/generated/prisma";
-import { formatDate, formatDateAgo } from "@/lib/format-date";
+import { formatDate, formatDateAgo, formatDateTime } from "@/lib/format-date";
 import { getPostTypeName } from "@/lib/post-type-name";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { cn } from "@/lib/utils";
@@ -74,7 +74,10 @@ export function PostGrid({ posts, brands }: PostGridProps) {
     };
 
     return (
-      <Badge variant="secondary" className="h-5 inline-flex items-center gap-1">
+      <Badge
+        variant="outline"
+        className="h-5 inline-flex items-center gap-1 bg-secondary"
+      >
         <span className="overflow-hidden h-4 w-4">{icon[post.postType]}</span>
 
         {getPostTypeName(post.postType)}
@@ -83,7 +86,18 @@ export function PostGrid({ posts, brands }: PostGridProps) {
   };
 
   const getCreatedAtBadge = (post: Post) => {
-    return <Badge variant="secondary">{formatDateAgo(post.createdAt)}</Badge>;
+    return (
+      <Tooltip>
+        <TooltipTrigger>
+          <Badge variant="outline" className="bg-secondary">
+            {formatDateAgo(post.createdAt)}
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>
+          Created at {formatDateTime(post.createdAt)}
+        </TooltipContent>
+      </Tooltip>
+    );
   };
 
   const getStatusBadge = (
@@ -117,7 +131,8 @@ export function PostGrid({ posts, brands }: PostGridProps) {
           <TooltipContent>
             {lastFailedAt ? (
               <>
-                The post has failed to be posted at {formatDate(lastFailedAt)}
+                The post has failed to be posted at{" "}
+                {formatDateTime(lastFailedAt)}
               </>
             ) : (
               <>The post has failed to be posted</>
@@ -152,7 +167,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
           </TooltipTrigger>
           <TooltipContent>
             {lastPostedAt ? (
-              <>All posts have been posted at {formatDate(lastPostedAt)}</>
+              <>All posts have been posted at {formatDateTime(lastPostedAt)}</>
             ) : (
               <>All posts have been posted</>
             )}
@@ -170,7 +185,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
               <Badge variant="info">Scheduled</Badge>
             </TooltipTrigger>
             <TooltipContent>
-              Scheduled for {formatDate(post.scheduledAt)}
+              Scheduled for {formatDateTime(post.scheduledAt)}
             </TooltipContent>
           </Tooltip>
         );

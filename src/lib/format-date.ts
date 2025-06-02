@@ -31,3 +31,7 @@ export function formatDateAgo(date: Date) {
 export function formatDate(date: Date) {
   return format(date, "MMM d, yyyy");
 }
+
+export function formatDateTime(date: Date) {
+  return format(date, "MMM d, yyyy HH:mm");
+}
