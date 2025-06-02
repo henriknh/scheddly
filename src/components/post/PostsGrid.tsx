@@ -25,7 +25,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { PostsGridImageCarousel } from "./PostsGridImageCarousel";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useEffect } from "react";
 
 interface PostGridProps {
@@ -37,22 +37,24 @@ export function PostGrid({ posts, brands }: PostGridProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const ref = useRef<HTMLDivElement>(null);
+  const [columns, setColumns] = useState<number>(0);
+  const [cellSize, setCellSize] = useState<number>(300);
+
   useEffect(() => {
     const grid = ref.current;
     if (!grid) return;
 
     const observer = new ResizeObserver(() => {
-      const colWidth = grid.offsetWidth / 4;
-      document.documentElement.style.setProperty(
-        "--cell-size",
-        `${colWidth}px`
-      );
+      const columns = Math.max(1, Math.floor(grid.offsetWidth / 300));
+      setColumns(columns);
+      const cellSize = grid.offsetWidth / columns;
+      setCellSize(cellSize);
     });
     observer.observe(grid);
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [setColumns, columns]);
 
   const updateQueryParams = (key: string, value: string | null) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -268,7 +270,11 @@ export function PostGrid({ posts, brands }: PostGridProps) {
 
       <div
         ref={ref}
-        className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4"
+        className="grid gap-4 transition-opacity duration-300"
+        style={{
+          gridTemplateColumns: `repeat(${columns}, 1fr)`,
+          opacity: columns > 0 ? 1 : 0,
+        }}
       >
         {posts.length > 0 ? (
           posts.map((post: PostWithRelations) => (
@@ -282,8 +288,8 @@ export function PostGrid({ posts, brands }: PostGridProps) {
               style={{
                 height:
                   post.postType === PostType.VIDEO
-                    ? "calc(var(--cell-size) * 1.7777777778 + 1rem)"
-                    : "calc(var(--cell-size) * 0.8888888889)",
+                    ? `calc(${cellSize}px * 1.7777777778 + 1rem)`
+                    : `calc(${cellSize}px * 0.8888888889)`,
               }}
             >
               <div className="group relative rounded-xl bg-card overflow-hidden border h-full">
