@@ -2,16 +2,9 @@
 
 import { getUserFromToken } from "@/lib/user";
 import prisma from "@/lib/prisma";
+import { CreatePostParams } from "./create-post";
 
-export async function editPost(
-  postId: string,
-  description,
-  postType,
-  images,
-  video,
-  scheduledAt,
-  socialMediaIntegrations
-) {
+export async function editPost(postId: string, data: CreatePostParams) {
   const user = await getUserFromToken();
 
   if (!user || !user.id || !user.teamId) {
@@ -25,4 +18,6 @@ export async function editPost(
   if (!post) {
     throw new Error("Post not found");
   }
+
+  throw new Error("Not implemented");
 }

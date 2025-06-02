@@ -11,11 +11,17 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 
 interface PostSchedulerProps {
+  initialDate?: Date | null;
   onScheduleChange: (date: Date | undefined) => void;
 }
 
-export function PostScheduler({ onScheduleChange }: PostSchedulerProps) {
-  const [date, setDate] = useState<Date | undefined>(undefined);
+export function PostScheduler({
+  initialDate,
+  onScheduleChange,
+}: PostSchedulerProps) {
+  const [date, setDate] = useState<Date | undefined>(
+    initialDate ? new Date(initialDate) : undefined
+  );
 
   const handleDateSelect = (newDate: Date | undefined) => {
     setDate(newDate);

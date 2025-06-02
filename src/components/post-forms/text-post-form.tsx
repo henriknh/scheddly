@@ -1,6 +1,7 @@
 "use client";
 
 import { createPost } from "@/app/api/post/create-post";
+import { editPost } from "@/app/api/post/edit-post";
 import { PostWithRelations } from "@/app/api/post/types";
 import { ConfirmDeletePostModal } from "@/components/confirm-delete-post-modal";
 import { PostScheduler } from "@/components/post-scheduler";
@@ -51,19 +52,28 @@ export function TextPostForm({ integrations, post }: TextPostFormProps) {
         selectedIntegrationIds.includes(integration.id)
       );
 
-      await createPost({
+      const data = {
         description: content,
         postType: PostType.TEXT,
         scheduledAt: scheduledDate,
         socialMediaIntegrations: selectedIntegrations,
-      })
+      };
+
+      const submit = post ? editPost(post.id, data) : createPost(data);
+
+      await submit
         .then(() => {
-          toast.success("Post created successfully");
+          toast.success(
+            post ? "Post updated successfully" : "Post created successfully"
+          );
           router.push("/dashboard/posts");
         })
         .catch((error) => {
-          toast.error("Failed to create post");
-          console.error("Failed to create post:", error);
+          toast.error(post ? "Failed to update post" : "Failed to create post");
+          console.error(
+            post ? "Failed to update post" : "Failed to create post",
+            error
+          );
         })
         .finally(() => {
           setContent("");
@@ -119,7 +129,10 @@ export function TextPostForm({ integrations, post }: TextPostFormProps) {
           <span className="font-medium">Scheduling</span>
         </div>
 
-        <PostScheduler onScheduleChange={setScheduledDate} />
+        <PostScheduler
+          initialDate={post?.scheduledAt}
+          onScheduleChange={setScheduledDate}
+        />
       </div>
 
       <div className="flex justify-end gap-2">
