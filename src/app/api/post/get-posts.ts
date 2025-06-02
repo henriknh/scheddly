@@ -48,12 +48,8 @@ export async function getPosts(
           },
         }),
         ...(filter?.status === "failed" && {
-          socialMediaPosts: {
-            some: {
-              failedAt: {
-                not: null,
-              },
-            },
+          failedAt: {
+            not: null,
           },
         }),
         ...(filter?.status === "scheduled" && {
@@ -62,12 +58,8 @@ export async function getPosts(
           },
         }),
         ...(filter?.status === "posted" && {
-          socialMediaPosts: {
-            some: {
-              postedAt: {
-                not: null,
-              },
-            },
+          postedAt: {
+            not: null,
           },
         }),
         ...(filter?.status === "pending" && {
@@ -77,6 +69,12 @@ export async function getPosts(
         }),
       },
       orderBy: [
+        {
+          scheduledAt: {
+            sort: "desc",
+            nulls: "last",
+          },
+        },
         {
           createdAt: "desc",
         },

@@ -9,29 +9,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Brand,
-  Post,
-  PostType,
-  SocialMedia,
-  SocialMediaPost,
-} from "@/generated/prisma";
-import {
-  formatDate,
-  formatDateAgo,
-  formatDateIn,
-  formatDateTime,
-} from "@/lib/format-date";
+import { Brand, Post, PostType, SocialMedia } from "@/generated/prisma";
+import { formatDateAgo, formatDateIn, formatDateTime } from "@/lib/format-date";
 import { getPostTypeName } from "@/lib/post-type-name";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { cn } from "@/lib/utils";
 import { ImageIcon, TextIcon, VideoIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { PostsGridImageCarousel } from "./PostsGridImageCarousel";
-import { useRef, useState } from "react";
-import { useEffect } from "react";
 
 interface PostGridProps {
   posts: PostWithRelations[];
@@ -105,77 +93,28 @@ export function PostGrid({ posts, brands }: PostGridProps) {
     );
   };
 
-  const getStatusBadge = (
-    post: Post & { socialMediaPosts: SocialMediaPost[] }
-  ) => {
-    const socialMediaPosts = post.socialMediaPosts || [];
-
-    const hasFailed = socialMediaPosts.some(
-      (post: SocialMediaPost) => post.failedAt || post.failedReason
-    );
-    if (hasFailed) {
-      const failedAt = socialMediaPosts.map(
-        (post: SocialMediaPost) => post.failedAt
-      );
-      const lastFailedAt = failedAt.sort((a, b) => {
-        if (a && b) {
-          return a.getTime() - b.getTime();
-        } else if (a) {
-          return 1;
-        } else if (b) {
-          return -1;
-        }
-        return 0;
-      })[0];
-
+  const getStatusBadge = (post: Post) => {
+    if (post.failedAt) {
       return (
         <Tooltip>
           <TooltipTrigger>
             <Badge variant="destructive">Failed</Badge>
           </TooltipTrigger>
           <TooltipContent>
-            {lastFailedAt ? (
-              <>
-                The post has failed to be posted at{" "}
-                {formatDateTime(lastFailedAt)}
-              </>
-            ) : (
-              <>The post has failed to be posted</>
-            )}
+            The post has failed to be posted at {formatDateTime(post.failedAt)}
           </TooltipContent>
         </Tooltip>
       );
     }
 
-    const allPosted = socialMediaPosts.every(
-      (post: SocialMediaPost) => post.postedAt
-    );
-    if (allPosted) {
-      const postedAt = socialMediaPosts.map(
-        (post: SocialMediaPost) => post.postedAt
-      );
-      const lastPostedAt = postedAt.sort((a, b) => {
-        if (a && b) {
-          return a.getTime() - b.getTime();
-        } else if (a) {
-          return 1;
-        } else if (b) {
-          return -1;
-        }
-        return 0;
-      })[0];
-
+    if (post.postedAt) {
       return (
         <Tooltip>
           <TooltipTrigger>
             <Badge variant="success">Success</Badge>
           </TooltipTrigger>
           <TooltipContent>
-            {lastPostedAt ? (
-              <>All posts have been posted at {formatDateTime(lastPostedAt)}</>
-            ) : (
-              <>All posts have been posted</>
-            )}
+            The post has been posted at {formatDateTime(post.postedAt)}
           </TooltipContent>
         </Tooltip>
       );

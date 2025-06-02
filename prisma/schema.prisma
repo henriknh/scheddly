@@ -15,8 +15,6 @@ model SocialMediaPost {
   socialMediaIntegration SocialMediaIntegration @relation(fields: [socialMediaIntegrationId], references: [id])
   socialMediaIntegrationId String
   socialMediaPostId     String?
-  postedAt              DateTime?
-  failedAt              DateTime?
   failedReason          String?
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
@@ -30,6 +28,8 @@ model Post {
   videoUrl         String?
   videoCoverUrl    String?
   scheduledAt      DateTime?
+  postedAt         DateTime?
+  failedAt         DateTime?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   teamId           String
