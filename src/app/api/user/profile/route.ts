@@ -1,5 +1,5 @@
 import { getTokenData } from "@/lib/jwt";
-import { getPresignedUrl, uploadToMinio } from "@/lib/minio";
+import { uploadToMinio } from "@/lib/minio";
 import prisma from "@/lib/prisma";
 import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
 import { NextRequest, NextResponse } from "next/server";
@@ -73,13 +73,11 @@ export async function PATCH(request: NextRequest) {
           .toBuffer();
 
         // Create a unique filename
-        const uniqueFilename = `avatars/${
-          payload.id
-        }-${Date.now()}${path.extname(file.name)}`;
+        avatarUrl = `avatars/${payload.id}-${Date.now()}${path.extname(
+          file.name
+        )}`;
 
-        await uploadToMinio(resizedImage, uniqueFilename, file.type);
-
-        avatarUrl = await getPresignedUrl(uniqueFilename);
+        await uploadToMinio(resizedImage, avatarUrl, file.type);
       } catch (error) {
         console.error("FILE_UPLOAD_ERROR", error);
         return new NextResponse("Error uploading file", { status: 500 });

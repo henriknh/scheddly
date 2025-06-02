@@ -26,7 +26,7 @@ export function PostsGridImageCarousel({ post }: PostsGridImageCarouselProps) {
   return (
     <div className="relative h-full w-full ">
       <img
-        src={post.imageUrls[currentImage]}
+        src={`/api/file/${post.imageUrls[currentImage]}`}
         alt={post.description}
         className="rounded-xl w-full h-full object-cover"
       />

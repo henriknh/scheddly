@@ -78,12 +78,13 @@ export const uploadImageToMinio = async (
   const uniqueFilename = `post_images/${image.name}-${Date.now()}`;
 
   await uploadToMinio(imageBuffer, uniqueFilename, image.type);
-  return await getPresignedUrl(uniqueFilename);
+  return uniqueFilename;
 };
 
 export const uploadImagesToMinio = async (
   images?: File[] | null
 ): Promise<string[]> => {
+  // TODO: Fix why this is calling uploadImageToMinio an extra time with undefined image
   console.log("uploading images to minio", images);
 
   if (images && images.length > 0) {
@@ -106,5 +107,5 @@ export const uploadVideoToMinio = async (
   const uniqueFilename = `post_videos/${video.name}-${Date.now()}`;
 
   await uploadToMinio(videoBuffer, uniqueFilename, video.type);
-  return await getPresignedUrl(uniqueFilename);
+  return uniqueFilename;
 };

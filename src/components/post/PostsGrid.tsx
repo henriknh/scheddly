@@ -25,6 +25,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { PostsGridImageCarousel } from "./PostsGridImageCarousel";
+import { useRef } from "react";
+import { useEffect } from "react";
 
 interface PostGridProps {
   posts: PostWithRelations[];
@@ -34,6 +36,23 @@ interface PostGridProps {
 export function PostGrid({ posts, brands }: PostGridProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const grid = ref.current;
+    if (!grid) return;
+
+    const observer = new ResizeObserver(() => {
+      const colWidth = grid.offsetWidth / 4;
+      document.documentElement.style.setProperty(
+        "--cell-size",
+        `${colWidth}px`
+      );
+    });
+    observer.observe(grid);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   const updateQueryParams = (key: string, value: string | null) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -247,27 +266,32 @@ export function PostGrid({ posts, brands }: PostGridProps) {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+      <div
+        ref={ref}
+        className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4"
+      >
         {posts.length > 0 ? (
           posts.map((post: PostWithRelations) => (
             <Link
               key={post.id}
               href={`/dashboard/posts/${post.id}`}
               className={cn(
-                "col-span-1",
-
-                post.postType === PostType.VIDEO ? "row-span-2" : "row-span-1",
-                post.postType === PostType.VIDEO
-                  ? "aspect-video"
-                  : "aspect-square"
+                "col-span-1 row-span-1",
+                post.postType === PostType.VIDEO ? "row-span-2" : "row-span-1"
               )}
+              style={{
+                height:
+                  post.postType === PostType.VIDEO
+                    ? "calc(var(--cell-size) * 1.7777777778 + 1rem)"
+                    : "calc(var(--cell-size) * 0.8888888889)",
+              }}
             >
               <div className="group relative rounded-xl bg-card overflow-hidden border h-full">
                 <div
                   className={cn(
                     "space-x-2 flex justify-between items-center",
                     post.postType === PostType.TEXT
-                      ? "p-4 pb-2"
+                      ? "p-4 pb-3"
                       : "absolute left-4 top-4 right-4 z-10"
                   )}
                 >
@@ -282,7 +306,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
 
                 {post.postType === PostType.VIDEO && post.videoUrl && false && (
                   <video
-                    src={post.videoUrl || ""}
+                    src={`/api/file/${post.videoUrl}`}
                     className="rounded-xl w-full h-full object-cover"
                     autoPlay
                     muted
@@ -293,7 +317,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
 
                 {post.postType === PostType.VIDEO && post.videoCoverUrl && (
                   <img
-                    src={post.videoCoverUrl}
+                    src={`/api/file/${post.videoCoverUrl}`}
                     alt={post.description}
                     className="rounded-xl w-full h-full object-cover"
                   />
@@ -306,7 +330,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
 
                 {post.postType === PostType.TEXT ? (
                   <div className="pb-4 px-4">
-                    <div className="line-clamp-10">{post.description}</div>
+                    <div className="line-clamp-9">{post.description}</div>
                   </div>
                 ) : (
                   post.description && (

@@ -37,6 +37,8 @@ export async function createPost({
   }
 
   const imageUrls = await uploadImagesToMinio(images);
+  console.log("imageUrls", imageUrls);
+
   if (postType === PostType.IMAGE && !imageUrls.length) {
     throw new Error("Images are required for image posts");
   }

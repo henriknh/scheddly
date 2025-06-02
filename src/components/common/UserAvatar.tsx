@@ -11,7 +11,10 @@ interface UserAvatarProps {
 export function UserAvatar({ src, fallback, isBig = false }: UserAvatarProps) {
   return (
     <Avatar className={cn(isBig ? "h-16 w-16" : "h-4 w-4")}>
-      <AvatarImage src={src!} alt="user avatar" />
+      <AvatarImage
+        src={src ? `/api/file/${src}` : undefined}
+        alt="user avatar"
+      />
       <AvatarFallback>
         {fallback ? (
           <span className="font-medium">

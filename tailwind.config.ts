@@ -21,6 +21,7 @@ const config = {
     extend: {
       aspectRatio: {
         video: "9/16",
+        post: "9/8",
       },
       lineClamp: {
         7: "7",
