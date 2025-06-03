@@ -30,14 +30,11 @@ export async function createPost({
 }: CreatePostParams) {
   const user = await getUserFromToken();
 
-  console.log("images", images);
-
   if (!user || !user.id || !user.teamId) {
     throw new Error("Unauthorized");
   }
 
   const imageUrls = await uploadImagesToMinio(images);
-  console.log("imageUrls", imageUrls);
 
   if (postType === PostType.IMAGE && !imageUrls.length) {
     throw new Error("Images are required for image posts");

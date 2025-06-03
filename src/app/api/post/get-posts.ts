@@ -23,8 +23,6 @@ export async function getPosts(
       throw new Error("Unauthorized");
     }
 
-    console.log(filter);
-
     const posts = await prisma.post.findMany({
       where: {
         teamId: user.teamId,

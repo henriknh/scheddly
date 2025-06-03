@@ -77,8 +77,6 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
   }, [setColumns, columns]);
 
   const updateQueryParam = (key: string, value: string | null) => {
-    console.log(searchParams.toString());
-
     const params = new URLSearchParams(searchParams.toString());
     if (value && value !== "all") {
       params.set(key, value);

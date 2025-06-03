@@ -68,7 +68,6 @@ export async function uploadToMinio(
 export const uploadImageToMinio = async (
   image?: File | null
 ): Promise<string | null> => {
-  console.log("uploading image to minio", image);
   if (!image) {
     return null;
   }
@@ -85,7 +84,6 @@ export const uploadImagesToMinio = async (
   images?: File[] | null
 ): Promise<string[]> => {
   // TODO: Fix why this is calling uploadImageToMinio an extra time with undefined image
-  console.log("uploading images to minio", images);
 
   if (images && images.length > 0) {
     return (await Promise.all(images.map(uploadImageToMinio))).filter(

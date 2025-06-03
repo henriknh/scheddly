@@ -25,10 +25,6 @@ export default async function PostsPage({ searchParams }: Props) {
 
   const scheduledDates = await getScheduledDates();
 
-  console.log(posts);
-
-  console.log(scheduledDates);
-
   const brands = await getBrands();
 
   return (
