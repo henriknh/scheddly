@@ -32,6 +32,12 @@ export async function deleteSocialMediaIntegration(
         break;
     }
 
+    // First delete all associated social media posts
+    await prisma.socialMediaPost.deleteMany({
+      where: { socialMediaIntegrationId },
+    });
+
+    // Then delete the social media integration
     await prisma.socialMediaIntegration.delete({
       where: { id: socialMediaIntegrationId, teamId: user.teamId },
       include: {
