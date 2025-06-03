@@ -24,22 +24,34 @@ export function PostsGridImageCarousel({ post }: PostsGridImageCarouselProps) {
   };
 
   return (
-    <div className="relative h-full w-full ">
+    <div className="relative h-full w-full">
       <img
         src={`/api/file/${post.imageUrls[currentImage]}`}
         alt={post.description}
         className="rounded-xl w-full h-full object-cover"
       />
 
-      <div className="absolute inset-0 flex items-center justify-between p-4">
-        <Button size="icon" onClick={handlePreviousImage}>
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
+      {post.imageUrls.length > 1 && (
+        <div className="absolute inset-0 flex items-center justify-between p-4">
+          <Button
+            size="icon"
+            variant="secondary"
+            onClick={handlePreviousImage}
+            className="z-20"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
 
-        <Button size="icon" onClick={handleNextImage}>
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
+          <Button
+            size="icon"
+            variant="secondary"
+            onClick={handleNextImage}
+            className="z-20"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

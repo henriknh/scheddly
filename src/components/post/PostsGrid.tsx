@@ -28,6 +28,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { PostsGridImageCarousel } from "./PostsGridImageCarousel";
+import Image from "next/image";
 
 interface PostGridProps {
   posts: PostWithRelations[];
@@ -133,30 +134,20 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
     );
   };
 
-  const getCreatedAtBadge = (post: Post) => {
-    return (
-      <Tooltip>
-        <TooltipTrigger>
-          <Badge variant="outline" className="bg-secondary">
-            {formatDateAgo(post.createdAt)}
-          </Badge>
-        </TooltipTrigger>
-        <TooltipContent>
-          Created at {formatDateTime(post.createdAt)}
-        </TooltipContent>
-      </Tooltip>
-    );
-  };
-
   const getStatusBadge = (post: Post) => {
     if (post.failedAt) {
       return (
         <Tooltip>
           <TooltipTrigger>
-            <Badge variant="destructive">Failed</Badge>
+            <Badge variant="destructive" className="text-nowrap">
+              Failed
+            </Badge>
           </TooltipTrigger>
           <TooltipContent>
-            The post has failed to be posted at {formatDateTime(post.failedAt)}
+            <div className="flex flex-col gap-1">
+              <div>Failed to post at {formatDateTime(post.failedAt)}</div>
+              <div>Created at {formatDateTime(post.createdAt)}</div>
+            </div>
           </TooltipContent>
         </Tooltip>
       );
@@ -166,10 +157,15 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
       return (
         <Tooltip>
           <TooltipTrigger>
-            <Badge variant="success">Success</Badge>
+            <Badge variant="success" className="text-nowrap">
+              Success
+            </Badge>
           </TooltipTrigger>
           <TooltipContent>
-            The post has been posted at {formatDateTime(post.postedAt)}
+            <div className="flex flex-col gap-1">
+              <div>Posted at {formatDateTime(post.postedAt)}</div>
+              <div>Created at {formatDateTime(post.createdAt)}</div>
+            </div>{" "}
           </TooltipContent>
         </Tooltip>
       );
@@ -181,10 +177,15 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
         return (
           <Tooltip>
             <TooltipTrigger>
-              <Badge variant="info">{formatDateIn(post.scheduledAt)}</Badge>
+              <Badge variant="info" className="text-nowrap">
+                {formatDateIn(post.scheduledAt)}
+              </Badge>
             </TooltipTrigger>
             <TooltipContent>
-              Scheduled for {formatDateTime(post.scheduledAt)}
+              <div className="flex flex-col gap-1">
+                <div>Scheduled for {formatDateTime(post.scheduledAt)}</div>
+                <div>Created at {formatDateTime(post.createdAt)}</div>
+              </div>{" "}
             </TooltipContent>
           </Tooltip>
         );
@@ -194,12 +195,77 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
     return (
       <Tooltip>
         <TooltipTrigger>
-          <Badge variant="warning" className="animate-pulse">
+          <Badge variant="warning" className="text-nowrap animate-pulse">
             Pending
           </Badge>
         </TooltipTrigger>
-        <TooltipContent>The post is pending to be posted</TooltipContent>
+        <TooltipContent>
+          <div className="flex flex-col gap-1">
+            <div>The post is pending to be posted</div>
+            <div>Created at {formatDateTime(post.createdAt)}</div>
+          </div>
+        </TooltipContent>
       </Tooltip>
+    );
+  };
+
+  const getBrandBadge = (post: PostWithRelations) => {
+    console.log(post);
+
+    const brandNames = post.socialMediaPosts
+      .map((socialMediaPost) => {
+        return socialMediaPost?.socialMediaIntegration?.brand?.name;
+      })
+      .filter((brandName) => brandName !== null);
+
+    if (brandNames.length === 0) {
+      return null;
+    }
+
+    return (
+      <Tooltip>
+        <TooltipTrigger>
+          <Badge variant="outline" className="bg-secondary">
+            {brandNames[0]}
+            {brandNames.length > 1 ? `+${brandNames.length - 1}` : ""}
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>{brandNames.join(", ")}</TooltipContent>
+      </Tooltip>
+    );
+  };
+
+  const getSocialMediaIcons = (post: PostWithRelations) => {
+    const socialMediaIcons = post.socialMediaPosts.map((socialMediaPost) => {
+      return socialMediaPost.socialMediaIntegration.socialMedia;
+    });
+
+    const socialMediaPlatformsArray = socialMediaPlatforms.filter((platform) =>
+      socialMediaIcons.includes(platform.id)
+    );
+
+    if (socialMediaPlatformsArray.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="flex items-center gap-2">
+        {socialMediaPlatformsArray.map((socialMediaPlatform) => (
+          <Tooltip key={socialMediaPlatform.id}>
+            <TooltipTrigger>
+              <div className="flex items-center justify-center h-4 w-4 rounded-full bg-secondary">
+                <Image
+                  src={socialMediaPlatform.icon}
+                  alt={socialMediaPlatform.name}
+                  width={16}
+                  height={16}
+                />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>{socialMediaPlatform.name}</TooltipContent>
+          </Tooltip>
+        ))}
+      </div>
     );
   };
 
@@ -403,59 +469,37 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
                     : `calc(${cellSize}px * 0.8888888889)`,
               }}
             >
-              <div className="group relative rounded-xl bg-card overflow-hidden border h-full">
-                <div
-                  className={cn(
-                    "space-x-2 flex justify-between items-center",
-                    post.postType === PostType.TEXT
-                      ? "p-4 pb-3"
-                      : "absolute left-4 top-4 right-4 z-10"
-                  )}
-                >
-                  <div className="flex items-center gap-2">
-                    {getPostTypeBadge(post)}
-
-                    {getCreatedAtBadge(post)}
-                  </div>
-
+              <div className="group relative rounded-xl bg-card overflow-hidden border h-full flex flex-col">
+                <div className="p-4 pb-3 flex justify-between items-center  z-10">
+                  {getPostTypeBadge(post)}
                   {getStatusBadge(post)}
                 </div>
 
-                {post.postType === PostType.VIDEO && post.videoUrl && false && (
-                  <video
-                    src={`/api/file/${post.videoUrl}`}
-                    className="rounded-xl w-full h-full object-cover"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                  />
-                )}
-
-                {post.postType === PostType.VIDEO && post.videoCoverUrl && (
+                {post.postType === PostType.VIDEO && (
                   <img
                     src={`/api/file/${post.videoCoverUrl}`}
                     alt={post.description}
-                    className="rounded-xl w-full h-full object-cover"
+                    className="absolute inset-0 rounded-xl w-full h-full object-cover"
                   />
                 )}
 
                 {post.postType === PostType.IMAGE &&
                   post.imageUrls.length > 0 && (
-                    <PostsGridImageCarousel post={post} />
+                    <div className="absolute inset-0">
+                      <PostsGridImageCarousel post={post} />
+                    </div>
                   )}
 
-                {post.postType === PostType.TEXT ? (
-                  <div className="pb-4 px-4">
-                    <div className="line-clamp-9">{post.description}</div>
-                  </div>
-                ) : (
-                  post.description && (
-                    <div className="absolute p-4 left-0 bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity bg-card/80">
-                      <div className="line-clamp-2">{post.description}</div>
-                    </div>
-                  )
-                )}
+                <div className="flex-1 px-4 z-10">
+                  {post.postType === PostType.TEXT && (
+                    <div className="line-clamp-8">{post.description}</div>
+                  )}
+                </div>
+
+                <div className="p-4 pt-3 flex items-center gap-2 z-10">
+                  {getBrandBadge(post)}
+                  {getSocialMediaIcons(post)}
+                </div>
               </div>
             </Link>
           ))

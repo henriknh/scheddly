@@ -66,5 +66,10 @@ export function formatDateIn(date: Date) {
     return `In ${isHours}h`;
   }
 
-  return format(date, "MMM d, yyyy");
+  const yearIsDifferent = date.getFullYear() !== new Date().getFullYear();
+  if (yearIsDifferent) {
+    return format(date, "MMM d, yyyy");
+  }
+
+  return format(date, "MMM d");
 }

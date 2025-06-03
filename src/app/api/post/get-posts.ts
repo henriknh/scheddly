@@ -92,7 +92,11 @@ export async function getPosts(
       include: {
         socialMediaPosts: {
           include: {
-            socialMediaIntegration: true,
+            socialMediaIntegration: {
+              include: {
+                brand: true,
+              },
+            },
           },
         },
       },
