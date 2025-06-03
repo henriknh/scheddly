@@ -14,24 +14,51 @@ import { formatDateAgo, formatDateIn, formatDateTime } from "@/lib/format-date";
 import { getPostTypeName } from "@/lib/post-type-name";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { cn } from "@/lib/utils";
-import { ImageIcon, TextIcon, VideoIcon } from "lucide-react";
+import { format } from "date-fns";
+import { CalendarIcon, ImageIcon, TextIcon, VideoIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Button } from "../ui/button";
+import { Calendar } from "../ui/calendar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { PostsGridImageCarousel } from "./PostsGridImageCarousel";
 
 interface PostGridProps {
   posts: PostWithRelations[];
   brands: Brand[];
+  scheduledDates: Date[];
 }
 
-export function PostGrid({ posts, brands }: PostGridProps) {
+export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const ref = useRef<HTMLDivElement>(null);
   const [columns, setColumns] = useState<number>(0);
   const [cellSize, setCellSize] = useState<number>(300);
+
+  const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
+  const [dateTo, setDateTo] = useState<Date | undefined>(undefined);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    setDateFrom(
+      searchParams.get("dateFrom")
+        ? new Date(searchParams.get("dateFrom")!)
+        : undefined
+    );
+    setDateTo(
+      searchParams.get("dateTo")
+        ? new Date(searchParams.get("dateTo")!)
+        : undefined
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const grid = ref.current;
@@ -49,7 +76,9 @@ export function PostGrid({ posts, brands }: PostGridProps) {
     };
   }, [setColumns, columns]);
 
-  const updateQueryParams = (key: string, value: string | null) => {
+  const updateQueryParam = (key: string, value: string | null) => {
+    console.log(searchParams.toString());
+
     const params = new URLSearchParams(searchParams.toString());
     if (value && value !== "all") {
       params.set(key, value);
@@ -58,6 +87,34 @@ export function PostGrid({ posts, brands }: PostGridProps) {
     }
     router.push(`?${params.toString()}`);
   };
+
+  useEffect(() => {
+    const updateQueryParams = (
+      params: Record<string, string | null | undefined>
+    ) => {
+      const newParams = new URLSearchParams(searchParams.toString());
+      Object.entries(params).forEach(([key, value]) => {
+        if (value) {
+          newParams.set(key, value);
+        } else {
+          newParams.delete(key);
+        }
+      });
+      router.push(`?${newParams.toString()}`);
+    };
+
+    if (dateFrom && dateTo) {
+      updateQueryParams({
+        dateFrom: dateFrom ? format(dateFrom, "yyyy-MM-dd") : undefined,
+        dateTo: dateTo ? format(dateTo, "yyyy-MM-dd") : undefined,
+      });
+    } else {
+      updateQueryParams({
+        dateFrom: undefined,
+        dateTo: undefined,
+      });
+    }
+  }, [dateFrom, dateTo, router, searchParams]);
 
   const getPostTypeBadge = (post: Post) => {
     const icon = {
@@ -148,12 +205,23 @@ export function PostGrid({ posts, brands }: PostGridProps) {
     );
   };
 
+  const next30Days = useMemo(() => {
+    const dates = [];
+    for (let i = 0; i < 30; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() + i);
+      date.setHours(0, 0, 0, 0);
+      dates.push(date);
+    }
+    return dates;
+  }, []);
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
         <Select
           value={searchParams.get("brandId") || "all"}
-          onValueChange={(value) => updateQueryParams("brandId", value)}
+          onValueChange={(value) => updateQueryParam("brandId", value)}
         >
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Filter by brand" />
@@ -170,7 +238,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
 
         <Select
           value={searchParams.get("postType") || "all"}
-          onValueChange={(value) => updateQueryParams("postType", value)}
+          onValueChange={(value) => updateQueryParam("postType", value)}
         >
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Filter by type" />
@@ -187,7 +255,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
 
         <Select
           value={searchParams.get("socialMedia") || "all"}
-          onValueChange={(value) => updateQueryParams("socialMedia", value)}
+          onValueChange={(value) => updateQueryParam("socialMedia", value)}
         >
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Filter by platform" />
@@ -212,7 +280,7 @@ export function PostGrid({ posts, brands }: PostGridProps) {
 
         <Select
           value={searchParams.get("status") || "all"}
-          onValueChange={(value) => updateQueryParams("status", value)}
+          onValueChange={(value) => updateQueryParam("status", value)}
         >
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Filter by status" />
@@ -225,6 +293,92 @@ export function PostGrid({ posts, brands }: PostGridProps) {
             <SelectItem value="pending">Pending</SelectItem>
           </SelectContent>
         </Select>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="w-[240px]">
+              <CalendarIcon className="w-4 h-4" />
+              <span className="flex-1">
+                {searchParams.get("dateFrom") && searchParams.get("dateTo")
+                  ? format(
+                      new Date(searchParams.get("dateFrom")!),
+                      "yyyy-MM-dd"
+                    ) +
+                    " - " +
+                    format(new Date(searchParams.get("dateTo")!), "yyyy-MM-dd")
+                  : "Select date range"}
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <Calendar
+              mode="range"
+              selected={{
+                from: dateFrom,
+                to: dateTo,
+              }}
+              onSelect={(date) => {
+                setDateFrom(date?.from || undefined);
+                setDateTo(date?.to || undefined);
+              }}
+            />
+
+            <div className="w-full px-3 pb-3">
+              <Button
+                variant="outline"
+                className="w-full"
+                disabled={!dateFrom && !dateTo}
+                onClick={() => {
+                  setDateFrom(undefined);
+                  setDateTo(undefined);
+                }}
+              >
+                Clear
+              </Button>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <div className="flex justify-between gap-2">
+        {next30Days.map((date, index) => {
+          const prevDate = new Date(date);
+          prevDate.setDate(prevDate.getDate() - 1);
+
+          const nextDate = new Date(date);
+          nextDate.setDate(nextDate.getDate() + 1);
+
+          const isNewMonth = date.getMonth() !== prevDate.getMonth();
+
+          const dateHasScheduledPosts = scheduledDates.some((scheduledDate) => {
+            return (
+              scheduledDate.getDate() === date.getDate() &&
+              scheduledDate.getMonth() === date.getMonth() &&
+              scheduledDate.getFullYear() === date.getFullYear()
+            );
+          });
+
+          return (
+            <div key={date.toISOString()} className="flex justify-between">
+              <div className="flex flex-col gap-1 justify-end">
+                <div>
+                  {isNewMonth || index === 0 ? format(date, "MMM") : null}
+                </div>
+                <Badge
+                  key={date.toISOString()}
+                  variant={dateHasScheduledPosts ? "info" : "outline"}
+                  onClick={() => {
+                    setDateFrom(date);
+                    setDateTo(nextDate);
+                  }}
+                  className="cursor-pointer"
+                >
+                  {date.getDate()}
+                </Badge>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <div

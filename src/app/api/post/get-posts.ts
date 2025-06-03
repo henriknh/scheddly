@@ -10,6 +10,8 @@ export interface GetPostsFilter {
   brandId?: string;
   postType?: PostType;
   socialMedia?: SocialMedia;
+  dateFrom?: string;
+  dateTo?: string;
 }
 
 export async function getPosts(
@@ -20,6 +22,8 @@ export async function getPosts(
     if (!user || !user.id || !user.teamId) {
       throw new Error("Unauthorized");
     }
+
+    console.log(filter);
 
     const posts = await prisma.post.findMany({
       where: {
@@ -67,6 +71,14 @@ export async function getPosts(
             lte: new Date(),
           },
         }),
+        ...(filter?.dateFrom &&
+          filter?.dateTo && {
+            scheduledAt: {
+              gte: new Date(filter.dateFrom),
+              lt: new Date(filter.dateTo),
+              not: null,
+            },
+          }),
       },
       orderBy: [
         {
