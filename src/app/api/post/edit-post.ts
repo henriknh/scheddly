@@ -4,6 +4,8 @@ import { getUserFromToken } from "@/lib/user";
 import prisma from "@/lib/prisma";
 import { CreatePostParams } from "./create-post";
 import { uploadImagesToMinio, uploadVideoToMinio } from "@/lib/minio";
+import { postIsEditable } from "@/lib/post";
+import { getPost } from "./get-post";
 
 export async function editPost(postId: string, data: CreatePostParams) {
   const user = await getUserFromToken();
@@ -12,12 +14,15 @@ export async function editPost(postId: string, data: CreatePostParams) {
     throw new Error("Unauthorized");
   }
 
-  const post = await prisma.post.findUnique({
-    where: { id: postId, teamId: user.teamId },
-  });
+  const post = await getPost(postId);
 
   if (!post) {
     throw new Error("Post not found");
+  }
+
+  const canEditPost = postIsEditable(post);
+  if (!canEditPost) {
+    throw new Error("Post is not editable");
   }
 
   const {
