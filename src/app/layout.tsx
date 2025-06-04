@@ -5,13 +5,13 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 import { AuthProviderWrapper } from "@/components/auth/auth-provider-wrapper";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { initializeBucket } from "@/lib/minio";
+import { ensureBucketExists } from "@/lib/minio";
 
 const inter = Inter({ subsets: ["latin"] });
 
 // Initialize MinIO bucket
 if (process.env.NODE_ENV === "production") {
-  initializeBucket().catch(console.error);
+  ensureBucketExists().catch(console.error);
 }
 
 export const metadata: Metadata = {
