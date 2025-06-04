@@ -10,12 +10,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Brand, Post, PostType, SocialMedia } from "@/generated/prisma";
-import { formatDateAgo, formatDateIn, formatDateTime } from "@/lib/format-date";
+import { formatDateIn, formatDateTime } from "@/lib/format-date";
 import { getPostTypeName } from "@/lib/post-type-name";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon, ImageIcon, TextIcon, VideoIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -28,7 +29,6 @@ import {
 } from "../ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { PostsGridImageCarousel } from "./PostsGridImageCarousel";
-import Image from "next/image";
 
 interface PostGridProps {
   posts: PostWithRelations[];
