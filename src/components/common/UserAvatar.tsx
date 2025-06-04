@@ -16,6 +16,7 @@ interface AvatarProps {
 export function Avatar({ src, fallback, isBig = false }: AvatarProps) {
   const url = useMemo(() => {
     if (!src) return null;
+    if (src.startsWith("data:image")) return src;
     if (src.startsWith("http")) return src;
     return `/api/file/${src}`;
   }, [src]);

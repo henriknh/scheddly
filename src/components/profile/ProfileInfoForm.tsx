@@ -29,9 +29,12 @@ export function ProfileInfoForm() {
     if (!file) return;
 
     setSelectedImage(file);
-    // Create a temporary URL for preview
-    const previewUrl = URL.createObjectURL(file);
-    setFormData((prev) => ({ ...prev, avatarUrl: previewUrl }));
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prev) => ({ ...prev, avatarUrl: reader.result as string }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
