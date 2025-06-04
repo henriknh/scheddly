@@ -46,7 +46,6 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
   const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
   const [dateTo, setDateTo] = useState<Date | undefined>(undefined);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     setDateFrom(
       searchParams.get("dateFrom")
