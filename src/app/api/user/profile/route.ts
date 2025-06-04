@@ -2,6 +2,7 @@ import { getTokenData } from "@/lib/jwt";
 import { uploadToMinio } from "@/lib/minio";
 import prisma from "@/lib/prisma";
 import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import sharp, { ResizeOptions } from "sharp";
@@ -73,9 +74,7 @@ export async function PATCH(request: NextRequest) {
           .toBuffer();
 
         // Create a unique filename
-        avatarUrl = `avatars/${payload.id}-${Date.now()}${path.extname(
-          file.name
-        )}`;
+        avatarUrl = `avatars/${payload.id}${path.extname(file.name)}`;
 
         await uploadToMinio(resizedImage, avatarUrl, file.type);
       } catch (error) {
