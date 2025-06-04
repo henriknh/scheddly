@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Header } from "../common/Header";
-import { UserAvatar } from "../common/UserAvatar";
+import { Avatar } from "../common/UserAvatar";
 import { Button } from "../ui/button";
 import { DataTable, DataTableColumnDef } from "../ui/data-table";
 import {
@@ -96,10 +96,7 @@ export function SocialMediaIntegrationsList({
         const accountInfo = row.original.socialMediaIntegrationAccountInfo;
         return (
           <div className="flex items-center gap-2">
-            <UserAvatar
-              src={accountInfo?.avatarUrl}
-              fallback={accountInfo?.name}
-            />
+            <Avatar src={accountInfo?.avatarUrl} fallback={accountInfo?.name} />
             {accountInfo?.name ?? <span>&mdash;</span>}
             <Button
               variant="ghost"

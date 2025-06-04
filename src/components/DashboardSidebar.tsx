@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UserAvatar } from "@/components/common/UserAvatar";
+import { Avatar } from "@/components/common/UserAvatar";
 
 import {
   DropdownMenu,
@@ -192,7 +192,7 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
                 href="/dashboard/profile"
                 className="flex items-center gap-2"
               >
-                <UserAvatar
+                <Avatar
                   src={user?.avatarUrl || undefined}
                   fallback={user?.name || undefined}
                 />

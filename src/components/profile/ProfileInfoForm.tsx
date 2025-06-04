@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { UserAvatar } from "@/components/common/UserAvatar";
+import { Avatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/lib/auth-context";
 import { Header } from "@/components/common/Header";
 import { HeaderGroup } from "@/components/common/HeaderGroup";
@@ -104,7 +104,7 @@ export function ProfileInfoForm() {
             aria-label="Change profile image"
           >
             <div className="relative">
-              <UserAvatar src={formData.avatarUrl} fallback={formData.name} />
+              <Avatar src={formData.avatarUrl} fallback={formData.name} />
               <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-medium rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-center text-xs">
                 Update avatar
               </div>
