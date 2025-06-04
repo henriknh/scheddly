@@ -1,13 +1,13 @@
 import { Breadcrumb } from "@/components/common/breadcrumb";
 
-export default function TeamLayout({
+export default function ProfileLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <div>
-      <Breadcrumb label="Team" href="/dashboard/team" />
+      <Breadcrumb label="Profile" href="/dashboard/profile" />
       {children}
     </div>
   );
