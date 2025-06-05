@@ -2,7 +2,6 @@ import { getTokenData } from "@/lib/jwt";
 import { uploadToMinio } from "@/lib/minio";
 import prisma from "@/lib/prisma";
 import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
-import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import sharp, { ResizeOptions } from "sharp";
