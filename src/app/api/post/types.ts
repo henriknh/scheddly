@@ -8,7 +8,7 @@ import {
 export type PostWithRelations = Post & {
   socialMediaPosts: (SocialMediaPost & {
     socialMediaIntegration: SocialMediaIntegration & {
-      brand: Brand;
+      brand?: Brand | null;
     };
   })[];
 };

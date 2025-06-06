@@ -1,9 +1,9 @@
-import { cookies } from "next/headers";
 import { AuthProvider } from "@/lib/auth-context";
+import { CleanedUser } from "@/lib/user";
 import { jwtDecode } from "jwt-decode";
-import { User } from "@/generated/prisma";
+import { cookies } from "next/headers";
 
-async function getInitialUser(): Promise<User | null> {
+async function getInitialUser(): Promise<CleanedUser | null> {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
@@ -12,7 +12,7 @@ async function getInitialUser(): Promise<User | null> {
       return null;
     }
 
-    const decoded = jwtDecode(token) as User;
+    const decoded = jwtDecode(token) as CleanedUser;
     return decoded;
   } catch (error) {
     console.error("Error getting initial user:", error);

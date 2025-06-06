@@ -1,7 +1,7 @@
 "use server";
 
-import { getUserFromToken } from "@/lib/user";
 import prisma from "@/lib/prisma";
+import { getUserFromToken } from "@/lib/user";
 import { PostWithRelations } from "./types";
 
 export async function getPost(id: string): Promise<PostWithRelations> {

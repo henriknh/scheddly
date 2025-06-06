@@ -6,11 +6,13 @@ import { getScheduledDates } from "@/app/api/post/get-scheduled-dates";
 import { Header } from "@/components/common/Header";
 import { PostGrid } from "@/components/post/PostsGrid";
 
-type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
+type PostsProps = {
+  searchParams: Promise<{
+    [key: string]: string | string[] | undefined;
+  }>;
 };
 
-export default async function PostsPage({ searchParams }: Props) {
+export default async function PostsPage({ searchParams }: PostsProps) {
   const { status, brandId, postType, socialMedia, dateFrom, dateTo } =
     (await searchParams) as GetPostsFilter;
 
