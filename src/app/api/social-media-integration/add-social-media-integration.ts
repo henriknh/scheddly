@@ -45,27 +45,41 @@ export async function addSocialMediaIntegration(
 
     const { accountId, name, avatarUrl } = await getAccountInfo();
 
-    const integration = await prisma.socialMediaIntegration.create({
-      data: {
+    const existingIntegration = await prisma.socialMediaIntegration.findFirst({
+      where: {
+        AND: {
+          accountId,
+          socialMedia: platform,
+          teamId: user.teamId,
+        },
+      },
+    });
+
+    const integration = await prisma.socialMediaIntegration.upsert({
+      where: {
+        id: existingIntegration?.id,
+        accountId,
+        socialMedia: platform,
+        teamId: user.teamId,
+      },
+      update: {
+        accessToken,
+        accessTokenExpiresAt,
+        refreshToken,
+        refreshTokenExpiresAt,
+      },
+      create: {
+        accountId,
+        name,
+        avatarUrl,
+        accessToken,
+        accessTokenExpiresAt,
+        refreshToken,
+        refreshTokenExpiresAt,
         socialMedia: platform,
         team: {
           connect: {
             id: user.teamId,
-          },
-        },
-        token: {
-          create: {
-            accessToken,
-            accessTokenExpiresAt,
-            refreshToken,
-            refreshTokenExpiresAt,
-          },
-        },
-        socialMediaIntegrationAccountInfo: {
-          create: {
-            accountId,
-            name,
-            avatarUrl,
           },
         },
       },

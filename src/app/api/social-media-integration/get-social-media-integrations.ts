@@ -19,7 +19,6 @@ export async function getSocialMediaIntegrations(): Promise<
       },
       include: {
         brand: true,
-        socialMediaIntegrationAccountInfo: true,
       },
     });
 

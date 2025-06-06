@@ -2,11 +2,7 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import {
-  Brand,
-  SocialMediaIntegration,
-  SocialMediaIntegrationAccountInfo,
-} from "@/generated/prisma";
+import { Brand, SocialMediaIntegration } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import Image from "next/image";
 import { Button } from "./ui/button";
@@ -18,7 +14,6 @@ interface SocialMediaIntegrationSelectorProps {
   postType?: "TEXT" | "IMAGE" | "VIDEO";
   integrations: (SocialMediaIntegration & {
     brand?: Brand | null;
-    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
   })[];
 }
 

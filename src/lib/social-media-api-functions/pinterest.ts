@@ -78,15 +78,13 @@ export const pinterest: SocialMediaApiFunctions = {
     };
   },
   refreshAccessToken: async (id: string): Promise<Tokens> => {
-    const token = await prisma.token.findFirst({
+    const integration = await prisma.socialMediaIntegration.findFirst({
       where: {
-        socialMediaIntegration: {
-          id,
-        },
+        id,
       },
     });
 
-    if (!token?.refreshToken) {
+    if (!integration?.refreshToken) {
       throw new Error("Integration not found or missing refresh token");
     }
 
@@ -97,7 +95,7 @@ export const pinterest: SocialMediaApiFunctions = {
       },
       body: JSON.stringify({
         grant_type: "refresh_token",
-        refresh_token: token.refreshToken,
+        refresh_token: integration.refreshToken,
         scope,
       }),
     });
@@ -115,9 +113,9 @@ export const pinterest: SocialMediaApiFunctions = {
       Date.now() + data.refresh_token_expires_in * 1000
     );
 
-    await prisma.token.update({
+    await prisma.socialMediaIntegration.update({
       where: {
-        id: token.id,
+        id,
       },
       data: {
         accessToken,
@@ -136,11 +134,9 @@ export const pinterest: SocialMediaApiFunctions = {
   },
 
   getValidAccessToken: async (id: string): Promise<string> => {
-    const integration = await prisma.token.findFirst({
+    const integration = await prisma.socialMediaIntegration.findFirst({
       where: {
-        socialMediaIntegration: {
-          id,
-        },
+        id,
       },
     });
 
@@ -156,15 +152,13 @@ export const pinterest: SocialMediaApiFunctions = {
   },
 
   revokeTokens: async (id: string): Promise<void> => {
-    const token = await prisma.token.findFirst({
+    const integration = await prisma.socialMediaIntegration.findFirst({
       where: {
-        socialMediaIntegration: {
-          id,
-        },
+        id,
       },
     });
 
-    if (!token) {
+    if (!integration) {
       throw new Error("Integration not found or missing access token");
     }
 
@@ -174,7 +168,7 @@ export const pinterest: SocialMediaApiFunctions = {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify({
-        token: token.accessToken,
+        token: integration.accessToken,
         token_type_hint: "access_token",
       }),
     });
@@ -185,7 +179,7 @@ export const pinterest: SocialMediaApiFunctions = {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify({
-        token: token.refreshToken,
+        token: integration.refreshToken,
         token_type_hint: "refresh_token",
       }),
     });
@@ -230,9 +224,9 @@ export const pinterest: SocialMediaApiFunctions = {
     await prisma.socialMediaIntegration.update({
       where: { id },
       data: {
-        socialMediaIntegrationAccountInfo: {
-          update: accountInfo,
-        },
+        accountId: accountInfo.accountId,
+        name: accountInfo.name,
+        avatarUrl: accountInfo.avatarUrl,
       },
     });
   },

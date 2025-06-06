@@ -4,11 +4,7 @@ import {
   updateAccountInfo,
   updateIntegrationBrand,
 } from "@/app/actions/social-media-integrations";
-import {
-  Brand,
-  SocialMediaIntegration,
-  SocialMediaIntegrationAccountInfo,
-} from "@/generated/prisma";
+import { Brand, SocialMediaIntegration } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
@@ -32,7 +28,6 @@ import { DeleteIntegrationDialog } from "./DeleteIntegrationDialog";
 interface SocialMediaIntegrationsListProps {
   integrations: (SocialMediaIntegration & {
     brand?: Brand | null;
-    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
   })[];
   brands: Brand[];
 }
@@ -61,7 +56,6 @@ export function SocialMediaIntegrationsList({
   const columns: DataTableColumnDef<
     SocialMediaIntegration & {
       brand?: Brand | null;
-      socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
     },
     unknown
   >[] = [
@@ -90,14 +84,16 @@ export function SocialMediaIntegrationsList({
       },
     },
     {
-      accessorKey: "socialMediaIntegrationAccountInfo",
+      accessorKey: "accountId",
       header: "Account",
       cell: ({ row }) => {
-        const accountInfo = row.original.socialMediaIntegrationAccountInfo;
         return (
           <div className="flex items-center gap-2">
-            <Avatar src={accountInfo?.avatarUrl} fallback={accountInfo?.name} />
-            {accountInfo?.name ?? <span>&mdash;</span>}
+            <Avatar
+              src={row.original?.avatarUrl}
+              fallback={row.original?.name}
+            />
+            {row.original?.name ?? <span>&mdash;</span>}
             <Button
               variant="ghost"
               size="icon"

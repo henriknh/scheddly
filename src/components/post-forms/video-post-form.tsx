@@ -7,12 +7,7 @@ import { PostScheduler } from "@/components/post-scheduler";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Brand,
-  PostType,
-  SocialMediaIntegration,
-  SocialMediaIntegrationAccountInfo,
-} from "@/generated/prisma";
+import { Brand, PostType, SocialMediaIntegration } from "@/generated/prisma";
 import { Video, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -23,7 +18,6 @@ import { editPost } from "@/app/api/post/edit-post";
 interface VideoPostFormProps {
   integrations: (SocialMediaIntegration & {
     brand?: Brand | null;
-    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
   })[];
   post?: PostWithRelations;
 }

@@ -40,10 +40,6 @@ export async function deleteSocialMediaIntegration(
     // Then delete the social media integration
     await prisma.socialMediaIntegration.delete({
       where: { id: socialMediaIntegrationId, teamId: user.teamId },
-      include: {
-        token: true,
-        socialMediaIntegrationAccountInfo: true,
-      },
     });
   } catch (error) {
     console.error(error);

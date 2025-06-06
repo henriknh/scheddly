@@ -8,12 +8,7 @@ import { PostScheduler } from "@/components/post-scheduler";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Brand,
-  PostType,
-  SocialMediaIntegration,
-  SocialMediaIntegrationAccountInfo,
-} from "@/generated/prisma";
+import { Brand, PostType, SocialMediaIntegration } from "@/generated/prisma";
 import { Plus, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -23,7 +18,6 @@ import { toast } from "sonner";
 interface ImagePostFormProps {
   integrations: (SocialMediaIntegration & {
     brand?: Brand | null;
-    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
   })[];
   post?: PostWithRelations;
 }

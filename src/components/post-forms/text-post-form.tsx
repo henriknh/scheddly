@@ -8,12 +8,7 @@ import { PostScheduler } from "@/components/post-scheduler";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Brand,
-  PostType,
-  SocialMediaIntegration,
-  SocialMediaIntegrationAccountInfo,
-} from "@/generated/prisma";
+import { Brand, PostType, SocialMediaIntegration } from "@/generated/prisma";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -21,7 +16,6 @@ import { toast } from "sonner";
 interface TextPostFormProps {
   integrations: (SocialMediaIntegration & {
     brand?: Brand | null;
-    socialMediaIntegrationAccountInfo?: SocialMediaIntegrationAccountInfo | null;
   })[];
   post?: PostWithRelations;
 }
