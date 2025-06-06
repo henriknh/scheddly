@@ -1,10 +1,7 @@
-import { PostWithRelations, Post } from "@/app/api/post/types";
-import config from "@/config";
-import { SocialMedia } from "@/generated/prisma";
+import { Post } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 import {
   AccountInfo,
-  getAccessTokenFromPost,
   SocialMediaApiFunctions,
   Tokens,
 } from "./social-media-api-functions";
