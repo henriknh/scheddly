@@ -1,6 +1,5 @@
 "use server";
 
-import { postIsEditable } from "@/lib/post";
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
 import { getPost } from "./get-post";
@@ -15,11 +14,6 @@ export async function deletePost(postId: string) {
   const post = await getPost(postId);
   if (!post) {
     throw new Error("Post not found");
-  }
-
-  const canEditPost = postIsEditable(post);
-  if (!canEditPost) {
-    throw new Error("Post is not editable");
   }
 
   // Use a transaction to ensure atomic operations

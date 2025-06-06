@@ -70,7 +70,7 @@ model SocialMediaIntegration {
   accessToken                       String
   accessTokenExpiresAt              DateTime
   refreshToken                      String
-  refreshTokenExpiresAt             DateTime
+  refreshTokenExpiresAt             DateTime?
   brandId                           String?
   brand                             Brand?      @relation(fields: [brandId], references: [id])
   createdAt                         DateTime    @default(now())
@@ -82,7 +82,7 @@ model SocialMediaIntegration {
   avatarUrl                         String?
   socialMediaPosts                  SocialMediaPost[]
 
-  @@unique([socialMedia, accountId])
+  @@unique([socialMedia, accountId, teamId])
 }
 
 model Brand {

@@ -32,12 +32,7 @@ export function AddIntegrationModal({
 
   const socialMediaDataButtons = useMemo(() => {
     const getOauthPageUrl = (socialMediaPlatform: SocialMediaPlatform) => {
-      switch (socialMediaPlatform.id) {
-        case SocialMedia.PINTEREST:
-          return pinterest.oauthPageUrl();
-        default:
-          return null;
-      }
+      return socialMediaPlatform.socialMediaApiFunctions.oauthPageUrl();
     };
 
     const handlePlatformSelect = (socialMediaPlatform: SocialMediaPlatform) => {

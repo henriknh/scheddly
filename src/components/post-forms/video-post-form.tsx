@@ -41,6 +41,24 @@ export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
       setSelectedIntegrationIds(
         post.socialMediaPosts.map((p) => p.socialMediaIntegrationId)
       );
+
+      const fetchVideo = async () => {
+        if (post.videoUrl) {
+          const response = await fetch(`/api/file/${post.videoUrl}`);
+          const blob = await response.blob();
+          setVideo(new File([blob], post.videoUrl));
+        }
+      };
+      const fetchVideoCover = async () => {
+        if (post.videoCoverUrl) {
+          const response = await fetch(`/api/file/${post.videoCoverUrl}`);
+          const blob = await response.blob();
+          setVideoCover(new File([blob], post.videoCoverUrl));
+        }
+      };
+
+      fetchVideo();
+      fetchVideoCover();
     }
   }, [post]);
 

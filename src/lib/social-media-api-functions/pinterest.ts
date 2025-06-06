@@ -1,10 +1,27 @@
-import { Post } from "@/generated/prisma";
+import { PostWithRelations, Post } from "@/app/api/post/types";
+import config from "@/config";
+import { SocialMedia } from "@/generated/prisma";
+import prisma from "@/lib/prisma";
 import {
   AccountInfo,
+  getAccessTokenFromPost,
   SocialMediaApiFunctions,
   Tokens,
 } from "./social-media-api-functions";
-import prisma from "@/lib/prisma";
+
+const client_id =
+  process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID;
+
+if (!client_id) {
+  throw new Error("Missing Pinterest client ID");
+}
+
+const redirect_uri =
+  process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_REDIRECT_URI;
+
+if (!redirect_uri) {
+  throw new Error("Missing Pinterest redirect URI");
+}
 
 const pinterestApiUrl = "https://api.pinterest.com/v5";
 const scope =
@@ -12,29 +29,13 @@ const scope =
 
 export const pinterest: SocialMediaApiFunctions = {
   oauthPageUrl: () => {
-    const clientId =
-      process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID;
-
-    if (!clientId) {
-      throw new Error("Missing Pinterest client ID");
-    }
-
-    const redirectUri =
-      process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_REDIRECT_URI;
-
-    if (!redirectUri) {
-      throw new Error("Missing Pinterest redirect URI");
-    }
-
-    return `https://www.pinterest.com/oauth/?client_id=${process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+    return `https://www.pinterest.com/oauth/?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}`;
   },
   consumeAuthorizationCode: async (code: string): Promise<Tokens> => {
-    const clientId =
-      process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID;
-    const clientSecret =
+    const client_secret =
       process.env.SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_SECRET;
 
-    if (!clientId || !clientSecret) {
+    if (!client_id || !client_secret) {
       throw new Error("Missing Pinterest client credentials");
     }
 
@@ -43,15 +44,13 @@ export const pinterest: SocialMediaApiFunctions = {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `Basic ${Buffer.from(
-          `${clientId}:${clientSecret}`
+          `${client_id}:${client_secret}`
         ).toString("base64")}`,
       },
       body: new URLSearchParams({
         grant_type: "authorization_code",
         code,
-        redirect_uri:
-          process.env
-            .NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_REDIRECT_URI || "",
+        redirect_uri,
       }).toString(),
     });
 

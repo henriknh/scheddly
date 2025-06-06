@@ -40,6 +40,14 @@ export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
       setSelectedIntegrationIds(
         post.socialMediaPosts.map((p) => p.socialMediaIntegrationId)
       );
+
+      Promise.all(
+        post.imageUrls.map(async (imageUrl) => {
+          const response = await fetch(`/api/file/${imageUrl}`);
+          const blob = await response.blob();
+          return new File([blob], imageUrl);
+        })
+      ).then((files) => setImages(files));
     }
   }, [post]);
 

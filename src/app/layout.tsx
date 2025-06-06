@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { AuthProviderWrapper } from "@/components/auth/auth-provider-wrapper";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ensureBucketExists } from "@/lib/minio";
+import config from "@/config";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +16,8 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export const metadata: Metadata = {
-  title: "Social Ecom",
-  description: "A social e-commerce platform",
+  title: config.appName,
+  description: config.appDescription,
 };
 
 export default function RootLayout({

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
+import config from "@/config";
 
 export function TopNav() {
   const { user } = useAuth();
@@ -11,7 +12,7 @@ export function TopNav() {
     <nav className="border-b w-full">
       <div className="flex h-16 items-center justify-between w-full px-8">
         <Link href="/" className="text-xl font-bold">
-          Social Ecom
+          {config.appName}
         </Link>
 
         <div className="flex items-center gap-4">

@@ -1,17 +1,8 @@
 "use server";
 
-import { PostType, SocialMedia } from "@/generated/prisma";
-import { pinterest } from "@/lib/social-media-api-functions/pinterest";
+import { PostType } from "@/generated/prisma";
+import { getSocialMediaApiFunctions } from "@/lib/social-media-api-functions/social-media-api-functions";
 import { getPost } from "./get-post";
-
-const getSocialMediaApiFunctions = (socialMedia: SocialMedia) => {
-  switch (socialMedia) {
-    case SocialMedia.PINTEREST:
-      return pinterest;
-  }
-
-  return null;
-};
 
 export async function postPost(postId: string) {
   const post = await getPost(postId);

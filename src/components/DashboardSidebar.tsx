@@ -37,6 +37,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import config from "@/config";
 
 interface SidebarNavProps {
   items?: {
@@ -69,7 +70,7 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
           >
             <SidebarMenuButton
               asChild
-              tooltip="Social Ecom"
+              tooltip={config.appName}
               size={"lg"}
               style={{
                 padding: "8px !important",
@@ -83,7 +84,7 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
               >
                 <Home className={cn("h-4 w-4", open ? "h-8 w-8" : "h-4 w-4")} />
                 <span className={cn("text-lg", open ? "block" : "hidden")}>
-                  Social Ecom
+                  {config.appName}
                 </span>
               </Link>
             </SidebarMenuButton>

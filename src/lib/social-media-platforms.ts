@@ -1,6 +1,7 @@
 import { PostType, SocialMedia } from "@/generated/prisma";
 import { SocialMediaApiFunctions } from "./social-media-api-functions/social-media-api-functions";
 import { pinterest } from "./social-media-api-functions/pinterest";
+import { tumblr } from "./social-media-api-functions/tumblr";
 
 export type SocialMediaPlatform = {
   id: SocialMedia;
@@ -16,13 +17,15 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
     name: "Pinterest",
     icon: "/icons/pinterest.svg",
     socialMediaApiFunctions: pinterest,
-    supportsPostTypes: [PostType.IMAGE, PostType.VIDEO, PostType.TEXT],
+    supportsPostTypes: [PostType.IMAGE, PostType.VIDEO],
   },
-  //   {
-  //     id: SocialMedia.TUMBLR,
-  //     name: "Tumblr",
-  //     icon: "/icons/tumblr.svg",
-  //   },
+  {
+    id: SocialMedia.TUMBLR,
+    name: "Tumblr",
+    icon: "/icons/tumblr.svg",
+    socialMediaApiFunctions: tumblr,
+    supportsPostTypes: [PostType.TEXT, PostType.IMAGE, PostType.VIDEO],
+  },
   //   {
   //     id: SocialMedia.FACEBOOK,
   //     name: "Facebook",
