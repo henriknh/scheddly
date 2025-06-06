@@ -238,4 +238,8 @@ export const pinterest: SocialMediaApiFunctions = {
   postVideo: async (post: Post) => {
     console.log("postVideo", post);
   },
+
+  deletePost: async (post: Post) => {
+    console.log("deletePost", post);
+  },
 };
