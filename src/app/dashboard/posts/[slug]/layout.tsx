@@ -1,15 +1,15 @@
 import { Breadcrumb } from "@/components/common/breadcrumb";
 
-export default function PostLayout({
+export default async function PostLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }) {
-  const slug = params.slug;
+  const { slug } = await params;
 
   return (
     <div>
