@@ -1,6 +1,6 @@
 import { Breadcrumb } from "@/components/common/breadcrumb";
 
-export default async function PostLayout({
+export default function PostLayout({
   children,
   params,
 }: {
@@ -9,7 +9,7 @@ export default async function PostLayout({
     slug: string;
   };
 }) {
-  const slug = (await params).slug;
+  const slug = params.slug;
 
   return (
     <div>
