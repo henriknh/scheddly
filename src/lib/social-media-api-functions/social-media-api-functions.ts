@@ -22,7 +22,7 @@ export interface Auth {
 }
 
 export interface SocialMediaApiFunctions {
-  oauthPageUrl: () => string;
+  oauthPageUrl: (brandId: string) => string;
   consumeAuthorizationCode: (code: string) => Promise<Tokens>;
   refreshAccessToken: (id: string) => Promise<Tokens>;
   revokeTokens: (id: string) => Promise<void>;

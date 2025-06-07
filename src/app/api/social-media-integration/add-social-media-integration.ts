@@ -7,11 +7,12 @@ import { getUserFromToken } from "@/lib/user";
 
 export async function addSocialMediaIntegration(
   platform: SocialMedia,
-  code: string
+  code: string,
+  brandId: string
 ) {
   try {
-    if (!platform || !code) {
-      throw new Error("Platform and code are required");
+    if (!platform || !code || !brandId) {
+      throw new Error("Platform, code, and brandId are required");
     }
 
     const user = await getUserFromToken();
@@ -79,6 +80,7 @@ export async function addSocialMediaIntegration(
         AND: {
           accountId,
           socialMedia: platform,
+          brandId,
           teamId: user.teamId,
         },
       },
@@ -114,19 +116,16 @@ export async function addSocialMediaIntegration(
     } else {
       const integration = await prisma.socialMediaIntegration.create({
         data: {
-          accountId,
-          name,
-          avatarUrl,
+          socialMedia: platform,
           accessToken,
           accessTokenExpiresAt,
           refreshToken,
           refreshTokenExpiresAt,
-          socialMedia: platform,
-          team: {
-            connect: {
-              id: user.teamId,
-            },
-          },
+          accountId,
+          name,
+          avatarUrl,
+          teamId: user.teamId,
+          brandId,
         },
       });
 

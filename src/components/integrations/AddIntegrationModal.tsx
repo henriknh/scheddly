@@ -16,21 +16,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { SocialMediaIntegration } from "@/generated/prisma";
 
 interface AddIntegrationModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  brandId: string;
+  integrations: SocialMediaIntegration[];
 }
 
 export function AddIntegrationModal({
   isOpen,
   onOpenChange,
+  brandId,
+  integrations,
 }: AddIntegrationModalProps) {
   const router = useRouter();
 
   const socialMediaDataButtons = useMemo(() => {
     const getOauthPageUrl = (socialMediaPlatform: SocialMediaPlatform) => {
-      return socialMediaPlatform.socialMediaApiFunctions.oauthPageUrl();
+      return socialMediaPlatform.socialMediaApiFunctions.oauthPageUrl(brandId);
     };
 
     const handlePlatformSelect = (socialMediaPlatform: SocialMediaPlatform) => {
@@ -58,13 +63,19 @@ export function AddIntegrationModal({
       }
     };
 
-    return socialMediaPlatforms.map((socialMediaPlatform) => ({
-      icon: socialMediaPlatform.icon,
-      name: socialMediaPlatform.name,
-      onClick: () => handlePlatformSelect(socialMediaPlatform),
-      disabled: !getOauthPageUrl(socialMediaPlatform),
-    }));
-  }, [onOpenChange, router]);
+    return socialMediaPlatforms.map((socialMediaPlatform) => {
+      const isConnected = integrations.some(
+        (integration) => integration.socialMedia === socialMediaPlatform.id
+      );
+
+      return {
+        icon: socialMediaPlatform.icon,
+        name: socialMediaPlatform.name,
+        onClick: () => handlePlatformSelect(socialMediaPlatform),
+        disabled: !getOauthPageUrl(socialMediaPlatform) || isConnected,
+      };
+    });
+  }, [onOpenChange, router, brandId, integrations]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -81,11 +92,12 @@ export function AddIntegrationModal({
             Select a social media platform to integrate with
           </DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {socialMediaDataButtons.map((socialMediaDataButton) => (
             <Button
               key={socialMediaDataButton.name}
-              className="cursor-pointer hover:bg-accent transition-colors"
+              variant="outline"
+              className="h-auto p-4 flex flex-col items-center gap-2 hover:bg-accent transition-colors"
               onClick={socialMediaDataButton.onClick}
               disabled={socialMediaDataButton.disabled}
             >

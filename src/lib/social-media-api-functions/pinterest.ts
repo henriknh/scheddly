@@ -25,8 +25,8 @@ const scope =
   "boards:read,pins:read,user_accounts:read,boards:read,boards:write,pins:read,pins:write";
 
 export const pinterest: SocialMediaApiFunctions = {
-  oauthPageUrl: () => {
-    return `https://www.pinterest.com/oauth/?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}`;
+  oauthPageUrl: (brandId: string) => {
+    return `https://www.pinterest.com/oauth/?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=${brandId}`;
   },
   consumeAuthorizationCode: async (code: string): Promise<Tokens> => {
     const client_secret =

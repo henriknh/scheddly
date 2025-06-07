@@ -11,11 +11,12 @@ export default function PinterestRedirectPage() {
 
   useEffect(() => {
     const code = params.get("code");
+    const brandId = params.get("state");
 
-    if (code) {
+    if (code && brandId) {
       const createPinterestIntegration = async () => {
         try {
-          await addSocialMediaIntegration(SocialMedia.PINTEREST, code);
+          await addSocialMediaIntegration(SocialMedia.PINTEREST, code, brandId);
           const channel = new BroadcastChannel("oauth2_integration_complete");
           channel.postMessage("oauth2-success");
         } catch (error) {

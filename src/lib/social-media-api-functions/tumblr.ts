@@ -24,9 +24,8 @@ const tumblrApiUrl = "https://api.tumblr.com/v2";
 const scope = "basic write offline_access";
 
 export const tumblr: SocialMediaApiFunctions = {
-  oauthPageUrl: () => {
-    const state = crypto.randomUUID();
-    return `https://www.tumblr.com/oauth2/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=${state}`;
+  oauthPageUrl: (brandId: string) => {
+    return `https://www.tumblr.com/oauth2/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=${brandId}`;
   },
   consumeAuthorizationCode: async (code: string): Promise<Tokens> => {
     console.log("consumeAuthorizationCode", code);

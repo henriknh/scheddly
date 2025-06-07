@@ -11,11 +11,12 @@ export default function TumblrRedirectPage() {
 
   useEffect(() => {
     const code = params.get("code");
+    const brandId = params.get("state");
 
-    if (code) {
+    if (code && brandId) {
       const createTumblrIntegration = async () => {
         try {
-          await addSocialMediaIntegration(SocialMedia.TUMBLR, code);
+          await addSocialMediaIntegration(SocialMedia.TUMBLR, code, brandId);
           const channel = new BroadcastChannel("oauth2_integration_complete");
           channel.postMessage("oauth2-success");
         } catch (error) {

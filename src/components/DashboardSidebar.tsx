@@ -1,22 +1,21 @@
 "use client";
 
+import { Avatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/lib/auth-context";
 import {
   Blocks,
   ChevronLeft,
   Home,
   ImageIcon,
-  Users,
   LayoutDashboard,
   Plus,
-  Tag,
-  TextIcon,
-  VideoIcon,
   StickyNote,
+  TextIcon,
+  Users,
+  VideoIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Avatar } from "@/components/common/UserAvatar";
 
 import {
   DropdownMenu,
@@ -36,8 +35,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
 import config from "@/config";
+import { cn } from "@/lib/utils";
 
 interface SidebarNavProps {
   items?: {
@@ -159,15 +158,6 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
                 <Link href="/dashboard/posts">
                   <StickyNote />
                   <span>Posts</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href="/dashboard/brands">
-                  <Tag />
-                  <span>Brands</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

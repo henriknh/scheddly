@@ -71,8 +71,8 @@ model SocialMediaIntegration {
   accessTokenExpiresAt              DateTime
   refreshToken                      String
   refreshTokenExpiresAt             DateTime?
-  brandId                           String?
-  brand                             Brand?      @relation(fields: [brandId], references: [id])
+  brandId                           String
+  brand                             Brand       @relation(fields: [brandId], references: [id])
   createdAt                         DateTime    @default(now())
   updatedAt                         DateTime    @updatedAt
   teamId                            String
