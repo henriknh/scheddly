@@ -1,4 +1,7 @@
-import { PostWithRelations } from "@/app/api/post/types";
+import {
+  PostWithRelations,
+  SocialMediaPostWithRelations,
+} from "@/app/api/post/types";
 import prisma from "@/lib/prisma";
 import {
   AccountInfo,
@@ -28,7 +31,6 @@ export const tumblr: SocialMediaApiFunctions = {
     return `https://www.tumblr.com/oauth2/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=${brandId}`;
   },
   consumeAuthorizationCode: async (code: string): Promise<Tokens> => {
-    console.log("consumeAuthorizationCode", code);
     const client_secret =
       process.env.SOCIAL_MEDIA_INTEGRATION_TUMBLR_CLIENT_SECRET;
 
@@ -64,7 +66,9 @@ export const tumblr: SocialMediaApiFunctions = {
       refreshToken: data.refresh_token,
     };
   },
-  refreshAccessToken: async (id: string): Promise<Tokens> => {
+  refreshAccessTokenAndUpdateSocialMediaIntegration: async (
+    id: string
+  ): Promise<Tokens> => {
     const integration = await prisma.socialMediaIntegration.findFirst({
       where: {
         id,
@@ -75,23 +79,44 @@ export const tumblr: SocialMediaApiFunctions = {
       throw new Error("Integration not found or missing refresh token");
     }
 
+    const client_secret =
+      process.env.SOCIAL_MEDIA_INTEGRATION_TUMBLR_CLIENT_SECRET;
+
+    if (!client_secret) {
+      throw new Error("Missing Tumblr client secret");
+    }
+
     const response = await fetch(`${tumblrApiUrl}/oauth2/token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: JSON.stringify({
+      body: new URLSearchParams({
         grant_type: "refresh_token",
         refresh_token: integration.refreshToken,
-        scope,
-      }),
+        client_id,
+        client_secret,
+      }).toString(),
     });
 
     if (!response.ok) {
+      const error = await response.json();
+      console.error("Failed to refresh access token", error);
       throw new Error("Failed to refresh access token");
     }
 
     const data = await response.json();
+
+    await prisma.socialMediaIntegration.update({
+      where: {
+        id,
+      },
+      data: {
+        accessToken: data.access_token,
+        accessTokenExpiresAt: new Date(Date.now() + data.expires_in * 1000),
+        refreshToken: data.refresh_token,
+      },
+    });
 
     return {
       accessToken: data.access_token,
@@ -112,8 +137,9 @@ export const tumblr: SocialMediaApiFunctions = {
     }
 
     if (integration.accessTokenExpiresAt < new Date()) {
-      const tokens = await tumblr.refreshAccessToken(id);
-      return tokens.accessToken;
+      return (
+        await tumblr.refreshAccessTokenAndUpdateSocialMediaIntegration(id)
+      ).accessToken;
     } else {
       return integration.accessToken;
     }
@@ -169,7 +195,6 @@ export const tumblr: SocialMediaApiFunctions = {
   },
 
   updateAccountInfo: async (id: string): Promise<void> => {
-    console.log("updateAccountInfo", id);
     const integration = await prisma.socialMediaIntegration.findFirst({
       where: {
         id,
@@ -194,19 +219,266 @@ export const tumblr: SocialMediaApiFunctions = {
     });
   },
 
-  postText: async (post: PostWithRelations) => {
-    console.log("postText", post);
+  postText: async (
+    post: PostWithRelations,
+    socialMediaPost: SocialMediaPostWithRelations
+  ) => {
+    const accessToken = await tumblr.getValidAccessToken(
+      post.socialMediaPosts[0].socialMediaIntegrationId
+    );
+
+    const response = await fetch(
+      `${tumblrApiUrl}/blog/${post.socialMediaPosts[0].socialMediaIntegration.accountId}/posts`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          blog_identifier:
+            post.socialMediaPosts[0].socialMediaIntegration.accountId,
+          content: [
+            {
+              type: "text",
+              text: post.description,
+            },
+          ],
+          state: "published",
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error("Failed to post text to Tumblr", error);
+      throw new Error("Failed to post text to Tumblr");
+    }
+
+    try {
+      const data = await response.json();
+
+      await prisma.socialMediaPost.update({
+        where: {
+          id: post.socialMediaPosts[0].id,
+        },
+        data: {
+          socialMediaPostId: data.response.id,
+          postedAt: new Date(),
+        },
+      });
+    } catch (error) {
+      console.error("Failed to update database  ", error);
+      throw new Error("Post created but failed to update database");
+    }
   },
 
-  postImage: async (post: PostWithRelations) => {
-    console.log("postImage", post);
+  postImage: async (
+    post: PostWithRelations,
+    socialMediaPost: SocialMediaPostWithRelations
+  ) => {
+    const accessToken = await tumblr.getValidAccessToken(
+      post.socialMediaPosts[0].socialMediaIntegrationId
+    );
+
+    // Create a FormData object for multipart/form-data
+    const formData = new FormData();
+
+    try {
+      // For multiple images, we'll create a photoset
+      const mediaIdentifiers = await Promise.all(
+        post.imageUrls.map(async (imageUrl, index) => {
+          const identifier = `image-${index}`;
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/file/${imageUrl}`
+          );
+          const blob = await response.blob();
+
+          // Add the image file to formData
+          formData.append(identifier, blob, `image-${index}.jpg`);
+
+          return {
+            type: "image/jpeg",
+            identifier,
+            width: 0, // We don't know the dimensions, Tumblr will handle this
+            height: 0,
+          };
+        })
+      );
+
+      // Create the JSON payload
+      const jsonPayload = {
+        blog_identifier:
+          post.socialMediaPosts[0].socialMediaIntegration.accountId,
+        content: [
+          {
+            type: "image",
+            media: mediaIdentifiers,
+          },
+        ],
+        state: "published",
+      };
+
+      // Add the JSON payload to formData
+      formData.append("json", JSON.stringify(jsonPayload));
+    } catch (error) {
+      console.error("Failed to create form data", error);
+      throw new Error("Failed to create form data");
+    }
+
+    const response = await fetch(
+      `${tumblrApiUrl}/blog/${post.socialMediaPosts[0].socialMediaIntegration.accountId}/posts`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error("Failed to post image to Tumblr", error);
+      throw new Error("Failed to post image to Tumblr");
+    }
+
+    try {
+      const data = await response.json();
+
+      await prisma.socialMediaPost.update({
+        where: {
+          id: post.socialMediaPosts[0].id,
+        },
+        data: {
+          socialMediaPostId: data.response.id,
+          postedAt: new Date(),
+        },
+      });
+    } catch (error) {
+      console.error("Failed to update database  ", error);
+      throw new Error("Post created but failed to update database");
+    }
   },
 
-  postVideo: async (post: PostWithRelations) => {
-    console.log("postVideo", post);
+  postVideo: async (
+    post: PostWithRelations,
+    socialMediaPost: SocialMediaPostWithRelations
+  ) => {
+    if (!post.videoUrl) {
+      throw new Error("No video URL provided");
+    }
+
+    const accessToken = await tumblr.getValidAccessToken(
+      post.socialMediaPosts[0].socialMediaIntegrationId
+    );
+
+    // Create a FormData object for multipart/form-data
+    const formData = new FormData();
+
+    try {
+      // Get the video data
+      const videoResponse = await fetch(post.videoUrl);
+      const videoBlob = await videoResponse.blob();
+
+      // Add the video file to formData
+      const videoIdentifier = "video-0";
+      formData.append(videoIdentifier, videoBlob, "video.mp4");
+
+      // Create the JSON payload
+      const jsonPayload = {
+        blog_identifier:
+          post.socialMediaPosts[0].socialMediaIntegration.accountId,
+        content: [
+          {
+            type: "video",
+            media: {
+              type: "video/mp4",
+              identifier: videoIdentifier,
+              width: 0, // We don't know the dimensions, Tumblr will handle this
+              height: 0,
+            },
+          },
+        ],
+        state: "published",
+      };
+
+      // Add the JSON payload to formData
+      formData.append("json", JSON.stringify(jsonPayload));
+    } catch (error) {
+      console.error("Failed to create form data", error);
+      throw new Error("Failed to create form data");
+    }
+
+    const response = await fetch(
+      `${tumblrApiUrl}/blog/${post.socialMediaPosts[0].socialMediaIntegration.accountId}/posts`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error("Failed to post video to Tumblr", error);
+      throw new Error("Failed to post video to Tumblr");
+    }
+
+    try {
+      const data = await response.json();
+
+      await prisma.socialMediaPost.update({
+        where: {
+          id: post.socialMediaPosts[0].id,
+        },
+        data: {
+          socialMediaPostId: data.response.id,
+          postedAt: new Date(),
+        },
+      });
+    } catch (error) {
+      console.error("Failed to update database  ", error);
+      throw new Error("Post created but failed to update database");
+    }
   },
 
-  deletePost: async (post: PostWithRelations) => {
-    console.log("deletePost", post);
+  deletePost: async (
+    post: PostWithRelations,
+    socialMediaPost: SocialMediaPostWithRelations
+  ) => {
+    if (!socialMediaPost.socialMediaPostId) {
+      throw new Error("Social media post ID is required");
+    }
+
+    const accessToken = await tumblr.getValidAccessToken(
+      post.socialMediaPosts[0].socialMediaIntegrationId
+    );
+
+    const response = await fetch(
+      `${tumblrApiUrl}/blog/${socialMediaPost.socialMediaIntegration.accountId}/post/delete`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          id: socialMediaPost.socialMediaPostId,
+        }).toString(),
+      }
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+      if (data.meta.status === 404) {
+        console.error("Post not found, skipping delete");
+      } else {
+        console.error("Failed to delete post from Tumblr", data);
+        throw new Error("Failed to delete post from Tumblr");
+      }
+    }
   },
 };

@@ -86,19 +86,6 @@ export async function addSocialMediaIntegration(
       },
     });
 
-    console.log("existingIntegration", existingIntegration);
-
-    console.log("data", {
-      id: existingIntegration?.id,
-      accountId,
-      socialMedia: platform,
-      teamId: user.teamId,
-      accessToken,
-      accessTokenExpiresAt,
-      refreshToken,
-      refreshTokenExpiresAt,
-    });
-
     if (existingIntegration) {
       await prisma.socialMediaIntegration.update({
         where: {

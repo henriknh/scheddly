@@ -1,10 +1,14 @@
 import { getPost } from "@/app/api/post/get-post";
 import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/get-social-media-integrations";
 import { Header } from "@/components/common/Header";
+import { ImagePostDetails } from "@/components/post-details/image-post-details";
+import { TextPostDetails } from "@/components/post-details/text-post-details";
+import { VideoPostDetails } from "@/components/post-details/video-post-details";
 import { ImagePostForm } from "@/components/post-forms/image-post-form";
 import { TextPostForm } from "@/components/post-forms/text-post-form";
 import { VideoPostForm } from "@/components/post-forms/video-post-form";
 import { PostType } from "@/generated/prisma";
+import { postIsEditable } from "@/lib/post";
 import { notFound } from "next/navigation";
 
 interface PostPageProps {
@@ -24,18 +28,37 @@ export default async function PostPage({ params }: PostPageProps) {
 
     return (
       <div className="space-y-4">
-        <>
-          <Header>Edit Post</Header>
-          {post.postType === PostType.TEXT && (
-            <TextPostForm integrations={integrations} post={post} />
-          )}
-          {post.postType === PostType.IMAGE && (
-            <ImagePostForm integrations={integrations} post={post} />
-          )}
-          {post.postType === PostType.VIDEO && (
-            <VideoPostForm integrations={integrations} post={post} />
-          )}
-        </>
+        <Header>
+          {post.postType === PostType.TEXT
+            ? "Text Post"
+            : post.postType === PostType.IMAGE
+            ? "Image Post"
+            : "Video Post"}
+        </Header>
+
+        {postIsEditable(post) ? (
+          <>
+            {post.postType === PostType.TEXT && (
+              <TextPostForm integrations={integrations} post={post} />
+            )}
+            {post.postType === PostType.IMAGE && (
+              <ImagePostForm integrations={integrations} post={post} />
+            )}
+            {post.postType === PostType.VIDEO && (
+              <VideoPostForm integrations={integrations} post={post} />
+            )}
+          </>
+        ) : (
+          <div>
+            {post.postType === PostType.TEXT && <TextPostDetails post={post} />}
+            {post.postType === PostType.IMAGE && (
+              <ImagePostDetails post={post} />
+            )}
+            {post.postType === PostType.VIDEO && (
+              <VideoPostDetails post={post} />
+            )}
+          </div>
+        )}
       </div>
     );
   } catch (error) {

@@ -39,7 +39,7 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     try {
       const user = await getUser();
       setUser(user);
-      console.log("User data:", user);
+      console.info("User data:", user);
     } catch (error) {
       console.error("Failed to fetch user", error);
     } finally {

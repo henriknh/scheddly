@@ -2,28 +2,43 @@
 
 import { PostType } from "@/generated/prisma";
 import { getSocialMediaApiFunctions } from "@/lib/social-media-api-functions/social-media-api-functions";
-import { getPost } from "./get-post";
+import { PostWithRelations } from "./types";
+import prisma from "@/lib/prisma";
 
-export async function postPost(postId: string) {
-  const post = await getPost(postId);
+export async function postPost(post: PostWithRelations) {
+  console.info("Posting post", post.id);
 
-  post.socialMediaPosts.forEach(async (socialMediaPost) => {
-    const socialMediaApiFunctions = getSocialMediaApiFunctions(
-      socialMediaPost.socialMediaIntegration.socialMedia
-    );
+  await Promise.all(
+    post.socialMediaPosts.map(async (socialMediaPost) => {
+      if (socialMediaPost.postedAt) {
+        return;
+      }
 
-    if (!socialMediaApiFunctions) {
-      throw new Error(
-        `Social media API functions not found for ${socialMediaPost.socialMediaIntegration.socialMedia}`
+      const socialMediaApiFunctions = getSocialMediaApiFunctions(
+        socialMediaPost.socialMediaIntegration.socialMedia
       );
-    }
 
-    if (post.postType === PostType.TEXT) {
-      await socialMediaApiFunctions.postText(post);
-    } else if (post.postType === PostType.IMAGE) {
-      await socialMediaApiFunctions.postImage(post);
-    } else if (post.postType === PostType.VIDEO) {
-      await socialMediaApiFunctions.postVideo(post);
-    }
-  });
+      if (!socialMediaApiFunctions) {
+        throw new Error(
+          `Social media API functions not found for ${socialMediaPost.socialMediaIntegration.socialMedia}`
+        );
+      }
+
+      try {
+        if (post.postType === PostType.TEXT) {
+          await socialMediaApiFunctions.postText(post, socialMediaPost);
+        } else if (post.postType === PostType.IMAGE) {
+          await socialMediaApiFunctions.postImage(post, socialMediaPost);
+        } else if (post.postType === PostType.VIDEO) {
+          await socialMediaApiFunctions.postVideo(post, socialMediaPost);
+        }
+      } catch (error) {
+        console.error("Error posting post", error);
+        await prisma.socialMediaPost.update({
+          where: { id: socialMediaPost.id },
+          data: { failedAt: new Date(), failedReason: error.message },
+        });
+      }
+    })
+  );
 }

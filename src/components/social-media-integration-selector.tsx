@@ -109,7 +109,7 @@ export function SocialMediaIntegrationSelector({
               </Button>
             </CardHeader>
 
-            <CardContent>
+            <CardContent className="flex flex-wrap gap-2">
               {integrationsByBrand.map((integration) => {
                 const platform = socialMediaPlatforms.find(
                   (p) => p.id === integration.socialMedia

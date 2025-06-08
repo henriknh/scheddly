@@ -1,7 +1,6 @@
-import { PostType } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
-import { getSocialMediaApiFunctions } from "@/lib/social-media-api-functions/social-media-api-functions";
 import { getUserFromToken } from "@/lib/user";
+import { postPost } from "./post-post";
 
 export async function GET() {
   const user = await getUserFromToken();
@@ -25,6 +24,11 @@ export async function GET() {
           scheduledAt: null,
         },
       ],
+      socialMediaPosts: {
+        some: {
+          postedAt: null,
+        },
+      },
     },
     include: {
       socialMediaPosts: {
@@ -35,29 +39,9 @@ export async function GET() {
     },
   });
 
-  console.log(`Found ${posts.length} posts to post`);
+  console.info(`Found ${posts.length} posts to post`);
 
-  for (const post of posts) {
-    for (const socialMediaPost of post.socialMediaPosts) {
-      const socialMediaApiFunctions = getSocialMediaApiFunctions(
-        socialMediaPost.socialMediaIntegration.socialMedia
-      );
-
-      if (!socialMediaApiFunctions) {
-        throw new Error(
-          `Social media API functions not found for ${socialMediaPost.socialMediaIntegration.socialMedia}`
-        );
-      }
-
-      if (post.postType === PostType.TEXT) {
-        await socialMediaApiFunctions.postText(post);
-      } else if (post.postType === PostType.IMAGE) {
-        await socialMediaApiFunctions.postImage(post);
-      } else if (post.postType === PostType.VIDEO) {
-        await socialMediaApiFunctions.postVideo(post);
-      }
-    }
-  }
+  await Promise.all(posts.map(postPost));
 
   return new Response("OK!");
 }

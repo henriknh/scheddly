@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
 import { getPost } from "./get-post";
+import { getSocialMediaApiFunctions } from "@/lib/social-media-api-functions/social-media-api-functions";
 
 export async function deletePost(postId: string) {
   const user = await getUserFromToken();
@@ -16,16 +17,25 @@ export async function deletePost(postId: string) {
     throw new Error("Post not found");
   }
 
-  // Use a transaction to ensure atomic operations
-  await prisma.$transaction(async (tx) => {
-    // First delete all related social media posts
-    await tx.socialMediaPost.deleteMany({
-      where: { postId: post.id },
-    });
+  const socialMediaPosts = post.socialMediaPosts;
 
-    // Then delete the main post
-    await tx.post.delete({
-      where: { id: post.id },
-    });
+  await Promise.all(
+    socialMediaPosts.map(async (socialMediaPost) => {
+      const socialMediaApiFunctions = getSocialMediaApiFunctions(
+        socialMediaPost.socialMediaIntegration.socialMedia
+      );
+
+      if (socialMediaApiFunctions && socialMediaPost.socialMediaPostId) {
+        await socialMediaApiFunctions.deletePost(post, socialMediaPost);
+      }
+
+      await prisma.socialMediaPost.delete({
+        where: { id: socialMediaPost.id },
+      });
+    })
+  );
+
+  await prisma.post.delete({
+    where: { id: post.id },
   });
 }

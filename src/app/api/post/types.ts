@@ -6,9 +6,11 @@ import {
 } from "@/generated/prisma";
 
 export type PostWithRelations = Post & {
-  socialMediaPosts: (SocialMediaPost & {
-    socialMediaIntegration: SocialMediaIntegration & {
-      brand?: Brand | null;
-    };
-  })[];
+  socialMediaPosts: SocialMediaPostWithRelations[];
+};
+
+export type SocialMediaPostWithRelations = SocialMediaPost & {
+  socialMediaIntegration: SocialMediaIntegration & {
+    brand?: Brand | null;
+  };
 };

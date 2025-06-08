@@ -8,6 +8,7 @@ import {
 } from "@/lib/minio";
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
+import { postPost } from "./post-post";
 
 export interface CreatePostParams {
   description: string;
@@ -65,7 +66,18 @@ export async function createPost({
       videoCoverUrl,
       scheduledAt,
     },
+    include: {
+      socialMediaPosts: {
+        include: {
+          socialMediaIntegration: true,
+        },
+      },
+    },
   });
+
+  if (!newPost.scheduledAt) {
+    await postPost(newPost);
+  }
 
   return newPost;
 }

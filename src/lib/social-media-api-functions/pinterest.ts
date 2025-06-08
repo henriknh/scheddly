@@ -1,4 +1,8 @@
-import { Post } from "@/generated/prisma";
+import {
+  PostWithRelations,
+  SocialMediaPostWithRelations,
+} from "@/app/api/post/types";
+import config from "@/config";
 import prisma from "@/lib/prisma";
 import {
   AccountInfo,
@@ -73,7 +77,9 @@ export const pinterest: SocialMediaApiFunctions = {
       refreshTokenExpiresAt,
     };
   },
-  refreshAccessToken: async (id: string): Promise<Tokens> => {
+  refreshAccessTokenAndUpdateSocialMediaIntegration: async (
+    id: string
+  ): Promise<Tokens> => {
     const integration = await prisma.socialMediaIntegration.findFirst({
       where: {
         id,
@@ -141,7 +147,13 @@ export const pinterest: SocialMediaApiFunctions = {
     }
 
     if (integration.accessTokenExpiresAt < new Date()) {
-      return (await pinterest.refreshAccessToken(id)).accessToken;
+      return (
+        await pinterest.refreshAccessTokenAndUpdateSocialMediaIntegration(id)
+      ).accessToken;
+    }
+
+    if (!integration.accessToken) {
+      throw new Error("Integration not found or missing access token");
     }
 
     return integration.accessToken;
@@ -227,19 +239,115 @@ export const pinterest: SocialMediaApiFunctions = {
     });
   },
 
-  postText: async (post: Post) => {
-    console.log("postText", post);
+  postText: async (
+    post: PostWithRelations,
+    socialMediaPost: SocialMediaPostWithRelations
+  ) => {
+    throw new Error("Not implemented");
   },
 
-  postImage: async (post: Post) => {
-    console.log("postImage", post);
+  postImage: async (
+    post: PostWithRelations,
+    socialMediaPost: SocialMediaPostWithRelations
+  ) => {
+    const accessToken = await pinterest.getValidAccessToken(
+      socialMediaPost.socialMediaIntegrationId
+    );
+
+    const boards = await fetch(`${pinterestApiUrl}/boards`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    });
+
+    const boardsJson = await boards.json();
+
+    const body = {
+      link: "https://www.pinterest.com/",
+      title: post.description,
+      description: post.description,
+      // dominant_color: "#6E7874",
+      // alt_text: socialMediaPost?.altText,
+      board_id: "1049972169315366740",
+      // board_section_id: socialMediaPost?.boardSectionId,
+      media_source: {
+        source_type: "multiple_image_urls",
+        // items: post.imageUrls.map((imageUrl) => ({
+        //   title: "string",
+        //   description: "string",
+        //   link: "string",
+        //   // url: imageUrl,
+        //   url: "https://commons.wikimedia.org/wiki/File:PNG_Test.png",
+        // })),
+        items: [
+          {
+            title: "string",
+            description: "string",
+            link: "string",
+            // url: imageUrl,
+            url: "https://commons.wikimedia.org/wiki/File:PNG_Test.png",
+          },
+          {
+            title: "string",
+            description: "string",
+            link: "string",
+            // url: imageUrl,
+            url: "https://commons.wikimedia.org/wiki/File:PNG_Test.png",
+          },
+        ],
+        index: 0,
+      },
+      note: `Created with ${config.appName}`,
+      is_removable: true,
+    };
+
+    const response = await fetch(`${pinterestApiUrl}/pins`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error("Failed to post image", error);
+      throw new Error("Failed to post image");
+    }
+
+    const json = await response.json();
   },
 
-  postVideo: async (post: Post) => {
-    console.log("postVideo", post);
+  postVideo: async (
+    post: PostWithRelations,
+    socialMediaPost: SocialMediaPostWithRelations
+  ) => {
+    throw new Error("Not implemented");
   },
+  deletePost: async (
+    post: PostWithRelations,
+    socialMediaPost: SocialMediaPostWithRelations
+  ) => {
+    const accessToken = await pinterest.getValidAccessToken(
+      socialMediaPost.socialMediaIntegrationId
+    );
 
-  deletePost: async (post: Post) => {
-    console.log("deletePost", post);
+    const response = await fetch(`${pinterestApiUrl}/pins/${post.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete post");
+    }
   },
 };

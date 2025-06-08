@@ -62,3 +62,7 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
   //     icon: "/icons/linkedin.svg",
   //   },
 ].sort((a, b) => a.name.localeCompare(b.name));
+
+export function getSocialMediaPlatform(socialMedia: SocialMedia) {
+  return socialMediaPlatforms.find((platform) => platform.id === socialMedia);
+}
