@@ -27,8 +27,8 @@ export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
   const [description, setDescription] = useState(post?.description || "");
   const [video, setVideo] = useState<File | null>(null);
   const [videoCover, setVideoCover] = useState<File | null>(null);
-  const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
-    post?.scheduledAt || undefined
+  const [scheduledDate, setScheduledDate] = useState<Date | null>(
+    post?.scheduledAt || null
   );
   const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
     string[]
@@ -37,7 +37,7 @@ export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
   useEffect(() => {
     if (post) {
       setDescription(post.description);
-      setScheduledDate(post.scheduledAt || undefined);
+      setScheduledDate(post.scheduledAt || null);
       setSelectedIntegrationIds(
         post.socialMediaPosts.map((p) => p.socialMediaIntegrationId)
       );

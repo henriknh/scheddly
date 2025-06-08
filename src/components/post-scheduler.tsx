@@ -19,30 +19,30 @@ import { useState } from "react";
 
 interface PostSchedulerProps {
   initialDate?: Date | null;
-  onScheduleChange: (date: Date | undefined) => void;
+  onScheduleChange: (date: Date | null) => void;
 }
 
 export function PostScheduler({
   initialDate,
   onScheduleChange,
 }: PostSchedulerProps) {
-  const [date, setDate] = useState<Date | undefined>(
-    initialDate ? new Date(initialDate) : undefined
+  const [date, setDate] = useState<Date | null>(
+    initialDate ? new Date(initialDate) : null
   );
   const [hour, setHour] = useState<string>(date ? format(date, "HH") : "12");
   const [minute, setMinute] = useState<string>(
     date ? format(date, "mm") : "00"
   );
 
-  const handleDateSelect = (newDate: Date | undefined) => {
+  const handleDateSelect = (newDate: Date | null | undefined) => {
     if (newDate) {
       const currentDate = new Date(newDate);
       currentDate.setHours(parseInt(hour), parseInt(minute));
       setDate(currentDate);
       onScheduleChange(currentDate);
     } else {
-      setDate(undefined);
-      onScheduleChange(undefined);
+      setDate(null);
+      onScheduleChange(null);
     }
   };
 
@@ -75,7 +75,7 @@ export function PostScheduler({
         <PopoverContent className="w-auto p-0">
           <Calendar
             mode="single"
-            selected={date}
+            selected={date ?? undefined}
             onSelect={handleDateSelect}
             initialFocus
             disabled={(date) => date < new Date()}
@@ -123,7 +123,7 @@ export function PostScheduler({
         </PopoverContent>
       </Popover>
       {date && (
-        <Button variant="ghost" onClick={() => handleDateSelect(undefined)}>
+        <Button variant="ghost" onClick={() => handleDateSelect(null)}>
           Post now instead
         </Button>
       )}

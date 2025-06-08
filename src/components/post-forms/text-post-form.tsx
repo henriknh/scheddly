@@ -23,8 +23,8 @@ interface TextPostFormProps {
 export function TextPostForm({ integrations, post }: TextPostFormProps) {
   const router = useRouter();
   const [content, setContent] = useState(post?.description || "");
-  const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
-    post?.scheduledAt || undefined
+  const [scheduledDate, setScheduledDate] = useState<Date | null>(
+    post?.scheduledAt || null
   );
   const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
     string[]
@@ -33,7 +33,7 @@ export function TextPostForm({ integrations, post }: TextPostFormProps) {
   useEffect(() => {
     if (post) {
       setContent(post.description);
-      setScheduledDate(post.scheduledAt || undefined);
+      setScheduledDate(post.scheduledAt || null);
       setSelectedIntegrationIds(
         post.socialMediaPosts.map((p) => p.socialMediaIntegrationId)
       );

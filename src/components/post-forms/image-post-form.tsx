@@ -26,8 +26,8 @@ export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
   const router = useRouter();
   const [caption, setCaption] = useState(post?.description || "");
   const [images, setImages] = useState<File[]>([]);
-  const [scheduledDate, setScheduledDate] = useState<Date | undefined>(
-    post?.scheduledAt || undefined
+  const [scheduledDate, setScheduledDate] = useState<Date | null>(
+    post?.scheduledAt || null
   );
   const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
     string[]
@@ -36,7 +36,7 @@ export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
   useEffect(() => {
     if (post) {
       setCaption(post.description);
-      setScheduledDate(post.scheduledAt || undefined);
+      setScheduledDate(post.scheduledAt || null);
       setSelectedIntegrationIds(
         post.socialMediaPosts.map((p) => p.socialMediaIntegrationId)
       );
