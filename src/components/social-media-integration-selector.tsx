@@ -110,47 +110,43 @@ export function SocialMediaIntegrationSelector({
             </CardHeader>
 
             <CardContent>
-              <div className="space-y-2">
-                {integrationsByBrand.map((integration) => {
-                  const platform = socialMediaPlatforms.find(
-                    (p) => p.id === integration.socialMedia
-                  );
-                  if (!platform) return null;
+              {integrationsByBrand.map((integration) => {
+                const platform = socialMediaPlatforms.find(
+                  (p) => p.id === integration.socialMedia
+                );
+                if (!platform) return null;
 
-                  return (
-                    <div
-                      key={integration.id}
-                      className="flex items-center space-x-2"
+                return (
+                  <div
+                    key={integration.id}
+                    className="flex items-center space-x-2"
+                  >
+                    <Checkbox
+                      id={integration.id}
+                      checked={selectedIntegrationIds.includes(integration.id)}
+                      onCheckedChange={(checked) =>
+                        handleIntegrationChange(
+                          integration.id,
+                          checked as boolean
+                        )
+                      }
+                    />
+                    <Label
+                      htmlFor={integration.id}
+                      className="flex items-center gap-2 cursor-pointer"
                     >
-                      <Checkbox
-                        id={integration.id}
-                        checked={selectedIntegrationIds.includes(
-                          integration.id
-                        )}
-                        onCheckedChange={(checked) =>
-                          handleIntegrationChange(
-                            integration.id,
-                            checked as boolean
-                          )
-                        }
+                      <Image
+                        src={platform.icon}
+                        alt={platform.name}
+                        width={16}
+                        height={16}
+                        className="h-4 w-4"
                       />
-                      <Label
-                        htmlFor={integration.id}
-                        className="flex items-center gap-2 cursor-pointer"
-                      >
-                        <Image
-                          src={platform.icon}
-                          alt={platform.name}
-                          width={16}
-                          height={16}
-                          className="h-4 w-4"
-                        />
-                        {platform.name}
-                      </Label>
-                    </div>
-                  );
-                })}
-              </div>
+                      {platform.name}
+                    </Label>
+                  </div>
+                );
+              })}
             </CardContent>
           </Card>
         );

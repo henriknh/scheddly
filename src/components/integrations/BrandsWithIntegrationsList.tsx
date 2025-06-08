@@ -97,9 +97,9 @@ export function BrandsWithIntegrationsList({
               />
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
+              <div>
                 {brandIntegrations.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foregroun col-span-3">
                     No integrations yet
                   </p>
                 ) : (
@@ -112,7 +112,7 @@ export function BrandsWithIntegrationsList({
                     return (
                       <div
                         key={integration.id}
-                        className="grid grid-cols-[1fr_2fr_auto] items-center gap-4 py-2"
+                        className="grid grid-cols-3 gap-2 space-y-2"
                       >
                         <div className="flex items-center gap-2">
                           <Image
