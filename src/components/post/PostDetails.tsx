@@ -20,11 +20,11 @@ interface PostDetailsProps {
 }
 
 export function PostDetails({ post }: PostDetailsProps) {
-  const getStatusBadge = () => {
-    if (post.failedAt) {
+  const getStatusBadge = (socialMediaPost: SocialMediaPost) => {
+    if (socialMediaPost.failedAt) {
       return <Badge variant="destructive">Error</Badge>;
     }
-    if (post.postedAt) {
+    if (socialMediaPost.postedAt) {
       return <Badge variant="success">Posted</Badge>;
     }
     if (post.scheduledAt) {
@@ -102,7 +102,7 @@ export function PostDetails({ post }: PostDetailsProps) {
                             socialMediaPost.socialMediaIntegration.socialMedia}
                         </span>
                       </div>
-                      {getStatusBadge()}
+                      {getStatusBadge(socialMediaPost)}
                     </div>
                     {socialMediaPost.failedReason && (
                       <p className="text-sm text-destructive mt-2">

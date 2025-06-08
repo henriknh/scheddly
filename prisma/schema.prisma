@@ -16,6 +16,8 @@ model SocialMediaPost {
   socialMediaIntegrationId String
   socialMediaPostId     String?
   failedReason          String?
+  postedAt             DateTime?
+  failedAt             DateTime?
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
 }
@@ -28,8 +30,6 @@ model Post {
   videoUrl         String?
   videoCoverUrl    String?
   scheduledAt      DateTime?
-  postedAt         DateTime?
-  failedAt         DateTime?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   teamId           String

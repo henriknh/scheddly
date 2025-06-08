@@ -133,8 +133,29 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
     );
   };
 
-  const getStatusBadge = (post: Post) => {
-    if (post.failedAt) {
+  const getStatusBadge = (post: PostWithRelations) => {
+    // Aggregate status from socialMediaPosts
+    const failed = post.socialMediaPosts.some((smp) => smp.failedAt);
+    const posted = post.socialMediaPosts.some((smp) => smp.postedAt);
+    const scheduled =
+      post.scheduledAt && new Date(post.scheduledAt) > new Date();
+
+    // Get latest timestamps
+    const latestFailedAt = post.socialMediaPosts
+      .filter((smp) => smp.failedAt)
+      .sort(
+        (a, b) =>
+          new Date(b.failedAt!).getTime() - new Date(a.failedAt!).getTime()
+      )[0]?.failedAt;
+
+    const latestPostedAt = post.socialMediaPosts
+      .filter((smp) => smp.postedAt)
+      .sort(
+        (a, b) =>
+          new Date(b.postedAt!).getTime() - new Date(a.postedAt!).getTime()
+      )[0]?.postedAt;
+
+    if (failed) {
       return (
         <Tooltip>
           <TooltipTrigger>
@@ -144,15 +165,14 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
           </TooltipTrigger>
           <TooltipContent>
             <div className="flex flex-col gap-1">
-              <div>Failed to post at {formatDateTime(post.failedAt)}</div>
+              <div>Failed to post at {formatDateTime(latestFailedAt!)}</div>
               <div>Created at {formatDateTime(post.createdAt)}</div>
             </div>
           </TooltipContent>
         </Tooltip>
       );
     }
-
-    if (post.postedAt) {
+    if (posted) {
       return (
         <Tooltip>
           <TooltipTrigger>
@@ -162,35 +182,30 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
           </TooltipTrigger>
           <TooltipContent>
             <div className="flex flex-col gap-1">
-              <div>Posted at {formatDateTime(post.postedAt)}</div>
+              <div>Posted at {formatDateTime(latestPostedAt!)}</div>
               <div>Created at {formatDateTime(post.createdAt)}</div>
-            </div>{" "}
+            </div>
           </TooltipContent>
         </Tooltip>
       );
     }
-
-    if (post.scheduledAt) {
-      const scheduledDate = new Date(post.scheduledAt);
-      if (scheduledDate > new Date()) {
-        return (
-          <Tooltip>
-            <TooltipTrigger>
-              <Badge variant="info" className="text-nowrap">
-                {formatDateIn(post.scheduledAt)}
-              </Badge>
-            </TooltipTrigger>
-            <TooltipContent>
-              <div className="flex flex-col gap-1">
-                <div>Scheduled for {formatDateTime(post.scheduledAt)}</div>
-                <div>Created at {formatDateTime(post.createdAt)}</div>
-              </div>{" "}
-            </TooltipContent>
-          </Tooltip>
-        );
-      }
+    if (scheduled) {
+      return (
+        <Tooltip>
+          <TooltipTrigger>
+            <Badge variant="info" className="text-nowrap">
+              {formatDateIn(post.scheduledAt!)}
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>
+            <div className="flex flex-col gap-1">
+              <div>Scheduled for {formatDateTime(post.scheduledAt!)}</div>
+              <div>Created at {formatDateTime(post.createdAt)}</div>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      );
     }
-
     return (
       <Tooltip>
         <TooltipTrigger>

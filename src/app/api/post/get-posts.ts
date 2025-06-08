@@ -49,25 +49,65 @@ export async function getPosts(
             },
           },
         }),
-        ...(filter?.status === "failed" && {
-          failedAt: {
-            not: null,
-          },
-        }),
         ...(filter?.status === "scheduled" && {
-          scheduledAt: {
-            not: null,
+          AND: [
+            {
+              scheduledAt: {
+                not: null,
+              },
+            },
+            {
+              socialMediaPosts: {
+                none: {
+                  failedAt: {
+                    not: null,
+                  },
+                  postedAt: {
+                    not: null,
+                  },
+                },
+              },
+            },
+          ],
+        }),
+        ...(filter?.status === "failed" && {
+          socialMediaPosts: {
+            some: {
+              failedAt: {
+                not: null,
+              },
+            },
           },
         }),
         ...(filter?.status === "posted" && {
-          postedAt: {
-            not: null,
+          socialMediaPosts: {
+            some: {
+              postedAt: {
+                not: null,
+              },
+            },
           },
         }),
         ...(filter?.status === "pending" && {
-          scheduledAt: {
-            lte: new Date(),
-          },
+          AND: [
+            {
+              scheduledAt: {
+                lte: new Date(),
+              },
+            },
+            {
+              socialMediaPosts: {
+                none: {
+                  failedAt: {
+                    not: null,
+                  },
+                  postedAt: {
+                    not: null,
+                  },
+                },
+              },
+            },
+          ],
         }),
         ...(filter?.dateFrom &&
           filter?.dateTo && {

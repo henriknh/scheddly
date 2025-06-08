@@ -1,18 +1,13 @@
 import { PostWithRelations } from "@/app/api/post/types";
 
 export function postIsEditable(post: PostWithRelations) {
-  const noSocialMediaPostsPosted = post.socialMediaPosts.every(
-    (post) => !post.socialMediaPostId
+  const noSocialMediaPostsPostedOrFailed = post.socialMediaPosts.every(
+    (smp) => !smp.postedAt && !smp.failedAt
   );
 
   const scheduledInFuture = post?.scheduledAt
     ? post?.scheduledAt > new Date()
     : false;
 
-  return (
-    !post.postedAt &&
-    !post.failedAt &&
-    noSocialMediaPostsPosted &&
-    scheduledInFuture
-  );
+  return noSocialMediaPostsPostedOrFailed && scheduledInFuture;
 }
