@@ -1,10 +1,8 @@
 import { getTokenData } from "@/lib/jwt";
-import { uploadToMinio } from "@/lib/minio";
+import { deleteFromMinio, uploadAvatar } from "@/lib/minio";
 import prisma from "@/lib/prisma";
 import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
-import sharp, { ResizeOptions } from "sharp";
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -15,8 +13,7 @@ export async function PATCH(request: NextRequest) {
 
     let name: string | undefined;
     let email: string | undefined;
-    let avatarUrl: string | undefined;
-    let file: File | null = null;
+    let avatarFile: File | null = null;
 
     const contentType = request.headers.get("content-type") || "";
 
@@ -24,7 +21,7 @@ export async function PATCH(request: NextRequest) {
       const formData = await request.formData();
       name = (formData.get("name") as string) || undefined;
       email = (formData.get("email") as string) || undefined;
-      file = formData.get("avatarUrl") as File | null;
+      avatarFile = formData.get("avatar") as File | null;
     } else {
       const body = await request.json();
       ({ name, email } = body);
@@ -55,27 +52,47 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Handle file upload
-    if (file) {
+    if (avatarFile) {
       try {
-        // Resize image to 512x512
+        // Delete old avatar
+        const existingFile = await prisma.file.findMany({
+          where: {
+            user: {
+              id: payload.id as string,
+            },
+          },
+        });
 
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        await Promise.all(
+          existingFile.map((file) => {
+            return deleteFromMinio(file).then(() => {
+              return prisma.file.delete({
+                where: {
+                  id: file.id,
+                },
+              });
+            });
+          })
+        );
 
-        const resizeOptions: ResizeOptions = {
-          width: 512,
-          height: 512,
-          fit: "cover",
-        };
+        // Add new avatar
+        const { path, mimeType, size } = await uploadAvatar(
+          avatarFile,
+          payload.id as string
+        );
 
-        const resizedImage = await sharp(buffer)
-          .resize(resizeOptions)
-          .toBuffer();
-
-        // Create a unique filename
-        avatarUrl = `avatars/${payload.id}${path.extname(file.name)}`;
-
-        await uploadToMinio(resizedImage, avatarUrl, file.type);
+        await prisma.file.create({
+          data: {
+            path,
+            mimeType,
+            size,
+            user: {
+              connect: {
+                id: payload.id as string,
+              },
+            },
+          },
+        });
       } catch (error) {
         console.error("FILE_UPLOAD_ERROR", error);
         return new NextResponse("Error uploading file", { status: 500 });
@@ -88,7 +105,9 @@ export async function PATCH(request: NextRequest) {
       data: {
         ...(name && { name }),
         ...(email && { email }),
-        ...(avatarUrl && { avatarUrl }),
+      },
+      include: {
+        avatar: true,
       },
     });
 

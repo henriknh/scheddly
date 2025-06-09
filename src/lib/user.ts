@@ -1,21 +1,27 @@
 "use server";
 
-import { User } from "@/generated/prisma";
+import { File, User } from "@/generated/prisma";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { createToken, setTokenCookie, verifyToken } from "./jwt";
 import prisma from "./prisma";
 
-export type CleanedUser = Omit<User, "password"> & {
+export interface UserWithRelations extends User {
+  avatar?: File | null;
+}
+
+export type CleanedUser = Omit<UserWithRelations, "password"> & {
   password?: undefined;
 };
 
-export const cleanUserData = async (user: User): Promise<CleanedUser> => {
+export const cleanUserData = async (
+  user: UserWithRelations
+): Promise<CleanedUser> => {
   return { ...user, password: undefined };
 };
 
 export const updateUserTokenWithCleanedUser = async (
-  user: User
+  user: UserWithRelations
 ): Promise<CleanedUser> => {
   const cleanedUser = await cleanUserData(user);
 
@@ -26,7 +32,7 @@ export const updateUserTokenWithCleanedUser = async (
 };
 
 export const updateUserTokenAndReturnNextResponse = async (
-  user: User
+  user: UserWithRelations
 ): Promise<NextResponse<{ user: CleanedUser }>> => {
   const cleanedUser = await updateUserTokenWithCleanedUser(user);
 
@@ -46,6 +52,9 @@ export const getUserFromToken = async () => {
 
   const user = await prisma.user.findUnique({
     where: { id: payload.id as string },
+    include: {
+      avatar: true,
+    },
   });
 
   if (!user) {
@@ -64,6 +73,9 @@ export async function getUser(): Promise<CleanedUser | null> {
   const user = await prisma.user.findUnique({
     where: {
       id: payload.id as string,
+    },
+    include: {
+      avatar: true,
     },
   });
 

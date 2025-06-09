@@ -16,6 +16,9 @@ export async function POST(req: Request) {
       where: {
         email,
       },
+      include: {
+        avatar: true,
+      },
     });
 
     if (!user || !user.password) {

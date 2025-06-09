@@ -1,13 +1,13 @@
 "use server";
 
-import { Team, User } from "@/generated/prisma";
+import { Team } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken, UserWithRelations } from "@/lib/user";
 
 export async function getTeamWithMembers(): Promise<
   | (Team & {
-      owner: User;
-      members: User[];
+      owner: UserWithRelations;
+      members: UserWithRelations[];
     })
   | null
 > {
@@ -22,8 +22,16 @@ export async function getTeamWithMembers(): Promise<
         id: user.teamId,
       },
       include: {
-        owner: true,
-        members: true,
+        owner: {
+          include: {
+            avatar: true,
+          },
+        },
+        members: {
+          include: {
+            avatar: true,
+          },
+        },
       },
     });
 

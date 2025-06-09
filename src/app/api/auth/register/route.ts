@@ -32,6 +32,9 @@ export async function POST(req: Request) {
           name,
           password: hashedPassword,
         },
+        include: {
+          avatar: true,
+        },
       });
 
       // Create a team for the user

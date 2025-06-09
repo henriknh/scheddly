@@ -1,19 +1,20 @@
 "use client";
 
-import { Team, User } from "@/generated/prisma";
+import { Team } from "@/generated/prisma";
 import { DataTable, DataTableColumnDef } from "@/components/ui/data-table";
 import { Avatar } from "@/components/common/UserAvatar";
 import { Header } from "@/components/common/Header";
+import { UserWithRelations } from "@/lib/user";
 
 interface TeamListProps {
   team: Team & {
-    owner: User;
-    members: User[];
+    owner: UserWithRelations;
+    members: UserWithRelations[];
   };
 }
 
 export function TeamList({ team }: TeamListProps) {
-  const columns: DataTableColumnDef<User, unknown>[] = [
+  const columns: DataTableColumnDef<UserWithRelations, unknown>[] = [
     {
       accessorKey: "name",
       header: "Name",
@@ -21,7 +22,7 @@ export function TeamList({ team }: TeamListProps) {
         const user = row.original;
         return (
           <div className="flex items-center gap-2">
-            <Avatar src={user.avatarUrl} fallback={user.name} />
+            <Avatar src={user.avatar?.path} fallback={user.name} />
             <span>{user.name}</span>
           </div>
         );

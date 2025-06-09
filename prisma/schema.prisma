@@ -45,7 +45,8 @@ model User {
   password             String?
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
-  avatarUrl            String?
+  avatarId             String?   @unique
+  avatar               File?     @relation(fields: [avatarId], references: [id])
   teamId               String?
   team                 Team?     @relation("TeamMember", fields: [teamId], references: [id])
   ownedTeam            Team?     @relation("TeamOwner")
@@ -111,4 +112,13 @@ enum SocialMedia {
   X
   FACEBOOK
   LINKEDIN
+}
+
+model File {
+  id        String   @id @default(cuid())
+  mimeType  String
+  size      Int
+  path      String
+  createdAt DateTime @default(now())
+  user      User?
 }

@@ -1,4 +1,9 @@
+import { File as PrismaFile } from "@/generated/prisma";
+import prisma from "@/lib/prisma";
+import { randomUUID } from "crypto";
 import { Client } from "minio";
+import { extname } from "path";
+import sharp, { ResizeOptions } from "sharp";
 
 if (!process.env.MINIO_ENDPOINT) throw new Error("MINIO_ENDPOINT is required");
 if (!process.env.MINIO_PORT) throw new Error("MINIO_PORT is required");
@@ -18,6 +23,12 @@ export const minioClient = new Client({
 });
 
 export const BUCKET_NAME = process.env.MINIO_BUCKET_NAME;
+
+export interface UploadResult {
+  path: string;
+  mimeType: string;
+  size: number;
+}
 
 export async function ensureBucketExists() {
   const bucketExists = await minioClient.bucketExists(BUCKET_NAME);
@@ -48,62 +59,87 @@ export async function getPresignedUrl(key: string): Promise<string> {
   }
 }
 
-export async function uploadToMinio(
+export async function deleteFromMinio(file: PrismaFile): Promise<void> {
+  await minioClient.removeObject(BUCKET_NAME, file.path);
+}
+
+async function uploadToMinio(
   buffer: Buffer,
-  filename: string,
-  contentType: string
-): Promise<string> {
+  path: string,
+  mimeType: string
+): Promise<UploadResult> {
   try {
     await ensureBucketExists();
-    await minioClient.putObject(BUCKET_NAME, filename, buffer, buffer.length, {
-      "Content-Type": contentType,
+    const size = buffer.length;
+    await minioClient.putObject(BUCKET_NAME, path, buffer, size, {
+      "Content-Type": mimeType,
     });
-    return filename;
+    return { path, mimeType, size: size };
   } catch (error) {
     console.error("Error uploading to MinIO:", error);
     throw error;
   }
 }
 
+export async function uploadAvatar(
+  file: File,
+  userId: string
+): Promise<UploadResult> {
+  const path = `avatars/${userId}${extname(file.name)}`;
+
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+
+  const resizeOptions: ResizeOptions = {
+    width: 256,
+    height: 256,
+    fit: "cover",
+  };
+
+  const resizedImage = await sharp(buffer).resize(resizeOptions).toBuffer();
+
+  return uploadToMinio(resizedImage, path, file.type);
+}
+
 export const uploadImageToMinio = async (
   image?: File | null
-): Promise<string | null> => {
+): Promise<UploadResult | null> => {
   if (!image) {
     return null;
   }
 
-  const imageBytes = await image.arrayBuffer();
-  const imageBuffer = Buffer.from(imageBytes);
-  const uniqueFilename = `post_images/${image.name}-${Date.now()}`;
+  const path = `post_images/${randomUUID()}${extname(image.name)}`;
 
-  await uploadToMinio(imageBuffer, uniqueFilename, image.type);
-  return uniqueFilename;
+  const bytes = await image.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+
+  return uploadToMinio(buffer, path, image.type);
 };
 
 export const uploadImagesToMinio = async (
   images?: File[] | null
-): Promise<string[]> => {
+): Promise<UploadResult[]> => {
   // TODO: Fix why this is calling uploadImageToMinio an extra time with undefined image
 
   if (images && images.length > 0) {
     return (await Promise.all(images.map(uploadImageToMinio))).filter(
       (url) => url !== null
-    ) as string[];
+    ) as UploadResult[];
   }
   return [];
 };
 
 export const uploadVideoToMinio = async (
   video?: File | null
-): Promise<string | null> => {
+): Promise<UploadResult | null> => {
   if (!video) {
     return null;
   }
 
-  const videoBytes = await video.arrayBuffer();
-  const videoBuffer = Buffer.from(videoBytes);
-  const uniqueFilename = `post_videos/${video.name}-${Date.now()}`;
+  const uniqueFilename = `post_videos/${randomUUID()}${extname(video.name)}`;
 
-  await uploadToMinio(videoBuffer, uniqueFilename, video.type);
-  return uniqueFilename;
+  const bytes = await video.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+
+  return uploadToMinio(buffer, uniqueFilename, video.type);
 };

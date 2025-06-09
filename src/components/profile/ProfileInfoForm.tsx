@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,8 +21,12 @@ export function ProfileInfoForm() {
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
-    avatarUrl: user?.avatarUrl || "",
+    avatar: user?.avatar?.path || "",
   });
+
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, avatar: user?.avatar?.path || "" }));
+  }, [user]);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,7 +36,7 @@ export function ProfileInfoForm() {
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setFormData((prev) => ({ ...prev, avatarUrl: reader.result as string }));
+      setFormData((prev) => ({ ...prev, avatar: reader.result as string }));
     };
     reader.readAsDataURL(file);
   };
@@ -49,7 +53,7 @@ export function ProfileInfoForm() {
         const formDataToSend = new FormData();
         formDataToSend.append("name", formData.name);
         formDataToSend.append("email", formData.email);
-        formDataToSend.append("avatarUrl", selectedImage);
+        formDataToSend.append("avatar", selectedImage);
 
         response = await fetch("/api/user/profile", {
           method: "PATCH",
@@ -107,7 +111,7 @@ export function ProfileInfoForm() {
             aria-label="Change profile image"
           >
             <div className="relative">
-              <Avatar src={formData.avatarUrl} fallback={formData.name} isBig />
+              <Avatar src={formData.avatar} fallback={formData.name} isBig />
               <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-medium rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-center text-xs">
                 Update avatar
               </div>
