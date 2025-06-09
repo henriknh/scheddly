@@ -20,6 +20,9 @@ export async function getSocialMediaIntegrations(): Promise<
       include: {
         brand: true,
       },
+      orderBy: {
+        socialMedia: "asc",
+      },
     });
 
     return integrations;
