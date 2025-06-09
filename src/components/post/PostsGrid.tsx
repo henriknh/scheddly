@@ -226,7 +226,10 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
   const getBrandBadge = (post: PostWithRelations) => {
     const brandNames = post.socialMediaPosts
       .map((socialMediaPost) => {
-        return socialMediaPost?.socialMediaIntegration?.brand?.name;
+        return (
+          socialMediaPost?.socialMediaIntegration?.brand?.name ||
+          socialMediaPost?.socialMediaIntegration?.accountName
+        );
       })
       .filter((brandName) => brandName !== null);
 

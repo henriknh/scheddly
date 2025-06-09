@@ -201,7 +201,6 @@ export const pinterest: SocialMediaApiFunctions = {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
-        Accept: "application/json",
       },
     });
 
@@ -211,30 +210,34 @@ export const pinterest: SocialMediaApiFunctions = {
 
     const {
       id: accountId,
-      business_name: name,
-      profile_image: avatarUrl,
+      business_name: accountName,
+      profile_image: accountAvatarUrl,
     } = await response.json();
 
     return {
       accountId,
-      name,
-      avatarUrl,
+      accountName,
+      accountAvatarUrl,
     };
   },
 
-  updateAccountInfo: async (id: string): Promise<void> => {
-    const accessToken = await pinterest.getValidAccessToken(id);
+  updateAccountInfo: async (
+    socialMediaIntegrationId: string
+  ): Promise<void> => {
+    const accessToken = await pinterest.getValidAccessToken(
+      socialMediaIntegrationId
+    );
 
     const accountInfo = await pinterest.fetchAccountInfoByAccessToken(
       accessToken
     );
 
     await prisma.socialMediaIntegration.update({
-      where: { id },
+      where: { id: socialMediaIntegrationId },
       data: {
         accountId: accountInfo.accountId,
-        name: accountInfo.name,
-        avatarUrl: accountInfo.avatarUrl,
+        accountName: accountInfo.accountName,
+        accountAvatarUrl: accountInfo.accountAvatarUrl,
       },
     });
   },

@@ -79,8 +79,8 @@ model SocialMediaIntegration {
   teamId                            String
   team                              Team        @relation(fields: [teamId], references: [id])
   accountId                         String
-  name                              String
-  avatarUrl                         String?
+  accountName                       String
+  accountAvatarUrl                  String?
   socialMediaPosts                  SocialMediaPost[]
 
   @@unique([socialMedia, accountId, teamId])

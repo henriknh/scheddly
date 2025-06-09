@@ -130,16 +130,16 @@ export function BrandsWithIntegrationsList({
                         <div className="flex items-center gap-2">
                           <Avatar className="h-4 w-4">
                             <AvatarImage
-                              src={integration.avatarUrl || undefined}
-                              alt={integration.name}
+                              src={integration.accountAvatarUrl || undefined}
+                              alt={integration.accountName}
                             />
                             <AvatarFallback>
-                              {integration.name.charAt(0)}
+                              {integration.accountName.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex flex-col">
                             <span className="text-sm font-medium">
-                              {integration.name}
+                              {integration.accountName}
                             </span>
                           </div>
 

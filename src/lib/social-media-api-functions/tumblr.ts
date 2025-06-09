@@ -174,47 +174,52 @@ export const tumblr: SocialMediaApiFunctions = {
   fetchAccountInfoByAccessToken: async (
     accessToken: string
   ): Promise<AccountInfo> => {
+    console.log("accessToken", accessToken);
+
     const response = await fetch(`${tumblrApiUrl}/user/info`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
       },
     });
 
     if (!response.ok) {
+      const error = await response.json();
+      console.error("Failed to fetch account info", error);
       throw new Error("Failed to fetch account info");
     }
 
     const data = await response.json();
 
+    console.log({
+      accountId: data.response.user.name,
+      accountName: data.response.user.name,
+      accountAvatarUrl: data.response.user.avatar_url,
+    });
+
     return {
       accountId: data.response.user.name,
-      name: data.response.user.name,
-      avatarUrl: data.response.user.avatar_url,
+      accountName: data.response.user.name,
+      accountAvatarUrl: data.response.user.avatar_url,
     };
   },
 
-  updateAccountInfo: async (id: string): Promise<void> => {
-    const integration = await prisma.socialMediaIntegration.findFirst({
-      where: {
-        id,
-      },
-    });
-
-    if (!integration?.accessToken) {
-      throw new Error("Integration not found or missing access token");
-    }
-
-    const accountInfo = await tumblr.fetchAccountInfoByAccessToken(
-      integration.accessToken
+  updateAccountInfo: async (
+    socialMediaIntegrationId: string
+  ): Promise<void> => {
+    const accessToken = await tumblr.getValidAccessToken(
+      socialMediaIntegrationId
     );
 
+    const accountInfo = await tumblr.fetchAccountInfoByAccessToken(accessToken);
+
     await prisma.socialMediaIntegration.update({
-      where: { id },
+      where: { id: socialMediaIntegrationId },
       data: {
         accountId: accountInfo.accountId,
-        name: accountInfo.name,
-        avatarUrl: accountInfo.avatarUrl,
+        accountName: accountInfo.accountName,
+        accountAvatarUrl: accountInfo.accountAvatarUrl,
       },
     });
   },

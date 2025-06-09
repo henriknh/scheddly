@@ -36,7 +36,8 @@ export function BrandsWithIntegrationsAndTheirStatus({
         ([brandId, socialMediaPosts]) => (
           <div key={brandId} className="space-y-2">
             <SubHeader>
-              {socialMediaPosts[0].socialMediaIntegration.brand?.name}
+              {socialMediaPosts[0].socialMediaIntegration.brand?.name ||
+                socialMediaPosts[0].socialMediaIntegration.accountName}
             </SubHeader>
             <div className="flex flex-wrap gap-1">
               {socialMediaPosts.map(
