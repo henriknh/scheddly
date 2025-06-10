@@ -89,7 +89,11 @@ export function TextPostForm({ integrations, post }: TextPostFormProps) {
           className="min-h-[200px]"
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          maxLength={280}
         />
+        <div className="text-sm text-muted-foreground text-right">
+          {content.length}/280 characters
+        </div>
       </div>
 
       <div className="space-y-4">

@@ -171,7 +171,7 @@ export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
         </div>
 
         <div className="flex space-x-2 h-[400px]">
-          <div className="aspect-[9/16] rounded-lg border-2 border-border overflow-hidden max-h-[400px]">
+          <div className="aspect-video rounded-lg border-2 border-border overflow-hidden max-h-[400px]">
             {video ? (
               <div className="relative w-full h-full">
                 <video
@@ -210,7 +210,7 @@ export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
         </div>
         {video && (
           <div className="flex space-x-2">
-            <div className="aspect-[9/16] rounded-lg border-2 border-border overflow-hidden max-h-[400px]">
+            <div className="aspect-video rounded-lg border-2 border-border overflow-hidden max-h-[400px]">
               {videoCover ? (
                 <img
                   src={URL.createObjectURL(videoCover)}
@@ -250,7 +250,11 @@ export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
             setDescription(e.target.value)
           }
+          maxLength={280}
         />
+        <div className="text-sm text-muted-foreground text-right">
+          {description.length}/280 characters
+        </div>
       </div>
 
       <div className="space-y-4">

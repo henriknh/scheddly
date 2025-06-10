@@ -150,7 +150,11 @@ export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
             setCaption(e.target.value)
           }
+          maxLength={280}
         />
+        <div className="text-sm text-muted-foreground text-right">
+          {caption.length}/280 characters
+        </div>
       </div>
 
       <div className="space-y-4">
