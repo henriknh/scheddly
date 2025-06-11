@@ -31,7 +31,7 @@ export function CreateNewPost() {
           <Card className="hover:bg-accent/50 transition-colors cursor-pointer h-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TextIcon className="h-5 w-5" />
+                <TextIcon className="h-8 w-8" />
                 Text Post
               </CardTitle>
               <CardDescription>
@@ -68,7 +68,7 @@ export function CreateNewPost() {
           <Card className="hover:bg-accent/50 transition-colors cursor-pointer h-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ImageIcon className="h-5 w-5" />
+                <ImageIcon className="h-8 w-8" />
                 Image Post
               </CardTitle>
               <CardDescription>
@@ -105,7 +105,7 @@ export function CreateNewPost() {
           <Card className="hover:bg-accent/50 transition-colors cursor-pointer h-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <VideoIcon className="h-5 w-5" />
+                <VideoIcon className="h-8 w-8" />
                 Video Post
               </CardTitle>
               <CardDescription>
