@@ -12,7 +12,7 @@
     --sidebar-foreground: 260 20% 20%;
     --popover: 0 0% 100%;
     --popover-foreground: 260 20% 20%;
-    --primary: 260 30% 55%;
+    --primary: 270 45% 45%;
     --primary-foreground: 0 0% 98%;
     --secondary: 260 20% 96%;
     --secondary-foreground: 260 20% 20%;
@@ -24,13 +24,13 @@
     --destructive-foreground: 0 0% 98%;
     --border: 260 10% 90%;
     --input: 260 10% 90%;
-    --ring: 260 30% 55%;
+    --ring: 270 45% 45%;
     --radius: 1rem;
-    --chart-1: 260 30% 55%;
-    --chart-2: 260 40% 65%;
-    --chart-3: 260 20% 45%;
-    --chart-4: 260 50% 75%;
-    --chart-5: 260 60% 85%;
+    --chart-1: 270 45% 45%;
+    --chart-2: 270 40% 65%;
+    --chart-3: 270 20% 45%;
+    --chart-4: 270 50% 75%;
+    --chart-5: 270 60% 85%;
 
     /* Status colors */
     --success: 142 72% 29%;
@@ -50,7 +50,7 @@
     --card-foreground: 260 10% 98%;
     --popover: 260 20% 15%;
     --popover-foreground: 260 10% 98%;
-    --primary: 260 30% 65%;
+    --primary: 270 45% 65%;
     --primary-foreground: 260 20% 10%;
     --secondary: 260 20% 25%;
     --secondary-foreground: 260 10% 98%;
@@ -62,12 +62,12 @@
     --destructive-foreground: 0 0% 98%;
     --border: 260 20% 25%;
     --input: 260 20% 25%;
-    --ring: 260 30% 65%;
-    --chart-1: 260 30% 65%;
-    --chart-2: 260 40% 75%;
-    --chart-3: 260 20% 55%;
-    --chart-4: 260 50% 85%;
-    --chart-5: 260 60% 95%;
+    --ring: 270 45% 65%;
+    --chart-1: 270 45% 65%;
+    --chart-2: 270 40% 75%;
+    --chart-3: 270 20% 55%;
+    --chart-4: 270 50% 85%;
+    --chart-5: 270 60% 95%;
 
     /* Status colors */
     --success: 142 72% 46%;

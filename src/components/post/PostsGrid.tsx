@@ -57,6 +57,7 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [columns, setColumns] = useState<number>(0);
   const [cellSize, setCellSize] = useState<number>(300);
+  const [daysToShow, setDaysToShow] = useState<number>(30);
 
   const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
   const [dateTo, setDateTo] = useState<Date | undefined>(undefined);
@@ -84,6 +85,7 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
       setColumns(columns);
       const cellSize = grid.offsetWidth / columns;
       setCellSize(cellSize);
+      setDaysToShow(Math.floor(grid.offsetWidth / 46));
     });
     observer.observe(grid);
     return () => {
@@ -208,7 +210,7 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
       return (
         <Tooltip>
           <TooltipTrigger>
-            <Badge variant="info" className="text-nowrap">
+            <Badge className="text-nowrap">
               {formatDateIn(post.scheduledAt!)}
             </Badge>
           </TooltipTrigger>
@@ -333,10 +335,15 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
   }, []);
 
   return (
-    <div className="space-y-8">
+    <div
+      className="space-y-8 transition-opacity duration-75"
+      style={{
+        opacity: columns > 0 ? 1 : 0,
+      }}
+    >
       <div className="space-y-4">
-        <div className="grid grid-cols-[repeat(30,1fr)] gap-2">
-          {next30Days.map((date, index) => {
+        <div className="flex justify-between">
+          {next30Days.slice(0, daysToShow).map((date, index) => {
             const prevDate = new Date(date);
             prevDate.setDate(prevDate.getDate() - 1);
 
@@ -365,12 +372,12 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
                 </div>
                 <Badge
                   key={date.toISOString()}
-                  variant={dateHasScheduledPosts ? "info" : "outline"}
+                  variant={dateHasScheduledPosts ? "default" : "outline"}
                   onClick={() => {
                     setDateFrom(date);
                     setDateTo(nextDate);
                   }}
-                  className="cursor-pointer flex items-center justify-center"
+                  className="cursor-pointer flex items-center justify-center w-9"
                 >
                   {date.getDate()}
                 </Badge>
@@ -507,10 +514,9 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
 
       <div
         ref={ref}
-        className="grid gap-8 transition-opacity duration-300"
+        className="grid gap-8"
         style={{
           gridTemplateColumns: `repeat(${columns}, 1fr)`,
-          opacity: columns > 0 ? 1 : 0,
         }}
       >
         {posts.length > 0 ? (
