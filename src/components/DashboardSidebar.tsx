@@ -184,7 +184,7 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
                 className="flex items-center gap-2"
               >
                 <Avatar
-                  src={user?.avatar?.path || undefined}
+                  src={user?.avatar?.id || undefined}
                   fallback={user?.name || undefined}
                 />
                 <span className="truncate">{user?.name || "User"}</span>

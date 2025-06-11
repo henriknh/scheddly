@@ -24,19 +24,19 @@ export function VideoPostDetails({ post }: VideoPostDetailsProps) {
         <CardContent className="space-y-4">
           <div className="flex space-x-4">
             <div className="aspect-[9/16] rounded-lg border-2 border-border overflow-hidden max-h-[400px]">
-              {post.videoUrl && (
+              {post.video && (
                 <video
-                  src={`/api/file/${post.videoUrl}`}
+                  src={`/api/file/${post.video.id}`}
                   className="w-full h-full object-cover bg-black"
                   controls
                   playsInline
                 />
               )}
             </div>
-            {post.videoCoverUrl && (
+            {post.videoCover && (
               <div className="aspect-[9/16] rounded-lg border-2 border-border overflow-hidden max-h-[400px]">
                 <Image
-                  src={`/api/file/${post.videoCoverUrl}`}
+                  src={`/api/file/${post.videoCover.id}`}
                   alt="Video cover"
                   fill
                   className="object-cover"

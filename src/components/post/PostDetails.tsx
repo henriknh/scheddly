@@ -1,23 +1,14 @@
 "use client";
 
+import { PostWithRelations } from "@/app/api/post/types";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Post, SocialMediaPost } from "@/generated/prisma";
+import { SocialMediaPost } from "@/generated/prisma";
 import { format } from "date-fns";
 import { FileText, ImageIcon, Video } from "lucide-react";
 
 interface PostDetailsProps {
-  post: Post & {
-    socialMediaPosts: (SocialMediaPost & {
-      socialMediaIntegration: {
-        socialMedia: string;
-        brand?: {
-          name: string;
-        } | null;
-        accountName: string;
-      };
-    })[];
-  };
+  post: PostWithRelations;
 }
 
 export function PostDetails({ post }: PostDetailsProps) {
@@ -53,12 +44,12 @@ export function PostDetails({ post }: PostDetailsProps) {
         <CardContent className="space-y-4">
           <p className="text-sm">{post.description}</p>
 
-          {post.postType === "IMAGE" && post.imageUrls.length > 0 && (
+          {post.postType === "IMAGE" && post.images.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {post.imageUrls.map((image, index) => (
+              {post.images.map((image, index) => (
                 <div key={index} className="relative aspect-square">
                   <img
-                    src={image}
+                    src={`/api/file/${image.id}`}
                     alt={`Post image ${index + 1}`}
                     className="object-cover rounded-lg"
                   />
@@ -67,10 +58,10 @@ export function PostDetails({ post }: PostDetailsProps) {
             </div>
           )}
 
-          {post.postType === "VIDEO" && post.videoUrl && (
+          {post.postType === "VIDEO" && post.video && (
             <div className="relative aspect-video">
               <video
-                src={post.videoUrl}
+                src={`/api/file/${post.video.id}`}
                 controls
                 className="w-full h-full rounded-lg"
               />

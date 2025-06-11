@@ -139,6 +139,9 @@ export async function getPosts(
             },
           },
         },
+        images: true,
+        video: true,
+        videoCover: true,
       },
     });
 

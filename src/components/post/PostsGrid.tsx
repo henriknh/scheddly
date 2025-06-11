@@ -490,16 +490,16 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
                   {getStatusBadge(post)}
                 </div>
 
-                {post.postType === PostType.VIDEO && (
+                {post.postType === PostType.VIDEO && post.videoCover && (
                   <img
-                    src={`/api/file/${post.videoCoverUrl}`}
+                    src={`/api/file/${post.videoCover.id}`}
                     alt={post.description}
                     className="absolute inset-0 rounded-xl w-full h-full object-cover"
                   />
                 )}
 
                 {post.postType === PostType.IMAGE &&
-                  post.imageUrls.length > 0 && (
+                  post.images?.length > 0 && (
                     <div className="absolute inset-0">
                       <PostsGridImageCarousel post={post} />
                     </div>

@@ -2,12 +2,13 @@
 
 import { PostType, SocialMediaIntegration } from "@/generated/prisma";
 import {
-  uploadImagesToMinio,
-  uploadImageToMinio,
-  uploadVideoToMinio,
+  uploadPostImage,
+  uploadPostVideo,
+  uploadPostVideoCover,
 } from "@/lib/minio";
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
+import { getPost } from "./get-post";
 import { postPost } from "./post-post";
 
 export interface CreatePostParams {
@@ -28,56 +29,123 @@ export async function createPost({
   videoCover,
   scheduledAt,
   socialMediaIntegrations,
-}: CreatePostParams) {
+}: CreatePostParams): Promise<void> {
   const user = await getUserFromToken();
 
   if (!user || !user.id || !user.teamId) {
     throw new Error("Unauthorized");
   }
 
-  const imageUrls = await uploadImagesToMinio(images);
-
-  if (postType === PostType.IMAGE && !imageUrls.length) {
+  if (postType === PostType.IMAGE && !images?.length) {
     throw new Error("Images are required for image posts");
   }
 
-  const videoCoverUrl = await uploadImageToMinio(videoCover);
-  if (postType === PostType.VIDEO && !videoCoverUrl) {
+  if (postType === PostType.VIDEO && !videoCover) {
     throw new Error("Video is required for video posts");
   }
 
-  const videoUrl = await uploadVideoToMinio(video);
-  if (postType === PostType.VIDEO && !videoUrl) {
+  if (postType === PostType.VIDEO && !video) {
     throw new Error("Video is required for video posts");
   }
 
-  const newPost = await prisma.post.create({
-    data: {
-      socialMediaPosts: {
-        create: socialMediaIntegrations.map((integration) => ({
-          socialMediaIntegrationId: integration.id,
-        })),
-      },
-      teamId: user.teamId,
-      description,
-      postType,
-      imageUrls,
-      videoUrl,
-      videoCoverUrl,
-      scheduledAt,
-    },
-    include: {
-      socialMediaPosts: {
-        include: {
-          socialMediaIntegration: true,
+  await prisma.$transaction(async (tx) => {
+    const newPost = await tx.post.create({
+      data: {
+        socialMediaPosts: {
+          create: socialMediaIntegrations.map((integration) => ({
+            socialMediaIntegrationId: integration.id,
+          })),
         },
+        teamId: user.teamId!,
+        description,
+        postType,
+
+        scheduledAt,
       },
-    },
+      include: {
+        socialMediaPosts: {
+          include: {
+            socialMediaIntegration: {
+              include: {
+                brand: true,
+              },
+            },
+          },
+        },
+        images: true,
+        video: true,
+        videoCover: true,
+      },
+    });
+
+    if (images?.length) {
+      await Promise.all(
+        images?.map(async (image) => {
+          const { path, mimeType, size } = await uploadPostImage(
+            image,
+            newPost.id
+          );
+
+          return await tx.file.create({
+            data: {
+              path,
+              mimeType,
+              size,
+              postId: newPost.id,
+            },
+          });
+        })
+      );
+    }
+
+    if (videoCover && video) {
+      const handleVideoCover = async () => {
+        const { path, mimeType, size } = await uploadPostVideoCover(
+          videoCover,
+          newPost.id
+        );
+
+        return await tx.file.create({
+          data: {
+            path,
+            mimeType,
+            size,
+            postVideoCover: {
+              connect: {
+                id: newPost.id,
+              },
+            },
+          },
+        });
+      };
+
+      const handleVideo = async () => {
+        const { path, mimeType, size } = await uploadPostVideo(
+          video,
+          newPost.id
+        );
+
+        return await tx.file.create({
+          data: {
+            path,
+            mimeType,
+            size,
+            postVideo: {
+              connect: {
+                id: newPost.id,
+              },
+            },
+          },
+        });
+      };
+
+      await Promise.all([handleVideoCover(), handleVideo()]);
+    }
+
+    if (!newPost.scheduledAt) {
+      await postPost(newPost);
+    }
+
+    return getPost(newPost.id);
   });
-
-  if (!newPost.scheduledAt) {
-    await postPost(newPost);
-  }
-
-  return newPost;
 }

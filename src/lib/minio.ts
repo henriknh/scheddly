@@ -1,5 +1,4 @@
 import { File as PrismaFile } from "@/generated/prisma";
-import prisma from "@/lib/prisma";
 import { randomUUID } from "crypto";
 import { Client } from "minio";
 import { extname } from "path";
@@ -63,7 +62,7 @@ export async function deleteFromMinio(file: PrismaFile): Promise<void> {
   await minioClient.removeObject(BUCKET_NAME, file.path);
 }
 
-async function uploadToMinio(
+async function uploadBuffer(
   buffer: Buffer,
   path: string,
   mimeType: string
@@ -79,6 +78,13 @@ async function uploadToMinio(
     console.error("Error uploading to MinIO:", error);
     throw error;
   }
+}
+
+async function uploadFile(file: File, path: string) {
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+
+  return uploadBuffer(buffer, path, file.type);
 }
 
 export async function uploadAvatar(
@@ -98,7 +104,31 @@ export async function uploadAvatar(
 
   const resizedImage = await sharp(buffer).resize(resizeOptions).toBuffer();
 
-  return uploadToMinio(resizedImage, path, file.type);
+  return uploadBuffer(resizedImage, path, file.type);
+}
+
+export async function uploadPostImage(
+  file: File,
+  postId: string
+): Promise<UploadResult> {
+  const path = `post_images/${postId}${extname(file.name)}`;
+  return uploadFile(file, path);
+}
+
+export async function uploadPostVideoCover(
+  file: File,
+  postId: string
+): Promise<UploadResult> {
+  const path = `post_videos/${postId}_cover${extname(file.name)}`;
+  return uploadFile(file, path);
+}
+
+export async function uploadPostVideo(
+  file: File,
+  postId: string
+): Promise<UploadResult> {
+  const path = `post_videos/${postId}${extname(file.name)}`;
+  return uploadFile(file, path);
 }
 
 export const uploadImageToMinio = async (
@@ -113,7 +143,7 @@ export const uploadImageToMinio = async (
   const bytes = await image.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
-  return uploadToMinio(buffer, path, image.type);
+  return uploadBuffer(buffer, path, image.type);
 };
 
 export const uploadImagesToMinio = async (
@@ -141,5 +171,5 @@ export const uploadVideoToMinio = async (
   const bytes = await video.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
-  return uploadToMinio(buffer, uniqueFilename, video.type);
+  return uploadBuffer(buffer, uniqueFilename, video.type);
 };

@@ -23,13 +23,13 @@ export function ImagePostDetails({ post }: ImagePostDetailsProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {post.imageUrls.map((imageUrl, index) => (
+            {post.images.map((image, index) => (
               <div
                 key={index}
                 className="relative aspect-square rounded-lg border-2 border-border overflow-hidden"
               >
                 <Image
-                  src={`/api/file/${imageUrl}`}
+                  src={`/api/file/${image.id}`}
                   alt={`Image ${index + 1}`}
                   fill
                   className="object-cover"

@@ -43,17 +43,17 @@ export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
       );
 
       const fetchVideo = async () => {
-        if (post.videoUrl) {
-          const response = await fetch(`/api/file/${post.videoUrl}`);
+        if (post.video) {
+          const response = await fetch(`/api/file/${post.video.id}`);
           const blob = await response.blob();
-          setVideo(new File([blob], post.videoUrl));
+          setVideo(new File([blob], post.video.path));
         }
       };
       const fetchVideoCover = async () => {
-        if (post.videoCoverUrl) {
-          const response = await fetch(`/api/file/${post.videoCoverUrl}`);
+        if (post.videoCover) {
+          const response = await fetch(`/api/file/${post.videoCover.id}`);
           const blob = await response.blob();
-          setVideoCover(new File([blob], post.videoCoverUrl));
+          setVideoCover(new File([blob], post.videoCover.path));
         }
       };
 

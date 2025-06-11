@@ -13,25 +13,25 @@ export function PostsGridImageCarousel({ post }: PostsGridImageCarouselProps) {
 
   const handleNextImage = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setCurrentImage((currentImage + 1) % post.imageUrls.length);
+    setCurrentImage((currentImage + 1) % post.images.length);
   };
 
   const handlePreviousImage = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setCurrentImage(
-      (currentImage - 1 + post.imageUrls.length) % post.imageUrls.length
+      (currentImage - 1 + post.images.length) % post.images.length
     );
   };
 
   return (
     <div className="relative h-full w-full">
       <img
-        src={`/api/file/${post.imageUrls[currentImage]}`}
+        src={`/api/file/${post.images[currentImage].id}`}
         alt={post.description}
         className="rounded-xl w-full h-full object-cover"
       />
 
-      {post.imageUrls.length > 1 && (
+      {post.images.length > 1 && (
         <div className="absolute inset-0 flex items-center justify-between p-4">
           <Button
             size="icon"

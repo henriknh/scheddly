@@ -8,6 +8,7 @@ import {
   SocialMediaApiFunctions,
   Tokens,
 } from "./social-media-api-functions";
+import { getPresignedUrl } from "../minio";
 
 const client_id =
   process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_TUMBLR_CLIENT_ID;
@@ -174,8 +175,6 @@ export const tumblr: SocialMediaApiFunctions = {
   fetchAccountInfoByAccessToken: async (
     accessToken: string
   ): Promise<AccountInfo> => {
-    console.log("accessToken", accessToken);
-
     const response = await fetch(`${tumblrApiUrl}/user/info`, {
       method: "GET",
       headers: {
@@ -191,12 +190,6 @@ export const tumblr: SocialMediaApiFunctions = {
     }
 
     const data = await response.json();
-
-    console.log({
-      accountId: data.response.user.name,
-      accountName: data.response.user.name,
-      accountAvatarUrl: data.response.user.avatar_url,
-    });
 
     return {
       accountId: data.response.user.name,
@@ -292,10 +285,10 @@ export const tumblr: SocialMediaApiFunctions = {
     try {
       // For multiple images, we'll create a photoset
       const mediaIdentifiers = await Promise.all(
-        post.imageUrls.map(async (imageUrl, index) => {
+        post.images.map(async (image, index) => {
           const identifier = `image-${index}`;
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/file/${imageUrl}`
+            `${process.env.NEXT_PUBLIC_API_URL}/api/file/${image.id}`
           );
           const blob = await response.blob();
 
@@ -370,7 +363,7 @@ export const tumblr: SocialMediaApiFunctions = {
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
   ) => {
-    if (!post.videoUrl) {
+    if (!post.video) {
       throw new Error("No video URL provided");
     }
 
@@ -383,7 +376,9 @@ export const tumblr: SocialMediaApiFunctions = {
 
     try {
       // Get the video data
-      const videoResponse = await fetch(post.videoUrl);
+      const videoResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/file/${post.video.id}`
+      );
       const videoBlob = await videoResponse.blob();
 
       // Add the video file to formData

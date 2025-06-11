@@ -278,13 +278,13 @@ export const pinterest: SocialMediaApiFunctions = {
       // board_section_id: socialMediaPost?.boardSectionId,
       media_source: {
         source_type: "multiple_image_urls",
-        // items: post.imageUrls.map((imageUrl) => ({
+        // items: await Promise.all(post.images.map(async (image) => ({
         //   title: "string",
         //   description: "string",
         //   link: "string",
-        //   // url: imageUrl,
-        //   url: "https://commons.wikimedia.org/wiki/File:PNG_Test.png",
-        // })),
+        //     url: await getPresignedUrl(image.path),
+        //   })),
+        // ),
         items: [
           {
             title: "string",

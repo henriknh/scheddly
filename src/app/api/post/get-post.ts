@@ -26,6 +26,9 @@ export async function getPost(id: string): Promise<PostWithRelations> {
             },
           },
         },
+        images: true,
+        video: true,
+        videoCover: true,
       },
     });
 

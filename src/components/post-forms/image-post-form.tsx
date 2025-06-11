@@ -42,10 +42,10 @@ export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
       );
 
       Promise.all(
-        post.imageUrls.map(async (imageUrl) => {
-          const response = await fetch(`/api/file/${imageUrl}`);
+        post.images.map(async (image) => {
+          const response = await fetch(`/api/file/${image.id}`);
           const blob = await response.blob();
-          return new File([blob], imageUrl);
+          return new File([blob], image.path);
         })
       ).then((files) => setImages(files));
     }

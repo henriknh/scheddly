@@ -26,9 +26,11 @@ model Post {
   id               String            @id @default(cuid())
   description      String
   postType         PostType
-  imageUrls        String[]          @default([])
-  videoUrl         String?
-  videoCoverUrl    String?
+  images           File[]            @relation("PostImages")
+  video            File?             @relation("PostVideo", fields: [videoId], references: [id])
+  videoId          String?           @unique
+  videoCover       File?             @relation("PostVideoCover", fields: [videoCoverId], references: [id])
+  videoCoverId     String?           @unique
   scheduledAt      DateTime?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
@@ -115,10 +117,14 @@ enum SocialMedia {
 }
 
 model File {
-  id        String   @id @default(cuid())
-  mimeType  String
-  size      Int
-  path      String
-  createdAt DateTime @default(now())
-  user      User?
+  id            String   @id @default(cuid())
+  mimeType      String
+  size          Int
+  path          String
+  createdAt     DateTime @default(now())
+  user          User?
+  postImages    Post?    @relation("PostImages", fields: [postId], references: [id])
+  postId        String?  @unique
+  postVideo     Post?    @relation("PostVideo")
+  postVideoCover Post?   @relation("PostVideoCover")
 }
