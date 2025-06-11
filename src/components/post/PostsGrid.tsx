@@ -1,7 +1,14 @@
 "use client";
 
 import { PostWithRelations } from "@/app/api/post/types";
+import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -9,14 +16,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Brand, Post, PostType, SocialMedia } from "@/generated/prisma";
+import {
+  Brand,
+  Post,
+  PostType,
+  SocialMedia,
+  SocialMediaIntegration,
+} from "@/generated/prisma";
 import { formatDateIn, formatDateTime } from "@/lib/format-date";
 import { getPostTypeName } from "@/lib/post-type-name";
-import { socialMediaPlatforms } from "@/lib/social-media-platforms";
+import {
+  getSocialMediaPlatform,
+  socialMediaPlatforms,
+} from "@/lib/social-media-platforms";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon, ImageIcon, TextIcon, VideoIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -224,16 +239,42 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
   };
 
   const getBrandBadge = (post: PostWithRelations) => {
-    const brandNames = post.socialMediaPosts
-      .map((socialMediaPost) => {
-        return (
-          socialMediaPost?.socialMediaIntegration?.brand?.name ||
-          socialMediaPost?.socialMediaIntegration?.accountName
-        );
-      })
-      .filter((brandName) => brandName !== null);
+    const socialMediaIntegrations = post.socialMediaPosts.map(
+      (socialMediaPost) => {
+        return socialMediaPost?.socialMediaIntegration;
+      }
+    );
 
-    if (brandNames.length === 0) {
+    const groupedSocialMediaIntegrationsByBrand =
+      socialMediaIntegrations.reduce(
+        (
+          acc: Record<
+            string,
+            { brand: Brand; socialMediaIntegrations: SocialMediaIntegration[] }
+          >,
+          socialMediaIntegration: SocialMediaIntegrationWithRelations
+        ) => {
+          const brand = socialMediaIntegration?.brand;
+
+          if (!brand) {
+            return acc;
+          }
+
+          if (!acc[brand.id]) {
+            acc[brand.id] = {
+              brand: brand,
+              socialMediaIntegrations: [],
+            };
+          }
+
+          acc[brand.id].socialMediaIntegrations.push(socialMediaIntegration);
+
+          return acc;
+        },
+        {}
+      );
+
+    if (Object.keys(groupedSocialMediaIntegrationsByBrand).length === 0) {
       return null;
     }
 
@@ -241,46 +282,42 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
       <Tooltip>
         <TooltipTrigger>
           <Badge variant="outline" className="bg-secondary">
-            {brandNames[0]}
-            {brandNames.length > 1 ? `+${brandNames.length - 1}` : ""}
+            {Object.values(groupedSocialMediaIntegrationsByBrand)[0].brand.name}
+            {Object.keys(groupedSocialMediaIntegrationsByBrand).length > 1
+              ? `+${
+                  Object.keys(groupedSocialMediaIntegrationsByBrand).length - 1
+                }`
+              : ""}
           </Badge>
         </TooltipTrigger>
-        <TooltipContent>{brandNames.join(", ")}</TooltipContent>
+        <TooltipContent>
+          <div className="flex flex-col gap-2">
+            {Object.values(groupedSocialMediaIntegrationsByBrand).map(
+              (group) => {
+                return (
+                  <div key={group.brand.id} className="flex flex-col gap-1">
+                    <div>{group.brand.name}</div>
+                    <div className="flex items-center gap-1">
+                      {group.socialMediaIntegrations.map((s) => {
+                        return (
+                          <img
+                            key={s.id}
+                            src={getSocialMediaPlatform(s.socialMedia)?.icon}
+                            alt={s.socialMedia}
+                            width={16}
+                            height={16}
+                            className="fill-white"
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        </TooltipContent>
       </Tooltip>
-    );
-  };
-
-  const getSocialMediaIcons = (post: PostWithRelations) => {
-    const socialMediaIcons = post.socialMediaPosts.map((socialMediaPost) => {
-      return socialMediaPost.socialMediaIntegration.socialMedia;
-    });
-
-    const socialMediaPlatformsArray = socialMediaPlatforms.filter((platform) =>
-      socialMediaIcons.includes(platform.id)
-    );
-
-    if (socialMediaPlatformsArray.length === 0) {
-      return null;
-    }
-
-    return (
-      <div className="flex items-center gap-2">
-        {socialMediaPlatformsArray.map((socialMediaPlatform) => (
-          <Tooltip key={socialMediaPlatform.id}>
-            <TooltipTrigger>
-              <div className="flex items-center justify-center h-4 w-4 rounded-full bg-secondary">
-                <Image
-                  src={socialMediaPlatform.icon}
-                  alt={socialMediaPlatform.name}
-                  width={16}
-                  height={16}
-                />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>{socialMediaPlatform.name}</TooltipContent>
-          </Tooltip>
-        ))}
-      </div>
     );
   };
 
@@ -296,150 +333,33 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
   }, []);
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-2">
-        <Select
-          value={searchParams.get("brandId") || "all"}
-          onValueChange={(value) => updateQueryParam("brandId", value)}
-        >
-          <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Filter by brand" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All brands</SelectItem>
-            {brands.map((brand) => (
-              <SelectItem key={brand.id} value={brand.id}>
-                {brand.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="space-y-8">
+      <div className="space-y-4">
+        <div className="grid grid-cols-[repeat(30,1fr)] gap-2">
+          {next30Days.map((date, index) => {
+            const prevDate = new Date(date);
+            prevDate.setDate(prevDate.getDate() - 1);
 
-        <Select
-          value={searchParams.get("postType") || "all"}
-          onValueChange={(value) => updateQueryParam("postType", value)}
-        >
-          <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Filter by type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All post types</SelectItem>
-            {Object.values(PostType).map((type) => (
-              <SelectItem key={type} value={type}>
-                {getPostTypeName(type)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+            const nextDate = new Date(date);
+            nextDate.setDate(nextDate.getDate() + 1);
 
-        <Select
-          value={searchParams.get("socialMedia") || "all"}
-          onValueChange={(value) => updateQueryParam("socialMedia", value)}
-        >
-          <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Filter by platform" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All platforms</SelectItem>
-            {Object.values(SocialMedia)
-              .filter((media) =>
-                socialMediaPlatforms.some((platform) => platform.id === media)
-              )
-              .map((media) => (
-                <SelectItem key={media} value={media}>
-                  {
-                    socialMediaPlatforms.find(
-                      (platform) => platform.id === media
-                    )?.name
-                  }
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
+            const isNewMonth = date.getMonth() !== prevDate.getMonth();
 
-        <Select
-          value={searchParams.get("status") || "all"}
-          onValueChange={(value) => updateQueryParam("status", value)}
-        >
-          <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Filter by status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            <SelectItem value="scheduled">Scheduled</SelectItem>
-            <SelectItem value="posted">Posted</SelectItem>
-            <SelectItem value="failed">Failed</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-[240px]">
-              <CalendarIcon className="w-4 h-4" />
-              <span className="flex-1">
-                {searchParams.get("dateFrom") && searchParams.get("dateTo")
-                  ? format(
-                      new Date(searchParams.get("dateFrom")!),
-                      "yyyy-MM-dd"
-                    ) +
-                    " - " +
-                    format(new Date(searchParams.get("dateTo")!), "yyyy-MM-dd")
-                  : "Select date range"}
-              </span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <Calendar
-              mode="range"
-              selected={{
-                from: dateFrom,
-                to: dateTo,
-              }}
-              onSelect={(date) => {
-                setDateFrom(date?.from || undefined);
-                setDateTo(date?.to || undefined);
-              }}
-            />
-
-            <div className="w-full px-3 pb-3">
-              <Button
-                variant="outline"
-                className="w-full"
-                disabled={!dateFrom && !dateTo}
-                onClick={() => {
-                  setDateFrom(undefined);
-                  setDateTo(undefined);
-                }}
-              >
-                Clear
-              </Button>
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      <div className="flex justify-between gap-2">
-        {next30Days.map((date, index) => {
-          const prevDate = new Date(date);
-          prevDate.setDate(prevDate.getDate() - 1);
-
-          const nextDate = new Date(date);
-          nextDate.setDate(nextDate.getDate() + 1);
-
-          const isNewMonth = date.getMonth() !== prevDate.getMonth();
-
-          const dateHasScheduledPosts = scheduledDates.some((scheduledDate) => {
-            return (
-              scheduledDate.getDate() === date.getDate() &&
-              scheduledDate.getMonth() === date.getMonth() &&
-              scheduledDate.getFullYear() === date.getFullYear()
+            const dateHasScheduledPosts = scheduledDates.some(
+              (scheduledDate) => {
+                return (
+                  scheduledDate.getDate() === date.getDate() &&
+                  scheduledDate.getMonth() === date.getMonth() &&
+                  scheduledDate.getFullYear() === date.getFullYear()
+                );
+              }
             );
-          });
 
-          return (
-            <div key={date.toISOString()} className="flex justify-between">
-              <div className="flex flex-col gap-1 justify-end">
+            return (
+              <div
+                key={date.toISOString()}
+                className="flex flex-col gap-1 justify-end"
+              >
                 <div>
                   {isNewMonth || index === 0 ? format(date, "MMM") : null}
                 </div>
@@ -450,19 +370,144 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
                     setDateFrom(date);
                     setDateTo(nextDate);
                   }}
-                  className="cursor-pointer"
+                  className="cursor-pointer flex items-center justify-center"
                 >
                   {date.getDate()}
                 </Badge>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <Select
+            value={searchParams.get("brandId") || "all"}
+            onValueChange={(value) => updateQueryParam("brandId", value)}
+          >
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Filter by brand" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All brands</SelectItem>
+              {brands.map((brand) => (
+                <SelectItem key={brand.id} value={brand.id}>
+                  {brand.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={searchParams.get("postType") || "all"}
+            onValueChange={(value) => updateQueryParam("postType", value)}
+          >
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Filter by type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All post types</SelectItem>
+              {Object.values(PostType).map((type) => (
+                <SelectItem key={type} value={type}>
+                  {getPostTypeName(type)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={searchParams.get("socialMedia") || "all"}
+            onValueChange={(value) => updateQueryParam("socialMedia", value)}
+          >
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Filter by platform" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All platforms</SelectItem>
+              {Object.values(SocialMedia)
+                .filter((media) =>
+                  socialMediaPlatforms.some((platform) => platform.id === media)
+                )
+                .map((media) => (
+                  <SelectItem key={media} value={media}>
+                    {
+                      socialMediaPlatforms.find(
+                        (platform) => platform.id === media
+                      )?.name
+                    }
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={searchParams.get("status") || "all"}
+            onValueChange={(value) => updateQueryParam("status", value)}
+          >
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All statuses</SelectItem>
+              <SelectItem value="scheduled">Scheduled</SelectItem>
+              <SelectItem value="posted">Posted</SelectItem>
+              <SelectItem value="failed">Failed</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-[240px]">
+                <CalendarIcon className="w-4 h-4" />
+                <span className="flex-1">
+                  {searchParams.get("dateFrom") && searchParams.get("dateTo")
+                    ? format(
+                        new Date(searchParams.get("dateFrom")!),
+                        "yyyy-MM-dd"
+                      ) +
+                      " - " +
+                      format(
+                        new Date(searchParams.get("dateTo")!),
+                        "yyyy-MM-dd"
+                      )
+                    : "Select date range"}
+                </span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <Calendar
+                mode="range"
+                selected={{
+                  from: dateFrom,
+                  to: dateTo,
+                }}
+                onSelect={(date) => {
+                  setDateFrom(date?.from || undefined);
+                  setDateTo(date?.to || undefined);
+                }}
+              />
+
+              <div className="w-full px-3 pb-3">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  disabled={!dateFrom && !dateTo}
+                  onClick={() => {
+                    setDateFrom(undefined);
+                    setDateTo(undefined);
+                  }}
+                >
+                  Clear
+                </Button>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div
         ref={ref}
-        className="grid gap-4 transition-opacity duration-300"
+        className="grid gap-8 transition-opacity duration-300"
         style={{
           gridTemplateColumns: `repeat(${columns}, 1fr)`,
           opacity: columns > 0 ? 1 : 0,
@@ -484,11 +529,11 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
                     : `calc(${cellSize}px * 0.8888888889)`,
               }}
             >
-              <div className="group relative rounded-xl bg-card overflow-hidden border h-full flex flex-col">
-                <div className="p-4 pb-3 flex justify-between items-center  z-10">
+              <Card className="group relative h-full flex flex-col overflow-hidden">
+                <CardHeader className="py-4 px-6 flex flex-row justify-between items-center z-10">
                   {getPostTypeBadge(post)}
                   {getStatusBadge(post)}
-                </div>
+                </CardHeader>
 
                 {post.postType === PostType.VIDEO && post.videoCover && (
                   <img
@@ -505,17 +550,16 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
                     </div>
                   )}
 
-                <div className="flex-1 px-4 z-10">
+                <CardContent className="flex-1 px-6 z-10 py-0">
                   {post.postType === PostType.TEXT && (
-                    <div className="line-clamp-8">{post.description}</div>
+                    <div className="line-clamp-6">{post.description}</div>
                   )}
-                </div>
+                </CardContent>
 
-                <div className="p-4 pt-3 flex items-center gap-2 z-10">
+                <CardFooter className="py-4 px-6 flex flex-row justify-between items-center z-10">
                   {getBrandBadge(post)}
-                  {getSocialMediaIcons(post)}
-                </div>
-              </div>
+                </CardFooter>
+              </Card>
             </Link>
           ))
         ) : (

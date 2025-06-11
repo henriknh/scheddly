@@ -67,14 +67,7 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
           <SidebarMenuItem
             className={cn("transition-all", open ? "pb-8 pt-4" : "pb-4")}
           >
-            <SidebarMenuButton
-              asChild
-              tooltip={config.appName}
-              size={"lg"}
-              style={{
-                padding: "8px !important",
-              }}
-            >
+            <SidebarMenuButton asChild tooltip={config.appName} size="lg">
               <Link
                 href="/dashboard"
                 style={{
@@ -91,13 +84,7 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <SidebarMenuButton
-                size={"lg"}
-                variant={"primary"}
-                style={{
-                  padding: "8px !important",
-                }}
-              >
+              <SidebarMenuButton size="rounded" variant={"primary"}>
                 <Plus className="h-4 w-4" />
                 <span>Create Post</span>
               </SidebarMenuButton>
