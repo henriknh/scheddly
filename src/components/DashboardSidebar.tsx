@@ -3,13 +3,13 @@
 import { Avatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/lib/auth-context";
 import {
+  AudioLines,
   Blocks,
   ChevronLeft,
-  Home,
+  HomeIcon,
   ImageIcon,
   LayoutDashboard,
   Plus,
-  StickyNote,
   TextIcon,
   Users,
   VideoIcon,
@@ -38,25 +38,8 @@ import {
 import config from "@/config";
 import { cn } from "@/lib/utils";
 
-interface SidebarNavProps {
-  items?: {
-    href: string;
-    title: string;
-    icon: React.ReactNode;
-  }[];
-}
-
-const defaultItems = [
-  {
-    href: "/dashboard",
-    title: "Dashboard",
-    icon: <LayoutDashboard className="h-4 w-4" />,
-  },
-];
-
-export function DashboardSidebar({ items }: SidebarNavProps) {
+export function DashboardSidebar() {
   const pathname = usePathname();
-  const navItems = items || defaultItems;
   const { user } = useAuth();
   const { open, toggleSidebar } = useSidebar();
 
@@ -68,13 +51,10 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
             className={cn("transition-all", open ? "pb-8 pt-4" : "pb-4")}
           >
             <SidebarMenuButton asChild tooltip={config.appName} size="lg">
-              <Link
-                href="/dashboard"
-                style={{
-                  padding: "8px !important",
-                }}
-              >
-                <Home className={cn("h-4 w-4", open ? "h-8 w-8" : "h-4 w-4")} />
+              <Link href="/dashboard">
+                <AudioLines
+                  className={cn("h-4 w-4", open ? "h-8 w-8" : "h-4 w-4")}
+                />
                 <span className={cn("text-lg", open ? "block" : "hidden")}>
                   {config.appName}
                 </span>
@@ -125,32 +105,38 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {navItems.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  asChild
-                  tooltip={item.title}
-                  isActive={pathname === item.href}
-                >
-                  <Link href={item.href}>
-                    {item.icon}
-                    <span>{item.title}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                tooltip={"Dashboard"}
+                isActive={pathname === "/dashboard"}
+              >
+                <Link href="/dashboard">
+                  <HomeIcon className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton
+                asChild
+                tooltip={"Posts"}
+                isActive={pathname === "/dashboard/posts"}
+              >
                 <Link href="/dashboard/posts">
-                  <StickyNote />
+                  <LayoutDashboard className="h-4 w-4" />
                   <span>Posts</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton
+                asChild
+                tooltip={"Integrations"}
+                isActive={pathname === "/dashboard/integrations"}
+              >
                 <Link href="/dashboard/integrations">
                   <Blocks />
                   <span>Integrations</span>
@@ -165,7 +151,11 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
         <Separator />
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton
+              asChild
+              tooltip={"Profile"}
+              isActive={pathname === "/dashboard/profile"}
+            >
               <Link
                 href="/dashboard/profile"
                 className="flex items-center gap-2"
@@ -179,7 +169,11 @@ export function DashboardSidebar({ items }: SidebarNavProps) {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton
+              asChild
+              tooltip={"Team"}
+              isActive={pathname === "/dashboard/team"}
+            >
               <Link href="/dashboard/team" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 <span>Team</span>
