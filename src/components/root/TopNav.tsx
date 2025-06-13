@@ -22,7 +22,7 @@ export function TopNav() {
 
         <div className="relative flex items-center gap-4">
           <div
-            className="absolute top-0 bottom-0 flex items-center gap-4 transition-all duration-300"
+            className="absolute top-0 bottom-0 flex items-center gap-4 transition-all duration-300 delay-300"
             style={{
               right: user ? 0 : "-200px",
               opacity: user ? 1 : 0,
@@ -34,11 +34,11 @@ export function TopNav() {
           </div>
 
           <div
-            className="absolute top-0 bottom-0 flex items-center gap-4 transition-all ease-out duration-300"
+            className="absolute top-0 bottom-0 flex items-center gap-4 transition-all ease-out duration-500 delay-200"
             style={{
-              opacity: user ? 0.5 : 1,
-              right: user ? "-200px" : 0,
-              scale: user ? 0.5 : 1,
+              opacity: user ? 0 : 1,
+              right: user ? "-100px" : 0,
+              scale: user ? 0.8 : 1,
             }}
           >
             <Button asChild variant="ghost">
