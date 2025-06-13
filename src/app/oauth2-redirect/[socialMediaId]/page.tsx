@@ -10,8 +10,6 @@ export default function PinterestRedirectPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  console.log(socialMediaId, searchParams);
-
   useEffect(() => {
     const code = searchParams.get("code");
     const brandId = searchParams.get("state");
