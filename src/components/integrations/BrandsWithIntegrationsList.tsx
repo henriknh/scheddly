@@ -1,23 +1,23 @@
 "use client";
 
+import { AddBrandModal } from "@/components/brands/AddBrandModal";
+import { DeleteBrandDialog } from "@/components/brands/DeleteBrandDialog";
+import { EditBrandModal } from "@/components/brands/EditBrandModal";
+import { Header } from "@/components/common/Header";
+import { AddIntegrationModal } from "@/components/integrations/AddIntegrationModal";
+import { DeleteIntegrationDialog } from "@/components/integrations/DeleteIntegrationDialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brand, SocialMediaIntegration } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
-import { Plus, RefreshCw, Pencil } from "lucide-react";
+import { Pencil, Plus, RefreshCw } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { AddIntegrationModal } from "@/components/integrations/AddIntegrationModal";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DeleteIntegrationDialog } from "@/components/integrations/DeleteIntegrationDialog";
-import { AddBrandModal } from "@/components/brands/AddBrandModal";
-import { EditBrandModal } from "@/components/brands/EditBrandModal";
-import { DeleteBrandDialog } from "@/components/brands/DeleteBrandDialog";
-import { Header } from "@/components/common/Header";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import { updateAccountInfo } from "@/app/actions/social-media-integrations";
+import { UserAvatar } from "../common/UserAvatar";
 
 interface BrandsWithIntegrationsListProps {
   brands: Brand[];
@@ -128,15 +128,9 @@ export function BrandsWithIntegrationsList({
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <Avatar className="h-4 w-4">
-                            <AvatarImage
-                              src={integration.accountAvatarUrl || undefined}
-                              alt={integration.accountName}
-                            />
-                            <AvatarFallback>
-                              {integration.accountName.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
+                          <UserAvatar
+                            src={integration.accountAvatarUrl || undefined}
+                          />
                           <div className="flex flex-col">
                             <span className="text-sm font-medium">
                               {integration.accountName}

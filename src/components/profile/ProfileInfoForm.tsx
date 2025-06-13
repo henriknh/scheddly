@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Description } from "@/components/common/Description";
+import { Header } from "@/components/common/Header";
+import { HeaderGroup } from "@/components/common/HeaderGroup";
+import { UserAvatar } from "@/components/common/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { Avatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/lib/auth-context";
-import { Header } from "@/components/common/Header";
-import { HeaderGroup } from "@/components/common/HeaderGroup";
-import { Description } from "@/components/common/Description";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 export function ProfileInfoForm() {
   const { user, reloadUser } = useAuth();
@@ -21,12 +21,8 @@ export function ProfileInfoForm() {
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
-    avatar: user?.avatar?.path || "",
+    avatar: "",
   });
-
-  useEffect(() => {
-    setFormData((prev) => ({ ...prev, avatar: user?.avatar?.path || "" }));
-  }, [user]);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -80,6 +76,7 @@ export function ProfileInfoForm() {
 
       toast.success("Profile updated successfully");
       reloadUser();
+      setFormData((prev) => ({ ...prev, avatar: "" }));
       router.refresh();
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -111,7 +108,7 @@ export function ProfileInfoForm() {
             aria-label="Change profile image"
           >
             <div className="relative">
-              <Avatar src={formData.avatar} fallback={formData.name} isBig />
+              <UserAvatar src={formData.avatar || user?.avatar?.id} isBig />
               <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-medium rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-center text-xs">
                 Update avatar
               </div>

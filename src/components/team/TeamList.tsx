@@ -2,7 +2,7 @@
 
 import { Team } from "@/generated/prisma";
 import { DataTable, DataTableColumnDef } from "@/components/ui/data-table";
-import { Avatar } from "@/components/common/UserAvatar";
+import { UserAvatar } from "@/components/common/UserAvatar";
 import { Header } from "@/components/common/Header";
 import { UserWithRelations } from "@/lib/user";
 
@@ -22,7 +22,7 @@ export function TeamList({ team }: TeamListProps) {
         const user = row.original;
         return (
           <div className="flex items-center gap-2">
-            <Avatar src={user.avatar?.path} fallback={user.name} />
+            <UserAvatar src={user.avatar?.id} />
             <span>{user.name}</span>
           </div>
         );

@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar } from "@/components/common/UserAvatar";
+import { UserAvatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/lib/auth-context";
 import {
   AudioLines,
@@ -160,10 +160,7 @@ export function DashboardSidebar() {
                 href="/dashboard/profile"
                 className="flex items-center gap-2"
               >
-                <Avatar
-                  src={user?.avatar?.id || undefined}
-                  fallback={user?.name || undefined}
-                />
+                <UserAvatar src={user?.avatar?.id} />
                 <span className="truncate">{user?.name || "User"}</span>
               </Link>
             </SidebarMenuButton>
