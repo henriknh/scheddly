@@ -73,7 +73,7 @@ export async function addSocialMediaIntegration(
       );
     };
 
-    const { accountId, name, avatarUrl } = await getAccountInfo();
+    const { accountId, accountName, accountAvatarUrl } = await getAccountInfo();
 
     const existingIntegration = await prisma.socialMediaIntegration.findFirst({
       where: {
@@ -109,8 +109,8 @@ export async function addSocialMediaIntegration(
           refreshToken,
           refreshTokenExpiresAt,
           accountId,
-          name,
-          avatarUrl,
+          accountName,
+          accountAvatarUrl,
           teamId: user.teamId,
           brandId,
         },
