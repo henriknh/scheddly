@@ -1,5 +1,6 @@
 "use client";
 
+import { logout } from "@/app/api/auth/logout";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -9,13 +10,7 @@ export function LogoutButton() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to logout");
-      }
+      await logout();
 
       router.push("/");
       toast.success("Logged out successfully");

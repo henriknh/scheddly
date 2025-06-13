@@ -1,15 +1,13 @@
+"use server";
+
 import prisma from "@/lib/prisma";
-import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
+import { updateUserTokenWithCleanedUser } from "@/lib/user";
 import bcrypt from "bcryptjs";
-import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function register(email: string, name: string, password: string) {
   try {
-    const body = await req.json();
-    const { email, name, password } = body;
-
     if (!email || !name || !password) {
-      return new NextResponse("Missing required fields", { status: 400 });
+      throw new Error("Missing required fields");
     }
 
     const existingUser = await prisma.user.findUnique({
@@ -19,7 +17,7 @@ export async function POST(req: Request) {
     });
 
     if (existingUser) {
-      return new NextResponse("User already exists", { status: 400 });
+      throw new Error("User already exists");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -57,9 +55,9 @@ export async function POST(req: Request) {
       return user;
     });
 
-    return updateUserTokenAndReturnNextResponse(result);
+    return updateUserTokenWithCleanedUser(result);
   } catch (error) {
     console.error("REGISTRATION_ERROR", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    throw new Error("Internal Error");
   }
 }

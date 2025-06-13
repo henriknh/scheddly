@@ -1,3 +1,5 @@
+"use server";
+
 import { CleanedUser } from "@/lib/user";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";

@@ -1,12 +1,11 @@
+import { ThemeProvider } from "@/components/theme-provider";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import config from "@/config";
+import { ensureBucketExists } from "@/lib/minio";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
-import { AuthProviderWrapper } from "@/components/auth/auth-provider-wrapper";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { ensureBucketExists } from "@/lib/minio";
-import config from "@/config";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,10 +34,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SidebarProvider>
-            <AuthProviderWrapper>
-              {children}
-              <Toaster />
-            </AuthProviderWrapper>
+            {children}
+            <Toaster />
           </SidebarProvider>
         </ThemeProvider>
       </body>

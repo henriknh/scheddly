@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { login } from "@/app/api/auth/login";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,11 +12,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth } from "@/lib/auth-context";
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -31,6 +33,7 @@ export default function LoginPage() {
     try {
       await login(email, password);
       toast.success("Login successful");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Login form error:", error);
       if (error instanceof Error) {

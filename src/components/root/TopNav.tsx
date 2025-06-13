@@ -1,12 +1,10 @@
-"use client";
-
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/lib/auth-context";
 import config from "@/config";
+import { getUserFromToken } from "@/lib/user";
+import Link from "next/link";
 
-export function TopNav() {
-  const { user } = useAuth();
+export async function TopNav() {
+  const user = await getUserFromToken();
 
   return (
     <nav className="border-b w-full">
