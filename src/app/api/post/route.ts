@@ -36,6 +36,9 @@ export async function GET() {
           socialMediaIntegration: true,
         },
       },
+      images: true,
+      video: true,
+      videoCover: true,
     },
   });
 
