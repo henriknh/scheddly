@@ -46,14 +46,15 @@ export function AddIntegrationModal({
         window.open(oauthPageUrl, "_blank");
 
         channel.onmessage = (event) => {
-          const oauth2Success = event?.data === "oauth2-success";
+          const data = event?.data;
 
-          if (oauth2Success) {
+          if (data?.success) {
             toast.success(
               `Connection established to ${socialMediaPlatform.name}`
             );
             router.refresh();
           } else {
+            console.error(data?.error || "Unknown integration error");
             toast.error(`Connection failed to ${socialMediaPlatform.name}`);
           }
 
