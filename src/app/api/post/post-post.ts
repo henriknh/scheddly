@@ -36,7 +36,11 @@ export async function postPost(post: PostWithRelations) {
         console.error("Error posting post", error);
         await prisma.socialMediaPost.update({
           where: { id: socialMediaPost.id },
-          data: { failedAt: new Date(), failedReason: error.message },
+          data: {
+            failedAt: new Date(),
+            failedReason:
+              error instanceof Error ? error.message : "Unknown error",
+          },
         });
       }
     })
