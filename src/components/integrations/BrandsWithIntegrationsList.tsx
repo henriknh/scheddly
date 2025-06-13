@@ -68,7 +68,7 @@ export function BrandsWithIntegrationsList({
   }, {} as Record<string, typeof integrations>);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <div className="flex justify-between">
         <Header>Integrations</Header>
         <Button onClick={() => setIsAddBrandModalOpen(true)}>
