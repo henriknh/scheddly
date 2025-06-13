@@ -12,7 +12,7 @@ export async function createToken(user: CleanedUser) {
     id: user.id,
     email: user.email,
     name: user.name,
-    avatarUrl: user.avatarUrl,
+    avatarPath: user.avatar?.path,
   };
 
   return await new SignJWT(tokenPayload)
