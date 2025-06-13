@@ -2,13 +2,13 @@ import {
   PostWithRelations,
   SocialMediaPostWithRelations,
 } from "@/app/api/post/types";
-import {
-  SocialMedia,
-  SocialMediaIntegration,
-  SocialMediaPost,
-} from "@/generated/prisma";
+import { SocialMedia } from "@/generated/prisma";
 import { pinterest } from "./pinterest";
 import { tumblr } from "./tumblr";
+
+export const SocialMediaApiErrors = {
+  INVALID_TOKEN: "Invalid token",
+};
 
 export interface Tokens {
   accessToken: string;

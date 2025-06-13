@@ -1,9 +1,13 @@
 "use server";
 
 import { PostType } from "@/generated/prisma";
-import { getSocialMediaApiFunctions } from "@/lib/social-media-api-functions/social-media-api-functions";
+import {
+  getSocialMediaApiFunctions,
+  SocialMediaApiErrors,
+} from "@/lib/social-media-api-functions/social-media-api-functions";
 import { PostWithRelations } from "./types";
 import prisma from "@/lib/prisma";
+import { randomUUID } from "crypto";
 
 export async function postPost(post: PostWithRelations) {
   console.info("Posting post", post.id);
@@ -33,13 +37,24 @@ export async function postPost(post: PostWithRelations) {
           await socialMediaApiFunctions.postVideo(post, socialMediaPost);
         }
       } catch (error) {
-        console.error("Error posting post", error);
+        const errorId = randomUUID();
+
+        console.error(`[${errorId}] Error posting post:`, error);
+
+        let failedReason = `Unknown error (${errorId})`;
+        if (error instanceof Error) {
+          switch (error.message) {
+            case SocialMediaApiErrors.INVALID_TOKEN:
+              failedReason = SocialMediaApiErrors.INVALID_TOKEN;
+              break;
+          }
+        }
+
         await prisma.socialMediaPost.update({
           where: { id: socialMediaPost.id },
           data: {
             failedAt: new Date(),
-            failedReason:
-              error instanceof Error ? error.message : "Unknown error",
+            failedReason,
           },
         });
       }
