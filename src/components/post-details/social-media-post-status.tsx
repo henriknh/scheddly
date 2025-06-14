@@ -9,12 +9,12 @@ import { formatDateTime } from "@/lib/format-date";
 import { getSocialMediaApiFunctions } from "@/lib/social-media-api-functions/social-media-api-functions";
 import { getSocialMediaPlatform } from "@/lib/social-media-platforms";
 import { cn } from "@/lib/utils";
-import { ExternalLink, RefreshCwIcon, Router } from "lucide-react";
+import { ExternalLink, RefreshCwIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Badge } from "../ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { useRouter } from "next/navigation";
 
 interface SocialMediaPostStatusProps {
   post: PostWithRelations;

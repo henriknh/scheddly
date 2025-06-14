@@ -25,6 +25,11 @@ export async function getPost(id: string): Promise<PostWithRelations> {
               },
             },
           },
+          orderBy: {
+            socialMediaIntegration: {
+              socialMedia: "asc",
+            },
+          },
         },
         images: true,
         video: true,

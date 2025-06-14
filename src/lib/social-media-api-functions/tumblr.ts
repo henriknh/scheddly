@@ -491,6 +491,6 @@ export const tumblr: SocialMediaApiFunctions = {
   },
 
   externalPostUrl: (socialMediaPost: SocialMediaPostWithRelations) => {
-    return `https://tumblr.com/post/${socialMediaPost.socialMediaPostId}`;
+    return `https://tumblr.com/${socialMediaPost.socialMediaIntegration.accountId}/${socialMediaPost.socialMediaPostId}`;
   },
 };

@@ -355,6 +355,7 @@ export const pinterest: SocialMediaApiFunctions = {
     }
   },
   externalPostUrl: (socialMediaPost: SocialMediaPostWithRelations) => {
-    return `https://pinterest.com/pin/${socialMediaPost.socialMediaPostId}`;
+    throw new Error("Not implemented");
+    // return `https://pinterest.com/pin/${socialMediaPost.socialMediaPostId}`;
   },
 };
