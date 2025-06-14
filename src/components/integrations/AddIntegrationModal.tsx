@@ -3,7 +3,6 @@ import {
   socialMediaPlatforms,
 } from "@/lib/social-media-platforms";
 import { PlusIcon } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { toast } from "sonner";
@@ -70,7 +69,7 @@ export function AddIntegrationModal({
       );
 
       return {
-        icon: socialMediaPlatform.icon,
+        Icon: socialMediaPlatform.Icon,
         name: socialMediaPlatform.name,
         onClick: () => handlePlatformSelect(socialMediaPlatform),
         disabled: !getOauthPageUrl(socialMediaPlatform) || isConnected,
@@ -102,13 +101,7 @@ export function AddIntegrationModal({
               onClick={socialMediaDataButton.onClick}
               disabled={socialMediaDataButton.disabled}
             >
-              <Image
-                src={socialMediaDataButton.icon}
-                alt={socialMediaDataButton.name}
-                width={32}
-                height={32}
-                className="h-8 w-8"
-              />
+              <socialMediaDataButton.Icon className="h-8 w-8" />
               <span className="text-sm font-medium">
                 {socialMediaDataButton.name}
               </span>

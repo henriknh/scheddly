@@ -301,16 +301,9 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
                     <div>{group.brand.name}</div>
                     <div className="flex items-center gap-1">
                       {group.socialMediaIntegrations.map((s) => {
-                        return (
-                          <img
-                            key={s.id}
-                            src={getSocialMediaPlatform(s.socialMedia)?.icon}
-                            alt={s.socialMedia}
-                            width={16}
-                            height={16}
-                            className="fill-white"
-                          />
-                        );
+                        const platform = getSocialMediaPlatform(s.socialMedia);
+                        if (!platform) return null;
+                        return <platform.Icon key={s.id} className="h-4 w-4" />;
                       })}
                     </div>
                   </div>
@@ -336,56 +329,12 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
 
   return (
     <div
-      className="space-y-8 transition-opacity duration-75"
+      className="space-y-4 transition-opacity duration-75"
       style={{
         opacity: columns > 0 ? 1 : 0,
       }}
     >
       <div className="space-y-4">
-        <div className="flex justify-between">
-          {next30Days.slice(0, daysToShow).map((date, index) => {
-            const prevDate = new Date(date);
-            prevDate.setDate(prevDate.getDate() - 1);
-
-            const nextDate = new Date(date);
-            nextDate.setDate(nextDate.getDate() + 1);
-
-            const isNewMonth = date.getMonth() !== prevDate.getMonth();
-
-            const dateHasScheduledPosts = scheduledDates.some(
-              (scheduledDate) => {
-                return (
-                  scheduledDate.getDate() === date.getDate() &&
-                  scheduledDate.getMonth() === date.getMonth() &&
-                  scheduledDate.getFullYear() === date.getFullYear()
-                );
-              }
-            );
-
-            return (
-              <div
-                key={date.toISOString()}
-                className="flex flex-col gap-1 justify-end"
-              >
-                <div>
-                  {isNewMonth || index === 0 ? format(date, "MMM") : null}
-                </div>
-                <Badge
-                  key={date.toISOString()}
-                  variant={dateHasScheduledPosts ? "default" : "outline"}
-                  onClick={() => {
-                    setDateFrom(date);
-                    setDateTo(nextDate);
-                  }}
-                  className="cursor-pointer flex items-center justify-center w-9"
-                >
-                  {date.getDate()}
-                </Badge>
-              </div>
-            );
-          })}
-        </div>
-
         <div className="flex flex-wrap gap-2">
           <Select
             value={searchParams.get("brandId") || "all"}
@@ -509,6 +458,50 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
+        </div>
+
+        <div className="flex justify-between">
+          {next30Days.slice(0, daysToShow).map((date, index) => {
+            const prevDate = new Date(date);
+            prevDate.setDate(prevDate.getDate() - 1);
+
+            const nextDate = new Date(date);
+            nextDate.setDate(nextDate.getDate() + 1);
+
+            const isNewMonth = date.getMonth() !== prevDate.getMonth();
+
+            const dateHasScheduledPosts = scheduledDates.some(
+              (scheduledDate) => {
+                return (
+                  scheduledDate.getDate() === date.getDate() &&
+                  scheduledDate.getMonth() === date.getMonth() &&
+                  scheduledDate.getFullYear() === date.getFullYear()
+                );
+              }
+            );
+
+            return (
+              <div
+                key={date.toISOString()}
+                className="flex flex-col gap-1 justify-start"
+              >
+                <Badge
+                  key={date.toISOString()}
+                  variant={dateHasScheduledPosts ? "default" : "outline"}
+                  onClick={() => {
+                    setDateFrom(date);
+                    setDateTo(nextDate);
+                  }}
+                  className="cursor-pointer flex items-center justify-center w-9"
+                >
+                  {date.getDate()}
+                </Badge>
+                <div className="text-xs">
+                  {isNewMonth || index === 0 ? format(date, "MMM") : null}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

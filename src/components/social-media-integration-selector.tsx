@@ -1,10 +1,8 @@
 "use client";
 
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Brand, SocialMediaIntegration } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
-import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
@@ -121,29 +119,23 @@ export function SocialMediaIntegrationSelector({
                     key={integration.id}
                     className="flex items-center space-x-2"
                   >
-                    <Checkbox
-                      id={integration.id}
-                      checked={selectedIntegrationIds.includes(integration.id)}
-                      onCheckedChange={(checked) =>
+                    <Badge
+                      variant={
+                        selectedIntegrationIds.includes(integration.id)
+                          ? "default"
+                          : "outline"
+                      }
+                      className="flex items-center gap-2 cursor-pointer"
+                      onClick={() =>
                         handleIntegrationChange(
                           integration.id,
-                          checked as boolean
+                          !selectedIntegrationIds.includes(integration.id)
                         )
                       }
-                    />
-                    <Label
-                      htmlFor={integration.id}
-                      className="flex items-center gap-2 cursor-pointer"
                     >
-                      <Image
-                        src={platform.icon}
-                        alt={platform.name}
-                        width={16}
-                        height={16}
-                        className="h-4 w-4"
-                      />
+                      <platform.Icon className="h-4 w-4" />
                       {platform.name}
-                    </Label>
+                    </Badge>
                   </div>
                 );
               })}

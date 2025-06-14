@@ -47,14 +47,18 @@ export function DashboardSidebar() {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem
-            className={cn("transition-all", open ? "pb-8 pt-4" : "pb-4")}
+            className={cn("transition-all", open ? "pb-8 pt-2" : "pb-4")}
           >
-            <SidebarMenuButton asChild tooltip={config.appName} size="lg">
+            <SidebarMenuButton
+              asChild
+              tooltip={config.appName}
+              className={cn(open ? "py-6" : "")}
+            >
               <Link href="/dashboard">
                 <AudioLines
                   className={cn("h-4 w-4", open ? "h-8 w-8" : "h-4 w-4")}
                 />
-                <span className={cn("text-lg", open ? "block" : "hidden")}>
+                <span className={cn("text-lg font-bold")}>
                   {config.appName}
                 </span>
               </Link>

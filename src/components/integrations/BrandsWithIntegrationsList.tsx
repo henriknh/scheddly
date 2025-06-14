@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brand, SocialMediaIntegration } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { Pencil, Plus, RefreshCw } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -115,13 +114,7 @@ export function BrandsWithIntegrationsList({
                         className="grid grid-cols-3 gap-2 space-y-2"
                       >
                         <div className="flex items-center gap-2">
-                          <Image
-                            src={platform.icon}
-                            alt={platform.name}
-                            width={16}
-                            height={16}
-                            className="h-4 w-4"
-                          />
+                          <platform.Icon className="h-4 w-4" />
                           <span className="text-sm font-medium">
                             {platform.name}
                           </span>

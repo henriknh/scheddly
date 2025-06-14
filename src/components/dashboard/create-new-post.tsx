@@ -10,7 +10,6 @@ import {
 import { PostType } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { ImageIcon, TextIcon, VideoIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 export type Platform = {
@@ -49,13 +48,7 @@ export function CreateNewPost() {
                       key={platform.name}
                       className="flex items-center gap-1 text-sm text-muted-foreground"
                     >
-                      <Image
-                        src={platform.icon}
-                        alt={platform.name}
-                        className="h-4 w-4"
-                        width={16}
-                        height={16}
-                      />
+                      <platform.Icon className="h-4 w-4" />
                       {platform.name}
                     </div>
                   ))}
@@ -86,13 +79,7 @@ export function CreateNewPost() {
                       key={platform.name}
                       className="flex items-center gap-1 text-sm text-muted-foreground"
                     >
-                      <Image
-                        src={platform.icon}
-                        alt={platform.name}
-                        width={16}
-                        height={16}
-                        className="h-4 w-4"
-                      />
+                      <platform.Icon className="h-4 w-4" />
                       {platform.name}
                     </div>
                   ))}
@@ -123,13 +110,7 @@ export function CreateNewPost() {
                       key={platform.name}
                       className="flex items-center gap-1 text-sm text-muted-foreground"
                     >
-                      <Image
-                        src={platform.icon}
-                        alt={platform.name}
-                        width={16}
-                        height={16}
-                        className="h-4 w-4"
-                      />
+                      <platform.Icon className="h-4 w-4" />
                       {platform.name}
                     </div>
                   ))}
