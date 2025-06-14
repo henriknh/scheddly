@@ -1,10 +1,10 @@
 import { PostWithRelations } from "@/app/api/post/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
-import { Calendar, Image as ImageIcon } from "lucide-react";
+import { Calendar } from "lucide-react";
 import Image from "next/image";
-import { BrandsWithIntegrationsAndTheirStatus } from "./brands-with-integrations-and-their.status";
 import { ConfirmDeletePostModal } from "../confirm-delete-post-modal";
+import { BrandsWithIntegrationsAndTheirStatuses } from "./brands-with-integrations-and-their-statuses";
 
 interface ImagePostDetailsProps {
   post: PostWithRelations;
@@ -15,13 +15,7 @@ export function ImagePostDetails({ post }: ImagePostDetailsProps) {
     <div className="space-y-4">
       {/* Content Section */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ImageIcon className="h-5 w-5" />
-            Image Post
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 p-8">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {post.images.map((image, index) => (
               <div
@@ -52,7 +46,7 @@ export function ImagePostDetails({ post }: ImagePostDetailsProps) {
         </CardContent>
       </Card>
 
-      <BrandsWithIntegrationsAndTheirStatus post={post} />
+      <BrandsWithIntegrationsAndTheirStatuses post={post} />
 
       {post && <ConfirmDeletePostModal postId={post.id} />}
     </div>

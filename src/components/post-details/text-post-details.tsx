@@ -1,9 +1,9 @@
 import { PostWithRelations } from "@/app/api/post/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
-import { Calendar, MessageSquare } from "lucide-react";
-import { BrandsWithIntegrationsAndTheirStatus } from "./brands-with-integrations-and-their.status";
+import { Calendar } from "lucide-react";
 import { ConfirmDeletePostModal } from "../confirm-delete-post-modal";
+import { BrandsWithIntegrationsAndTheirStatuses } from "./brands-with-integrations-and-their-statuses";
 
 interface TextPostDetailsProps {
   post: PostWithRelations;
@@ -14,13 +14,7 @@ export function TextPostDetails({ post }: TextPostDetailsProps) {
     <div className="space-y-4">
       {/* Content Section */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MessageSquare className="h-5 w-5" />
-            Text Post
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 p-8">
           <div className="whitespace-pre-wrap">{post.description}</div>
 
           {post.scheduledAt && (
@@ -32,7 +26,7 @@ export function TextPostDetails({ post }: TextPostDetailsProps) {
         </CardContent>
       </Card>
 
-      <BrandsWithIntegrationsAndTheirStatus post={post} />
+      <BrandsWithIntegrationsAndTheirStatuses post={post} />
 
       {post && <ConfirmDeletePostModal postId={post.id} />}
     </div>

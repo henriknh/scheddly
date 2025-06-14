@@ -1,0 +1,9 @@
+export { FacebookIcon } from "./facebook";
+export { InstagramIcon } from "./instagram";
+export { LinkedInIcon } from "./linkedin";
+export { PinterestIcon } from "./pinterest";
+export { ThreadsIcon } from "./threads";
+export { TikTokIcon } from "./tiktok";
+export { TumblrIcon } from "./tumblr";
+export { XIcon } from "./x";
+export { YouTubeIcon } from "./youtube";

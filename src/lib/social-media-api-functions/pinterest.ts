@@ -332,6 +332,7 @@ export const pinterest: SocialMediaApiFunctions = {
   ) => {
     throw new Error("Not implemented");
   },
+
   deletePost: async (
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
@@ -352,5 +353,8 @@ export const pinterest: SocialMediaApiFunctions = {
     if (!response.ok) {
       throw new Error("Failed to delete post");
     }
+  },
+  externalPostUrl: (socialMediaPost: SocialMediaPostWithRelations) => {
+    return `https://pinterest.com/pin/${socialMediaPost.socialMediaPostId}`;
   },
 };

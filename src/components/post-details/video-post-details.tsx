@@ -1,10 +1,9 @@
 import { PostWithRelations } from "@/app/api/post/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
-import { Calendar, Video } from "lucide-react";
-import Image from "next/image";
-import { BrandsWithIntegrationsAndTheirStatus } from "./brands-with-integrations-and-their.status";
+import { Calendar } from "lucide-react";
 import { ConfirmDeletePostModal } from "../confirm-delete-post-modal";
+import { BrandsWithIntegrationsAndTheirStatuses } from "./brands-with-integrations-and-their-statuses";
 
 interface VideoPostDetailsProps {
   post: PostWithRelations;
@@ -15,36 +14,15 @@ export function VideoPostDetails({ post }: VideoPostDetailsProps) {
     <div className="space-y-4">
       {/* Content Section */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Video className="h-5 w-5" />
-            Video Post
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex space-x-4">
-            <div className="aspect-[9/16] rounded-lg border-2 border-border overflow-hidden max-h-[400px]">
-              {post.video && (
-                <video
-                  src={`/api/file/${post.video.id}`}
-                  className="w-full h-full object-cover bg-black"
-                  controls
-                  playsInline
-                />
-              )}
-            </div>
-            {post.videoCover && (
-              <div className="aspect-[9/16] rounded-lg border-2 border-border overflow-hidden max-h-[400px]">
-                <Image
-                  src={`/api/file/${post.videoCover.id}`}
-                  alt="Video cover"
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              </div>
-            )}
-          </div>
+        <CardContent className="space-y-4 p-8">
+          {post.video && (
+            <video
+              src={`/api/file/${post.video.id}`}
+              className="relative rounded-lg border-2 border-border overflow-hidden max-h-[400px] object-cover"
+              controls
+              playsInline
+            />
+          )}
 
           {post.description && (
             <div className="whitespace-pre-wrap">{post.description}</div>
@@ -59,7 +37,7 @@ export function VideoPostDetails({ post }: VideoPostDetailsProps) {
         </CardContent>
       </Card>
 
-      <BrandsWithIntegrationsAndTheirStatus post={post} />
+      <BrandsWithIntegrationsAndTheirStatuses post={post} />
 
       {post && <ConfirmDeletePostModal postId={post.id} />}
     </div>

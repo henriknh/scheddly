@@ -524,7 +524,7 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
               style={{
                 height:
                   post.postType === PostType.VIDEO
-                    ? `calc(${cellSize}px * 1.7777777778 + 1rem)`
+                    ? `calc(${cellSize}px * 1.7777777778 + 2rem)`
                     : `calc(${cellSize}px * 0.8888888889)`,
               }}
             >

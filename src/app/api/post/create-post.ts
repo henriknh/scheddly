@@ -8,7 +8,7 @@ import {
 } from "@/lib/minio";
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
-import { getPost } from "./get-post";
+import { PostWithRelations } from "./types";
 import { postPost } from "./post-post";
 
 export interface CreatePostParams {
@@ -29,7 +29,7 @@ export async function createPost({
   videoCover,
   scheduledAt,
   socialMediaIntegrations,
-}: CreatePostParams): Promise<void> {
+}: CreatePostParams): Promise<PostWithRelations> {
   const user = await getUserFromToken();
 
   if (!user || !user.id || !user.teamId) {
@@ -48,7 +48,7 @@ export async function createPost({
     throw new Error("Video is required for video posts");
   }
 
-  await prisma.$transaction(async (tx) => {
+  const newPost = await prisma.$transaction(async (tx) => {
     const newPost = await tx.post.create({
       data: {
         socialMediaPosts: {
@@ -59,7 +59,6 @@ export async function createPost({
         teamId: user.teamId!,
         description,
         postType,
-
         scheduledAt,
       },
       include: {
@@ -77,6 +76,8 @@ export async function createPost({
         videoCover: true,
       },
     });
+
+    console.log("newPost", newPost);
 
     if (images?.length) {
       await Promise.all(
@@ -142,10 +143,12 @@ export async function createPost({
       await Promise.all([handleVideoCover(), handleVideo()]);
     }
 
-    if (!newPost.scheduledAt) {
-      await postPost(newPost);
-    }
-
-    return getPost(newPost.id);
+    return newPost;
   });
+
+  if (!newPost.scheduledAt) {
+    await postPost(newPost);
+  }
+
+  return newPost;
 }

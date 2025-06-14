@@ -55,9 +55,12 @@ export interface SocialMediaApiFunctions {
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
   ) => Promise<void>;
+  externalPostUrl: (socialMediaPost: SocialMediaPostWithRelations) => string;
 }
 
-export const getSocialMediaApiFunctions = (socialMedia: SocialMedia) => {
+export const getSocialMediaApiFunctions = (
+  socialMedia: SocialMedia
+): SocialMediaApiFunctions => {
   switch (socialMedia) {
     case SocialMedia.PINTEREST:
       return pinterest;
@@ -65,5 +68,5 @@ export const getSocialMediaApiFunctions = (socialMedia: SocialMedia) => {
       return tumblr;
   }
 
-  return null;
+  throw new Error(`Social media ${socialMedia} not supported`);
 };

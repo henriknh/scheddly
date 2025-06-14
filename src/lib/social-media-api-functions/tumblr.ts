@@ -313,6 +313,10 @@ export const tumblr: SocialMediaApiFunctions = {
             type: "image",
             media: mediaIdentifiers,
           },
+          {
+            type: "text",
+            text: post.description,
+          },
         ],
         state: "published",
       };
@@ -399,6 +403,10 @@ export const tumblr: SocialMediaApiFunctions = {
               height: 0,
             },
           },
+          {
+            type: "text",
+            text: post.description,
+          },
         ],
         state: "published",
       };
@@ -480,5 +488,9 @@ export const tumblr: SocialMediaApiFunctions = {
         throw new Error("Failed to delete post from Tumblr");
       }
     }
+  },
+
+  externalPostUrl: (socialMediaPost: SocialMediaPostWithRelations) => {
+    return `https://tumblr.com/post/${socialMediaPost.socialMediaPostId}`;
   },
 };
