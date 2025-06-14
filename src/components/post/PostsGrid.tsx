@@ -528,7 +528,7 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
                     : `calc(${cellSize}px * 0.8888888889)`,
               }}
             >
-              <Card className="group relative h-full flex flex-col overflow-hidden">
+              <Card className="group relative h-full flex flex-col overflow-hidden hover:bg-secondary transition-colors">
                 <CardHeader className="py-4 px-6 flex flex-row justify-between items-center z-10">
                   {getPostTypeBadge(post)}
                   {getStatusBadge(post)}

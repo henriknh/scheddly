@@ -27,7 +27,7 @@ export function CreateNewPost() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Link href="/dashboard/create-new-post/text">
-          <Card className="hover:bg-accent/50 transition-colors cursor-pointer h-full">
+          <Card className="hover:bg-secondary transition-colors cursor-pointer h-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TextIcon className="h-8 w-8" />
@@ -58,7 +58,7 @@ export function CreateNewPost() {
         </Link>
 
         <Link href="/dashboard/create-new-post/image">
-          <Card className="hover:bg-accent/50 transition-colors cursor-pointer h-full">
+          <Card className="hover:bg-secondary transition-colors cursor-pointer h-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <ImageIcon className="h-8 w-8" />
@@ -89,7 +89,7 @@ export function CreateNewPost() {
         </Link>
 
         <Link href="/dashboard/create-new-post/video">
-          <Card className="hover:bg-accent/50 transition-colors cursor-pointer h-full">
+          <Card className="hover:bg-secondary transition-colors cursor-pointer h-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <VideoIcon className="h-8 w-8" />
