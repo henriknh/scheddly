@@ -133,19 +133,6 @@ export function DashboardSidebar() {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                tooltip={"Integrations"}
-                isActive={pathname === "/dashboard/integrations"}
-              >
-                <Link href="/dashboard/integrations">
-                  <Blocks />
-                  <span>Integrations</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
@@ -176,6 +163,19 @@ export function DashboardSidebar() {
               <Link href="/dashboard/team" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 <span>Team</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              tooltip={"Integrations"}
+              isActive={pathname === "/dashboard/integrations"}
+            >
+              <Link href="/dashboard/integrations">
+                <Blocks />
+                <span>Integrations</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
