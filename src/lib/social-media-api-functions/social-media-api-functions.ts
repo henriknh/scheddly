@@ -2,7 +2,7 @@ import {
   PostWithRelations,
   SocialMediaPostWithRelations,
 } from "@/app/api/post/types";
-import { SocialMedia } from "@/generated/prisma";
+import { SocialMedia, SocialMediaIntegration } from "@/generated/prisma";
 import { pinterest } from "./pinterest";
 import { tumblr } from "./tumblr";
 
@@ -20,7 +20,8 @@ export interface Tokens {
 export interface AccountInfo {
   accountId: string;
   accountName: string;
-  accountAvatarUrl: string;
+  accountUsername?: string;
+  accountAvatarUrl?: string;
 }
 
 export interface Auth {
@@ -55,6 +56,9 @@ export interface SocialMediaApiFunctions {
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
   ) => Promise<void>;
+  externalAccountUrl: (
+    socialMediaIntegration: SocialMediaIntegration
+  ) => string;
   externalPostUrl: (socialMediaPost: SocialMediaPostWithRelations) => string;
 }
 

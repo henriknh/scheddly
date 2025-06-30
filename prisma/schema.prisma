@@ -82,6 +82,7 @@ model SocialMediaIntegration {
   team                              Team        @relation(fields: [teamId], references: [id])
   accountId                         String
   accountName                       String
+  accountUsername                   String?
   accountAvatarUrl                  String?
   socialMediaPosts                  SocialMediaPost[]
 

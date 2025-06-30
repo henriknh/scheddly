@@ -9,6 +9,7 @@ import {
   SocialMediaApiFunctions,
   Tokens,
 } from "./social-media-api-functions";
+import { SocialMediaIntegration } from "@/generated/prisma";
 
 const client_id =
   process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID;
@@ -208,16 +209,13 @@ export const pinterest: SocialMediaApiFunctions = {
       throw new Error("Failed to fetch account info");
     }
 
-    const {
-      id: accountId,
-      business_name: accountName,
-      profile_image: accountAvatarUrl,
-    } = await response.json();
+    const data = await response.json();
 
     return {
-      accountId,
-      accountName,
-      accountAvatarUrl,
+      accountId: data.id,
+      accountName: data.business_name,
+      accountUsername: data.username,
+      accountAvatarUrl: data.profile_image,
     };
   },
 
@@ -234,11 +232,7 @@ export const pinterest: SocialMediaApiFunctions = {
 
     await prisma.socialMediaIntegration.update({
       where: { id: socialMediaIntegrationId },
-      data: {
-        accountId: accountInfo.accountId,
-        accountName: accountInfo.accountName,
-        accountAvatarUrl: accountInfo.accountAvatarUrl,
-      },
+      data: accountInfo,
     });
   },
 
@@ -353,6 +347,9 @@ export const pinterest: SocialMediaApiFunctions = {
     if (!response.ok) {
       throw new Error("Failed to delete post");
     }
+  },
+  externalAccountUrl: (socialMediaIntegration: SocialMediaIntegration) => {
+    return `https://pinterest.com/${socialMediaIntegration.accountUsername}`;
   },
   externalPostUrl: (socialMediaPost: SocialMediaPostWithRelations) => {
     throw new Error("Not implemented");

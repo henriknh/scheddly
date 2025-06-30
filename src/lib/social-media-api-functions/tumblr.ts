@@ -2,13 +2,13 @@ import {
   PostWithRelations,
   SocialMediaPostWithRelations,
 } from "@/app/api/post/types";
+import { SocialMediaIntegration } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 import {
   AccountInfo,
   SocialMediaApiFunctions,
   Tokens,
 } from "./social-media-api-functions";
-import { getPresignedUrl } from "../minio";
 
 const client_id =
   process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_TUMBLR_CLIENT_ID;
@@ -191,10 +191,14 @@ export const tumblr: SocialMediaApiFunctions = {
 
     const data = await response.json();
 
+    const blog = data.response.user.blogs?.[0];
+    const accountAvatarUrl = blog.avatar?.[0]?.url;
+
     return {
-      accountId: data.response.user.name,
-      accountName: data.response.user.name,
-      accountAvatarUrl: data.response.user.avatar_url,
+      accountId: blog.name,
+      accountName: blog.name,
+      accountUsername: undefined,
+      accountAvatarUrl,
     };
   },
 
@@ -209,11 +213,7 @@ export const tumblr: SocialMediaApiFunctions = {
 
     await prisma.socialMediaIntegration.update({
       where: { id: socialMediaIntegrationId },
-      data: {
-        accountId: accountInfo.accountId,
-        accountName: accountInfo.accountName,
-        accountAvatarUrl: accountInfo.accountAvatarUrl,
-      },
+      data: accountInfo,
     });
   },
 
@@ -488,6 +488,10 @@ export const tumblr: SocialMediaApiFunctions = {
         throw new Error("Failed to delete post from Tumblr");
       }
     }
+  },
+
+  externalAccountUrl: (socialMediaIntegration: SocialMediaIntegration) => {
+    return `https://www.tumblr.com/blog/${socialMediaIntegration.accountId}`;
   },
 
   externalPostUrl: (socialMediaPost: SocialMediaPostWithRelations) => {

@@ -16,6 +16,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { updateAccountInfo } from "@/app/actions/social-media-integrations";
+import { getSocialMediaApiFunctions } from "@/lib/social-media-api-functions/social-media-api-functions";
+import Link from "next/link";
 import { UserAvatar } from "../common/UserAvatar";
 
 interface BrandsWithIntegrationsListProps {
@@ -108,6 +110,10 @@ export function BrandsWithIntegrationsList({
                     );
                     if (!platform) return null;
 
+                    const socialMediaApiFunctions = getSocialMediaApiFunctions(
+                      integration.socialMedia
+                    );
+
                     return (
                       <div
                         key={integration.id}
@@ -121,14 +127,24 @@ export function BrandsWithIntegrationsList({
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <UserAvatar
-                            src={integration.accountAvatarUrl || undefined}
-                          />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium">
-                              {integration.accountName}
-                            </span>
-                          </div>
+                          <Button variant="ghost" asChild>
+                            <Link
+                              href={socialMediaApiFunctions.externalAccountUrl(
+                                integration
+                              )}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <UserAvatar
+                                src={integration.accountAvatarUrl || undefined}
+                              />
+                              <div className="flex flex-col">
+                                <span className="text-sm font-medium">
+                                  {integration.accountName}
+                                </span>
+                              </div>
+                            </Link>
+                          </Button>
 
                           <Button
                             variant="ghost"
