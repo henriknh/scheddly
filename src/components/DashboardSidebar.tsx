@@ -3,7 +3,6 @@
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/lib/auth-context";
 import {
-  AudioLines,
   Blocks,
   ChevronLeft,
   HomeIcon,
