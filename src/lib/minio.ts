@@ -16,7 +16,7 @@ if (!process.env.MINIO_BUCKET_NAME)
 export const minioClient = new Client({
   endPoint: process.env.MINIO_ENDPOINT,
   port: parseInt(process.env.MINIO_PORT),
-  useSSL: process.env.NODE_ENV === "production",
+  useSSL: true,
   accessKey: process.env.MINIO_ACCESS_KEY,
   secretKey: process.env.MINIO_SECRET_KEY,
 });
