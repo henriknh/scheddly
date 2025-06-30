@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/sidebar";
 import config from "@/config";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -55,9 +56,8 @@ export function DashboardSidebar() {
               className={cn(open ? "py-6" : "")}
             >
               <Link href="/dashboard">
-                <AudioLines
-                  className={cn("h-4 w-4", open ? "h-8 w-8" : "h-4 w-4")}
-                />
+                <Image src="/logo.svg" alt="Logo" width={20} height={20} />
+
                 <span className={cn("text-lg font-bold")}>
                   {config.appName}
                 </span>

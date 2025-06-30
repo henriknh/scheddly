@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { CleanedUser, getUserFromToken } from "@/lib/user";
+import Image from "next/image";
 
 export function TopNav() {
   const [user, setUser] = useState<CleanedUser | null>(null);
@@ -16,7 +17,8 @@ export function TopNav() {
   return (
     <nav className="border-b w-full">
       <div className="flex h-16 items-center justify-between w-full px-8">
-        <Link href="/" className="text-xl font-bold">
+        <Link href="/" className="text-xl font-bold flex gap-2 items-center">
+          <Image src="/logo.svg" alt="Logo" width={20} height={20} />
           {config.appName}
         </Link>
 
