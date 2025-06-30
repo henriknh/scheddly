@@ -1,6 +1,5 @@
 import { getUserFromToken } from "@/lib/user";
 import { redirect } from "next/navigation";
-import { Footer } from "@/components/root/Footer";
 
 export default async function AuthLayout({
   children,
@@ -16,7 +15,6 @@ export default async function AuthLayout({
   return (
     <div className="min-h-screen w-full flex flex-col">
       <div className="flex-1 flex items-center justify-center">{children}</div>
-      <Footer />
     </div>
   );
 }

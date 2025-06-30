@@ -1,7 +1,6 @@
 import { AuthProviderWrapper } from "@/components/auth/auth-provider-wrapper";
 import { Breadcrumbs } from "@/components/common/breadcrumbs";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
-import { Footer } from "@/components/root/Footer";
 import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -28,7 +27,6 @@ export default function DashboardLayout({
             </div>
           </main>
         </div>
-        <Footer />
       </div>
     </AuthProviderWrapper>
   );
