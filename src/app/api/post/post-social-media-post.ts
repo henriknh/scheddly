@@ -37,6 +37,14 @@ export async function postSocialMediaPost(
     } else if (post.postType === PostType.VIDEO) {
       await socialMediaApiFunctions.postVideo(post, socialMediaPost);
     }
+
+    await prisma.socialMediaPost.update({
+      where: { id: socialMediaPost.id },
+      data: {
+        failedAt: null,
+        failedReason: null,
+      },
+    });
   } catch (error) {
     const errorId = randomUUID();
 
