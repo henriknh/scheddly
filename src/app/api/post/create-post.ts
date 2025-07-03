@@ -77,8 +77,6 @@ export async function createPost({
       },
     });
 
-    console.log("newPost", newPost);
-
     if (images?.length) {
       const uploadResults = await uploadPostImages(images, newPost.id);
 

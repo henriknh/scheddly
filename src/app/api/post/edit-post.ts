@@ -26,10 +26,6 @@ export async function editPost(
 ): Promise<void> {
   const user = await getUserFromToken();
 
-  console.log("images", images);
-  console.log("video", video);
-  console.log("videoCover", videoCover);
-
   if (!user || !user.id || !user.teamId) {
     throw new Error("Unauthorized");
   }
@@ -103,13 +99,6 @@ export async function editPost(
       await Promise.all(
         uploadResults?.map(async (uploadResult) => {
           const { path, mimeType, size } = uploadResult;
-
-          console.log({
-            path,
-            mimeType,
-            size,
-            postId: newPost.id,
-          });
 
           return await tx.file.create({
             data: {
