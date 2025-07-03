@@ -222,7 +222,7 @@ export const tumblr: SocialMediaApiFunctions = {
     socialMediaPost: SocialMediaPostWithRelations
   ) => {
     const accessToken = await tumblr.getValidAccessToken(
-      post.socialMediaPosts[0].socialMediaIntegrationId
+      socialMediaPost.socialMediaIntegrationId
     );
 
     const response = await fetch(
@@ -276,7 +276,7 @@ export const tumblr: SocialMediaApiFunctions = {
     socialMediaPost: SocialMediaPostWithRelations
   ) => {
     const accessToken = await tumblr.getValidAccessToken(
-      post.socialMediaPosts[0].socialMediaIntegrationId
+      socialMediaPost.socialMediaIntegrationId
     );
 
     // Create a FormData object for multipart/form-data
@@ -372,7 +372,7 @@ export const tumblr: SocialMediaApiFunctions = {
     }
 
     const accessToken = await tumblr.getValidAccessToken(
-      post.socialMediaPosts[0].socialMediaIntegrationId
+      socialMediaPost.socialMediaIntegrationId
     );
 
     // Create a FormData object for multipart/form-data
@@ -462,7 +462,7 @@ export const tumblr: SocialMediaApiFunctions = {
     }
 
     const accessToken = await tumblr.getValidAccessToken(
-      post.socialMediaPosts[0].socialMediaIntegrationId
+      socialMediaPost.socialMediaIntegrationId
     );
 
     const response = await fetch(
