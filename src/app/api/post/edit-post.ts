@@ -2,7 +2,7 @@
 
 import { PostType } from "@/generated/prisma";
 import {
-  uploadPostImage,
+  uploadPostImages,
   uploadPostVideo,
   uploadPostVideoCover,
 } from "@/lib/minio";
@@ -10,6 +10,7 @@ import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
 import { CreatePostParams } from "./create-post";
 import { getPost } from "./get-post";
+import { deleteFile } from "../file/delete-file";
 
 export async function editPost(
   postId: string,
@@ -24,6 +25,10 @@ export async function editPost(
   }: CreatePostParams
 ): Promise<void> {
   const user = await getUserFromToken();
+
+  console.log("images", images);
+  console.log("video", video);
+  console.log("videoCover", videoCover);
 
   if (!user || !user.id || !user.teamId) {
     throw new Error("Unauthorized");
@@ -46,20 +51,6 @@ export async function editPost(
   if (!post) {
     throw new Error("Post not found");
   }
-
-  await prisma.file.deleteMany({
-    where: {
-      postVideo: {
-        id: postId,
-      },
-      postVideoCover: {
-        id: postId,
-      },
-      postImages: {
-        id: postId,
-      },
-    },
-  });
 
   await prisma.$transaction(async (tx) => {
     const newPost = await tx.post.update({
@@ -91,36 +82,34 @@ export async function editPost(
     });
 
     if (newPost.images) {
-      await tx.file.deleteMany({
-        where: {
-          postImages: { id: newPost.id },
-        },
-      });
+      await Promise.all(
+        newPost.images.map(async (image) => {
+          await deleteFile(image.id);
+        })
+      );
     }
 
     if (newPost.videoCover) {
-      await tx.file.deleteMany({
-        where: {
-          postVideoCover: { id: newPost.id },
-        },
-      });
+      await deleteFile(newPost.videoCover.id);
     }
 
     if (newPost.video) {
-      await tx.file.deleteMany({
-        where: {
-          postVideo: { id: newPost.id },
-        },
-      });
+      await deleteFile(newPost.video.id);
     }
 
     if (images?.length) {
+      const uploadResults = await uploadPostImages(images, newPost.id);
+
       await Promise.all(
-        images?.map(async (image) => {
-          const { path, mimeType, size } = await uploadPostImage(
-            image,
-            newPost.id
-          );
+        uploadResults?.map(async (uploadResult) => {
+          const { path, mimeType, size } = uploadResult;
+
+          console.log({
+            path,
+            mimeType,
+            size,
+            postId: newPost.id,
+          });
 
           return await tx.file.create({
             data: {

@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
 import { getPost } from "./get-post";
 import { getSocialMediaApiFunctions } from "@/lib/social-media-api-functions/social-media-api-functions";
+import { deleteFile } from "../file/delete-file";
 
 export async function deletePost(postId: string) {
   const user = await getUserFromToken();
@@ -19,23 +20,37 @@ export async function deletePost(postId: string) {
 
   const socialMediaPosts = post.socialMediaPosts;
 
-  await Promise.all(
-    socialMediaPosts.map(async (socialMediaPost) => {
-      const socialMediaApiFunctions = getSocialMediaApiFunctions(
-        socialMediaPost.socialMediaIntegration.socialMedia
-      );
+  await prisma.$transaction(async (tx) => {
+    const files = await tx.file.findMany({
+      where: {
+        postId: post.id,
+      },
+    });
 
-      if (socialMediaApiFunctions && socialMediaPost.socialMediaPostId) {
-        await socialMediaApiFunctions.deletePost(post, socialMediaPost);
-      }
+    await Promise.all(
+      files.map(async (file) => {
+        await deleteFile(file.id, { prismaTx: tx });
+      })
+    );
 
-      await prisma.socialMediaPost.delete({
-        where: { id: socialMediaPost.id },
-      });
-    })
-  );
+    await Promise.all(
+      socialMediaPosts.map(async (socialMediaPost) => {
+        const socialMediaApiFunctions = getSocialMediaApiFunctions(
+          socialMediaPost.socialMediaIntegration.socialMedia
+        );
 
-  await prisma.post.delete({
-    where: { id: post.id },
+        if (socialMediaApiFunctions && socialMediaPost.socialMediaPostId) {
+          await socialMediaApiFunctions.deletePost(post, socialMediaPost);
+        }
+
+        await tx.socialMediaPost.delete({
+          where: { id: socialMediaPost.id },
+        });
+      })
+    );
+
+    await tx.post.delete({
+      where: { id: post.id },
+    });
   });
 }

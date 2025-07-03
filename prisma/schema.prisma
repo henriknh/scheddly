@@ -125,7 +125,7 @@ model File {
   createdAt     DateTime @default(now())
   user          User?
   postImages    Post?    @relation("PostImages", fields: [postId], references: [id])
-  postId        String?  @unique
+  postId        String?
   postVideo     Post?    @relation("PostVideo")
   postVideoCover Post?   @relation("PostVideoCover")
 }

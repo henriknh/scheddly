@@ -2,7 +2,7 @@
 
 import { PostType, SocialMediaIntegration } from "@/generated/prisma";
 import {
-  uploadPostImage,
+  uploadPostImages,
   uploadPostVideo,
   uploadPostVideoCover,
 } from "@/lib/minio";
@@ -80,12 +80,11 @@ export async function createPost({
     console.log("newPost", newPost);
 
     if (images?.length) {
+      const uploadResults = await uploadPostImages(images, newPost.id);
+
       await Promise.all(
-        images?.map(async (image) => {
-          const { path, mimeType, size } = await uploadPostImage(
-            image,
-            newPost.id
-          );
+        uploadResults?.map(async (uploadResult) => {
+          const { path, mimeType, size } = uploadResult;
 
           return await tx.file.create({
             data: {

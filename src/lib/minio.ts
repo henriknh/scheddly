@@ -107,12 +107,16 @@ export async function uploadAvatar(
   return uploadBuffer(resizedImage, path, file.type);
 }
 
-export async function uploadPostImage(
-  file: File,
+export async function uploadPostImages(
+  files: File[],
   postId: string
-): Promise<UploadResult> {
-  const path = `post_images/${postId}${extname(file.name)}`;
-  return uploadFile(file, path);
+): Promise<UploadResult[]> {
+  return Promise.all(
+    files.map(async (file, index) => {
+      const path = `post_images/${postId}_${index}${extname(file.name)}`;
+      return uploadFile(file, path);
+    })
+  );
 }
 
 export async function uploadPostVideoCover(
