@@ -311,10 +311,10 @@ export const tumblr: SocialMediaApiFunctions = {
       const jsonPayload = {
         blog_identifier: socialMediaPost.socialMediaIntegration.accountId,
         content: [
-          {
+          ...mediaIdentifiers.map((mediaIdentifier) => ({
             type: "image",
-            media: mediaIdentifiers,
-          },
+            media: mediaIdentifier,
+          })),
           {
             type: "text",
             text: post.description,
