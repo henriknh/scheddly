@@ -226,7 +226,7 @@ export const tumblr: SocialMediaApiFunctions = {
     );
 
     const response = await fetch(
-      `${tumblrApiUrl}/blog/${post.socialMediaPosts[0].socialMediaIntegration.accountId}/posts`,
+      `${tumblrApiUrl}/blog/${socialMediaPost.socialMediaIntegration.accountId}/posts`,
       {
         method: "POST",
         headers: {
@@ -234,8 +234,7 @@ export const tumblr: SocialMediaApiFunctions = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          blog_identifier:
-            post.socialMediaPosts[0].socialMediaIntegration.accountId,
+          blog_identifier: socialMediaPost.socialMediaIntegration.accountId,
           content: [
             {
               type: "text",
@@ -306,8 +305,7 @@ export const tumblr: SocialMediaApiFunctions = {
 
       // Create the JSON payload
       const jsonPayload = {
-        blog_identifier:
-          post.socialMediaPosts[0].socialMediaIntegration.accountId,
+        blog_identifier: socialMediaPost.socialMediaIntegration.accountId,
         content: [
           {
             type: "image",
@@ -329,7 +327,7 @@ export const tumblr: SocialMediaApiFunctions = {
     }
 
     const response = await fetch(
-      `${tumblrApiUrl}/blog/${post.socialMediaPosts[0].socialMediaIntegration.accountId}/posts`,
+      `${tumblrApiUrl}/blog/${socialMediaPost.socialMediaIntegration.accountId}/posts`,
       {
         method: "POST",
         headers: {
@@ -391,8 +389,7 @@ export const tumblr: SocialMediaApiFunctions = {
 
       // Create the JSON payload
       const jsonPayload = {
-        blog_identifier:
-          post.socialMediaPosts[0].socialMediaIntegration.accountId,
+        blog_identifier: socialMediaPost.socialMediaIntegration.accountId,
         content: [
           {
             type: "video",
@@ -419,7 +416,7 @@ export const tumblr: SocialMediaApiFunctions = {
     }
 
     const response = await fetch(
-      `${tumblrApiUrl}/blog/${post.socialMediaPosts[0].socialMediaIntegration.accountId}/posts`,
+      `${tumblrApiUrl}/blog/${socialMediaPost.socialMediaIntegration.accountId}/posts`,
       {
         method: "POST",
         headers: {
