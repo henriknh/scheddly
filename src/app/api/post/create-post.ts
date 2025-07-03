@@ -48,7 +48,7 @@ export async function createPost({
     throw new Error("Video is required for video posts");
   }
 
-  const newPost = await prisma.$transaction(async (tx) => {
+  const post = await prisma.$transaction(async (tx) => {
     const newPost = await tx.post.create({
       data: {
         socialMediaPosts: {
@@ -61,30 +61,20 @@ export async function createPost({
         postType,
         scheduledAt,
       },
-      include: {
-        socialMediaPosts: {
-          include: {
-            socialMediaIntegration: {
-              include: {
-                brand: true,
-              },
-            },
-          },
-        },
-        images: true,
-        video: true,
-        videoCover: true,
-      },
     });
 
     if (images?.length) {
       const uploadResults = await uploadPostImages(images, newPost.id);
 
+      console.log("uploadResults", uploadResults);
+
       await Promise.all(
         uploadResults?.map(async (uploadResult) => {
           const { path, mimeType, size } = uploadResult;
 
-          return await tx.file.create({
+          console.log("uploadResult", uploadResult);
+
+          return tx.file.create({
             data: {
               path,
               mimeType,
@@ -94,6 +84,8 @@ export async function createPost({
           });
         })
       );
+
+      console.log("newPost", newPost);
     }
 
     if (videoCover && video) {
@@ -140,12 +132,30 @@ export async function createPost({
       await Promise.all([handleVideoCover(), handleVideo()]);
     }
 
-    return newPost;
+    const postWithRelations = await tx.post.findUnique({
+      where: { id: newPost.id },
+      include: {
+        socialMediaPosts: {
+          include: {
+            socialMediaIntegration: {
+              include: {
+                brand: true,
+              },
+            },
+          },
+        },
+        images: true,
+        video: true,
+        videoCover: true,
+      },
+    });
+
+    return postWithRelations!;
   });
 
-  if (!newPost.scheduledAt) {
-    await postPost(newPost);
+  if (!post.scheduledAt) {
+    await postPost(post);
   }
 
-  return newPost;
+  return post;
 }

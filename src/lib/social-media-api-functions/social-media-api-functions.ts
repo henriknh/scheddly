@@ -3,6 +3,7 @@ import {
   SocialMediaPostWithRelations,
 } from "@/app/api/post/types";
 import { SocialMedia, SocialMediaIntegration } from "@/generated/prisma";
+import { instagram } from "./instagram";
 import { pinterest } from "./pinterest";
 import { tumblr } from "./tumblr";
 
@@ -66,6 +67,8 @@ export const getSocialMediaApiFunctions = (
   socialMedia: SocialMedia
 ): SocialMediaApiFunctions => {
   switch (socialMedia) {
+    case SocialMedia.INSTAGRAM:
+      return instagram;
     case SocialMedia.PINTEREST:
       return pinterest;
     case SocialMedia.TUMBLR:
