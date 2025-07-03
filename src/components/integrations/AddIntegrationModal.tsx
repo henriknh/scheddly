@@ -4,7 +4,7 @@ import {
 } from "@/lib/social-media-platforms";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
@@ -18,19 +18,16 @@ import {
 import { SocialMediaIntegration } from "@/generated/prisma";
 
 interface AddIntegrationModalProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
   brandId: string;
   integrations: SocialMediaIntegration[];
 }
 
 export function AddIntegrationModal({
-  isOpen,
-  onOpenChange,
   brandId,
   integrations,
 }: AddIntegrationModalProps) {
   const router = useRouter();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const socialMediaDataButtons = useMemo(() => {
     const getOauthPageUrl = (socialMediaPlatform: SocialMediaPlatform) => {
@@ -58,7 +55,7 @@ export function AddIntegrationModal({
           }
 
           channel.close();
-          onOpenChange(false);
+          setIsAddModalOpen(false);
         };
       }
     };
@@ -75,10 +72,10 @@ export function AddIntegrationModal({
         disabled: !getOauthPageUrl(socialMediaPlatform) || isConnected,
       };
     });
-  }, [onOpenChange, router, brandId, integrations]);
+  }, [setIsAddModalOpen, router, brandId, integrations]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
       <DialogTrigger asChild>
         <Button>
           <PlusIcon className="w-4 h-4" />

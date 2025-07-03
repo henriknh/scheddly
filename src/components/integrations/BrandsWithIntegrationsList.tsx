@@ -52,7 +52,6 @@ export function BrandsWithIntegrationsList({
   brands,
   integrations,
 }: BrandsWithIntegrationsListProps) {
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isAddBrandModalOpen, setIsAddBrandModalOpen] = useState(false);
   const [refreshingIntegrations, setRefreshingIntegrations] = useState<
     Set<string>
@@ -91,8 +90,6 @@ export function BrandsWithIntegrationsList({
               </div>
 
               <AddIntegrationModal
-                isOpen={isAddModalOpen}
-                onOpenChange={setIsAddModalOpen}
                 brandId={brand.id}
                 integrations={brandIntegrations}
               />
