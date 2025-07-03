@@ -257,7 +257,7 @@ export const tumblr: SocialMediaApiFunctions = {
 
       await prisma.socialMediaPost.update({
         where: {
-          id: post.socialMediaPosts[0].id,
+          id: socialMediaPost.id,
         },
         data: {
           socialMediaPostId: data.response.id,
@@ -348,7 +348,7 @@ export const tumblr: SocialMediaApiFunctions = {
 
       await prisma.socialMediaPost.update({
         where: {
-          id: post.socialMediaPosts[0].id,
+          id: socialMediaPost.id,
         },
         data: {
           socialMediaPostId: data.response.id,
@@ -437,7 +437,7 @@ export const tumblr: SocialMediaApiFunctions = {
 
       await prisma.socialMediaPost.update({
         where: {
-          id: post.socialMediaPosts[0].id,
+          id: socialMediaPost.id,
         },
         data: {
           socialMediaPostId: data.response.id,
