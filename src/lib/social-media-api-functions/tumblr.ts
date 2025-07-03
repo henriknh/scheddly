@@ -274,6 +274,10 @@ export const tumblr: SocialMediaApiFunctions = {
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
   ) => {
+    if (!post.images?.length) {
+      throw new Error("No images provided");
+    }
+
     const accessToken = await tumblr.getValidAccessToken(
       socialMediaPost.socialMediaIntegrationId
     );
@@ -366,7 +370,7 @@ export const tumblr: SocialMediaApiFunctions = {
     socialMediaPost: SocialMediaPostWithRelations
   ) => {
     if (!post.video) {
-      throw new Error("No video URL provided");
+      throw new Error("No video provided");
     }
 
     const accessToken = await tumblr.getValidAccessToken(

@@ -247,6 +247,10 @@ export const pinterest: SocialMediaApiFunctions = {
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
   ) => {
+    if (!post.images?.length) {
+      throw new Error("No images provided");
+    }
+
     const accessToken = await pinterest.getValidAccessToken(
       socialMediaPost.socialMediaIntegrationId
     );
