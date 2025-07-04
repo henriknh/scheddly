@@ -114,7 +114,7 @@ export function BrandsWithIntegrationsList({
                     return (
                       <div
                         key={integration.id}
-                        className="grid grid-cols-3 gap-2 space-y-2"
+                        className="flex items-center justify-between gap-2 space-y-2"
                       >
                         <div className="flex items-center gap-2">
                           <platform.Icon className="h-4 w-4" />
@@ -179,9 +179,7 @@ export function BrandsWithIntegrationsList({
                               }`}
                             />
                           </Button>
-                        </div>
 
-                        <div className="flex justify-end">
                           <DeleteIntegrationDialog
                             integrationId={integration.id}
                           />

@@ -3,7 +3,13 @@ import { SocialMediaApiFunctions } from "./social-media-api-functions/social-med
 import { instagram } from "./social-media-api-functions/instagram";
 import { pinterest } from "./social-media-api-functions/pinterest";
 import { tumblr } from "./social-media-api-functions/tumblr";
-import { PinterestIcon, TumblrIcon, InstagramIcon } from "@/components/icons";
+import { x } from "./social-media-api-functions/x";
+import {
+  PinterestIcon,
+  TumblrIcon,
+  InstagramIcon,
+  XIcon,
+} from "@/components/icons";
 
 export type SocialMediaPlatform = {
   id: SocialMedia;
@@ -35,6 +41,13 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
     socialMediaApiFunctions: tumblr,
     supportsPostTypes: [PostType.TEXT, PostType.IMAGE, PostType.VIDEO],
   },
+  {
+    id: SocialMedia.X,
+    name: "X",
+    Icon: XIcon,
+    socialMediaApiFunctions: x,
+    supportsPostTypes: [PostType.TEXT, PostType.IMAGE, PostType.VIDEO],
+  },
   //   {
   //     id: SocialMedia.FACEBOOK,
   //     name: "Facebook",
@@ -54,11 +67,6 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
   //     id: SocialMedia.THREADS,
   //     name: "Threads",
   //     Icon: ThreadsIcon,
-  //   },
-  //   {
-  //     id: SocialMedia.X,
-  //     name: "X",
-  //     Icon: XIcon,
   //   },
   //   {
   //     id: SocialMedia.LINKEDIN,

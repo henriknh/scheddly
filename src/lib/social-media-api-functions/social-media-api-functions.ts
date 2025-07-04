@@ -6,6 +6,7 @@ import { SocialMedia, SocialMediaIntegration } from "@/generated/prisma";
 import { instagram } from "./instagram/index";
 import { pinterest } from "./pinterest/index";
 import { tumblr } from "./tumblr/index";
+import { x } from "./x/index";
 import prisma from "@/lib/prisma";
 
 export const SocialMediaApiErrors = {
@@ -74,6 +75,8 @@ export const getSocialMediaApiFunctions = (
       return pinterest;
     case SocialMedia.TUMBLR:
       return tumblr;
+    case SocialMedia.X:
+      return x;
   }
 
   throw new Error(`Social media ${socialMedia} not supported`);
@@ -109,6 +112,12 @@ export const getValidAccessToken = async (
       case SocialMedia.TUMBLR:
         return (
           await tumblr.refreshAccessTokenAndUpdateSocialMediaIntegration(
+            integrationId
+          )
+        ).accessToken;
+      case SocialMedia.X:
+        return (
+          await x.refreshAccessTokenAndUpdateSocialMediaIntegration(
             integrationId
           )
         ).accessToken;
