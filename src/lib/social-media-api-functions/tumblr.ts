@@ -214,21 +214,6 @@ export const tumblr: SocialMediaApiFunctions = {
     };
   },
 
-  updateAccountInfo: async (
-    socialMediaIntegrationId: string
-  ): Promise<void> => {
-    const accessToken = await tumblr.getValidAccessToken(
-      socialMediaIntegrationId
-    );
-
-    const accountInfo = await tumblr.fetchAccountInfoByAccessToken(accessToken);
-
-    await prisma.socialMediaIntegration.update({
-      where: { id: socialMediaIntegrationId },
-      data: accountInfo,
-    });
-  },
-
   postText: async (
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations

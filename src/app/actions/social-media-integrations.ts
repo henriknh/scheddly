@@ -20,5 +20,20 @@ export async function updateAccountInfo(integrationId: string) {
     throw new Error("Platform not found");
   }
 
-  await platform.socialMediaApiFunctions.updateAccountInfo(integrationId);
+  const accountInfo =
+    await platform.socialMediaApiFunctions.fetchAccountInfoByAccessToken(
+      integration.accessToken
+    );
+
+  await prisma.socialMediaIntegration.update({
+    where: {
+      id: integrationId,
+    },
+    data: {
+      accountId: accountInfo.accountId,
+      accountName: accountInfo.accountName,
+      accountUsername: accountInfo.accountUsername,
+      accountAvatarUrl: accountInfo.accountAvatarUrl,
+    },
+  });
 }

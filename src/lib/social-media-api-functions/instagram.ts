@@ -250,36 +250,6 @@ export const instagram: SocialMediaApiFunctions = {
     };
   },
 
-  updateAccountInfo: async (
-    socialMediaIntegrationId: string
-  ): Promise<void> => {
-    const integration = await prisma.socialMediaIntegration.findFirst({
-      where: {
-        id: socialMediaIntegrationId,
-      },
-    });
-
-    if (!integration?.accessToken) {
-      throw new Error("Integration not found or missing access token");
-    }
-
-    const accountInfo = await instagram.fetchAccountInfoByAccessToken(
-      integration.accessToken
-    );
-
-    await prisma.socialMediaIntegration.update({
-      where: {
-        id: socialMediaIntegrationId,
-      },
-      data: {
-        accountId: accountInfo.accountId,
-        accountName: accountInfo.accountName,
-        accountUsername: accountInfo.accountUsername,
-        accountAvatarUrl: accountInfo.accountAvatarUrl,
-      },
-    });
-  },
-
   postText: async (
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations

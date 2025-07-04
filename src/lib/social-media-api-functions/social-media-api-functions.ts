@@ -40,7 +40,6 @@ export interface SocialMediaApiFunctions {
   getValidAccessToken: (id: string) => Promise<string>;
 
   fetchAccountInfoByAccessToken: (accessToken: string) => Promise<AccountInfo>;
-  updateAccountInfo: (socialMediaIntegrationId: string) => Promise<void>;
   postText: (
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations

@@ -225,23 +225,6 @@ export const pinterest: SocialMediaApiFunctions = {
     };
   },
 
-  updateAccountInfo: async (
-    socialMediaIntegrationId: string
-  ): Promise<void> => {
-    const accessToken = await pinterest.getValidAccessToken(
-      socialMediaIntegrationId
-    );
-
-    const accountInfo = await pinterest.fetchAccountInfoByAccessToken(
-      accessToken
-    );
-
-    await prisma.socialMediaIntegration.update({
-      where: { id: socialMediaIntegrationId },
-      data: accountInfo,
-    });
-  },
-
   postText: async (
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
