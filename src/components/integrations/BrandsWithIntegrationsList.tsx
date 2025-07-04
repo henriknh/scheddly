@@ -2,23 +2,20 @@
 
 import { AddBrandModal } from "@/components/brands/AddBrandModal";
 import { DeleteBrandDialog } from "@/components/brands/DeleteBrandDialog";
-import { EditBrandModal } from "@/components/brands/EditBrandModal";
 import { Header } from "@/components/common/Header";
 import { AddIntegrationModal } from "@/components/integrations/AddIntegrationModal";
 import { DeleteIntegrationDialog } from "@/components/integrations/DeleteIntegrationDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brand, SocialMediaIntegration } from "@/generated/prisma";
-import { socialMediaPlatforms } from "@/lib/social-media-platforms";
-import { Pencil, Plus, RefreshCw } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
-
-import { updateAccountInfo } from "@/app/actions/social-media-integrations";
 import { getSocialMediaApiFunctions } from "@/lib/social-media-api-functions/social-media-api-functions";
+import { socialMediaPlatforms } from "@/lib/social-media-platforms";
+import { Plus } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { UserAvatar } from "../common/UserAvatar";
+import { RefreshIntegration } from "./RefreshIntegration";
+import { EditBrandButton } from "./edit-brand-button";
 
 interface BrandsWithIntegrationsListProps {
   brands: Brand[];
@@ -27,37 +24,12 @@ interface BrandsWithIntegrationsListProps {
   })[];
 }
 
-interface EditBrandButtonProps {
-  brand: Brand;
-}
-
-function EditBrandButton({ brand }: EditBrandButtonProps) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <>
-      <Button variant="ghost" size="icon" onClick={() => setIsOpen(true)}>
-        <Pencil className="h-4 w-4" />
-      </Button>
-      <EditBrandModal
-        brand={brand}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      />
-    </>
-  );
-}
-
 export function BrandsWithIntegrationsList({
   brands,
   integrations,
 }: BrandsWithIntegrationsListProps) {
   const [isAddBrandModalOpen, setIsAddBrandModalOpen] = useState(false);
-  const [refreshingIntegrations, setRefreshingIntegrations] = useState<
-    Set<string>
-  >(new Set());
-  const router = useRouter();
-  // Group integrations by brand
+
   const integrationsByBrand = integrations.reduce((acc, integration) => {
     const brandId = integration.brand?.id || "no-brand";
     if (!acc[brandId]) {
@@ -111,75 +83,46 @@ export function BrandsWithIntegrationsList({
                       integration.socialMedia
                     );
 
+                    const accountButton = (
+                      <Button variant="ghost" asChild>
+                        <Link
+                          href={socialMediaApiFunctions.externalAccountUrl(
+                            integration
+                          )}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <UserAvatar
+                            src={integration.accountAvatarUrl || undefined}
+                          />
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">
+                              {integration.accountName}
+                            </span>
+                          </div>
+                        </Link>
+                      </Button>
+                    );
+
                     return (
                       <div
                         key={integration.id}
-                        className="flex items-center justify-between gap-2 space-y-2"
+                        className="flex items-center gap-2 space-y-2"
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex-1 flex items-center gap-2">
                           <platform.Icon className="h-4 w-4" />
                           <span className="text-sm font-medium">
                             {platform.name}
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <Button variant="ghost" asChild>
-                            <Link
-                              href={socialMediaApiFunctions.externalAccountUrl(
-                                integration
-                              )}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <UserAvatar
-                                src={integration.accountAvatarUrl || undefined}
-                              />
-                              <div className="flex flex-col">
-                                <span className="text-sm font-medium">
-                                  {integration.accountName}
-                                </span>
-                              </div>
-                            </Link>
-                          </Button>
+                        <div className="flex-1 items-center gap-2">
+                          {accountButton}
 
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              setRefreshingIntegrations(
-                                (prev) => new Set([...prev, integration.id])
-                              );
-                              updateAccountInfo(integration.id)
-                                .then(() => {
-                                  toast.success("Account info updated");
-                                  router.refresh();
-                                })
-                                .catch((error) => {
-                                  console.error(error);
-                                  toast.error("Failed to update account info");
-                                })
-                                .finally(() => {
-                                  setRefreshingIntegrations((prev) => {
-                                    const next = new Set(prev);
-                                    next.delete(integration.id);
-                                    return next;
-                                  });
-                                });
-                            }}
-                            disabled={refreshingIntegrations.has(
-                              integration.id
-                            )}
-                          >
-                            <RefreshCw
-                              className={`h-4 w-4 ${
-                                refreshingIntegrations.has(integration.id)
-                                  ? "animate-spin"
-                                  : ""
-                              }`}
-                            />
-                          </Button>
+                          <RefreshIntegration integrationId={integration.id} />
+                        </div>
 
+                        <div className="flex justify-end">
                           <DeleteIntegrationDialog
                             integrationId={integration.id}
                           />
