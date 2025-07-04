@@ -1,5 +1,3 @@
-"use server";
-
 import { SocialMediaApiFunctions } from "../social-media-api-functions";
 import { consumeAuthorizationCode } from "./consume-authorization-code";
 import { deletePost } from "./delete-post";

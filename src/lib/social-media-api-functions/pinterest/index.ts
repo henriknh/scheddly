@@ -1,5 +1,3 @@
-"use server";
-
 import { SocialMediaApiFunctions } from "../social-media-api-functions";
 import { oauthPageUrl } from "./oauth-page-url";
 import { consumeAuthorizationCode } from "./consume-authorization-code";
