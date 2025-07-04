@@ -3,9 +3,9 @@
 import { AccountInfo } from "../social-media-api-functions";
 import { tumblrApiUrl } from ".";
 
-export const fetchAccountInfoByAccessToken = async (
+export async function fetchAccountInfoByAccessToken(
   accessToken: string
-): Promise<AccountInfo> => {
+): Promise<AccountInfo> {
   const response = await fetch(`${tumblrApiUrl}/user/info`, {
     method: "GET",
     headers: {
@@ -31,4 +31,4 @@ export const fetchAccountInfoByAccessToken = async (
     accountUsername: undefined,
     accountAvatarUrl,
   };
-};
+}

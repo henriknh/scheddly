@@ -8,10 +8,10 @@ import prisma from "@/lib/prisma";
 import { tumblrApiUrl } from ".";
 import { getValidAccessToken } from "../social-media-api-functions";
 
-export const postVideo = async (
+export async function postVideo(
   post: PostWithRelations,
   socialMediaPost: SocialMediaPostWithRelations
-) => {
+) {
   if (!post.video) {
     throw new Error("No video provided");
   }
@@ -95,4 +95,4 @@ export const postVideo = async (
     console.error("Failed to update database  ", error);
     throw new Error("Post created but failed to update database");
   }
-};
+}

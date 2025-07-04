@@ -16,9 +16,9 @@ if (!client_secret) {
   throw new Error("Missing Tumblr client secret");
 }
 
-export const refreshAccessTokenAndUpdateSocialMediaIntegration = async (
+export async function refreshAccessTokenAndUpdateSocialMediaIntegration(
   id: string
-): Promise<Tokens> => {
+): Promise<Tokens> {
   const integration = await prisma.socialMediaIntegration.findFirst({
     where: {
       id,
@@ -37,8 +37,8 @@ export const refreshAccessTokenAndUpdateSocialMediaIntegration = async (
     body: new URLSearchParams({
       grant_type: "refresh_token",
       refresh_token: integration.refreshToken,
-      client_id,
-      client_secret,
+      client_id: client_id!,
+      client_secret: client_secret!,
     }).toString(),
   });
 
@@ -66,4 +66,4 @@ export const refreshAccessTokenAndUpdateSocialMediaIntegration = async (
     accessTokenExpiresAt: new Date(Date.now() + data.expires_in * 1000),
     refreshToken: data.refresh_token,
   };
-};
+}

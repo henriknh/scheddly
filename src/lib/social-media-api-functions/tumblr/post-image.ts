@@ -8,10 +8,10 @@ import prisma from "@/lib/prisma";
 import { getValidAccessToken } from "../social-media-api-functions";
 import { tumblrApiUrl } from ".";
 
-export const postImage = async (
+export async function postImage(
   post: PostWithRelations,
   socialMediaPost: SocialMediaPostWithRelations
-) => {
+) {
   if (!post.images?.length) {
     throw new Error("No images provided");
   }
@@ -101,4 +101,4 @@ export const postImage = async (
     console.error("Failed to update database  ", error);
     throw new Error("Post created but failed to update database");
   }
-};
+}

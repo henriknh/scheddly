@@ -8,10 +8,10 @@ import prisma from "@/lib/prisma";
 import { getValidAccessToken } from "../social-media-api-functions";
 import { tumblrApiUrl } from ".";
 
-export const postText = async (
+export async function postText(
   post: PostWithRelations,
   socialMediaPost: SocialMediaPostWithRelations
-) => {
+) {
   const accessToken = await getValidAccessToken(
     socialMediaPost.socialMediaIntegrationId
   );
@@ -59,4 +59,4 @@ export const postText = async (
     console.error("Failed to update database  ", error);
     throw new Error("Post created but failed to update database");
   }
-};
+}

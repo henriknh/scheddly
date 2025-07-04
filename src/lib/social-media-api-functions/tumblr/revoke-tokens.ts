@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import { tumblrApiUrl } from ".";
 
-export const revokeTokens = async (id: string): Promise<void> => {
+export async function revokeTokens(id: string): Promise<void> {
   const integration = await prisma.socialMediaIntegration.findFirst({
     where: {
       id,
@@ -27,4 +27,4 @@ export const revokeTokens = async (id: string): Promise<void> => {
   if (!response.ok) {
     throw new Error("Failed to revoke tokens");
   }
-};
+}

@@ -3,8 +3,8 @@ import {
   SocialMediaPostWithRelations,
 } from "@/app/api/post/types";
 import { SocialMedia, SocialMediaIntegration } from "@/generated/prisma";
-import { instagram } from "./instagram";
-import { pinterest } from "./pinterest";
+import { instagram } from "./instagram/index";
+import { pinterest } from "./pinterest/index";
 import { tumblr } from "./tumblr/index";
 import prisma from "@/lib/prisma";
 

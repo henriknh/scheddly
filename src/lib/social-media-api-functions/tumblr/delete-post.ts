@@ -7,10 +7,10 @@ import {
 import { getValidAccessToken } from "../social-media-api-functions";
 import { tumblrApiUrl } from ".";
 
-export const deletePost = async (
+export async function deletePost(
   post: PostWithRelations,
   socialMediaPost: SocialMediaPostWithRelations
-) => {
+) {
   if (!socialMediaPost.socialMediaPostId) {
     throw new Error("Social media post ID is required");
   }
@@ -42,4 +42,4 @@ export const deletePost = async (
       throw new Error("Failed to delete post from Tumblr");
     }
   }
-};
+}
