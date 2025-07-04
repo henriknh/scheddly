@@ -11,19 +11,13 @@ import {
 } from "./social-media-api-functions";
 import { SocialMediaIntegration } from "@/generated/prisma";
 
-const client_id =
-  process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-if (!client_id) {
-  throw new Error("Missing Pinterest client ID");
+if (!apiUrl) {
+  throw new Error("Missing API URL");
 }
 
-const redirect_uri =
-  process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_PINTEREST_REDIRECT_URI;
-
-if (!redirect_uri) {
-  throw new Error("Missing Pinterest redirect URI");
-}
+const redirect_uri = `${apiUrl}/oauth2-redirect/pinterest`;
 
 const pinterestApiUrl = "https://api.pinterest.com/v5";
 const scope =
@@ -31,14 +25,26 @@ const scope =
 
 export const pinterest: SocialMediaApiFunctions = {
   oauthPageUrl: (brandId: string) => {
+    const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID;
+
+    if (!client_id) {
+      throw new Error("Missing Pinterest client ID");
+    }
+
     return `https://www.pinterest.com/oauth/?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=${brandId}`;
   },
   consumeAuthorizationCode: async (code: string): Promise<Tokens> => {
+    const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID;
+
+    if (!client_id) {
+      throw new Error("Missing Pinterest client ID");
+    }
+
     const client_secret =
       process.env.SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_SECRET;
 
-    if (!client_id || !client_secret) {
-      throw new Error("Missing Pinterest client credentials");
+    if (!client_secret) {
+      throw new Error("Missing Pinterest client secret");
     }
 
     const response = await fetch(`${pinterestApiUrl}/oauth/token`, {

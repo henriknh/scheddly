@@ -10,19 +10,13 @@ import {
 } from "./social-media-api-functions";
 import { SocialMediaIntegration } from "@/generated/prisma";
 
-const client_id =
-  process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_INSTAGRAM_CLIENT_ID;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-if (!client_id) {
-  throw new Error("Missing Instagram client ID");
+if (!apiUrl) {
+  throw new Error("Missing API URL");
 }
 
-const redirect_uri =
-  process.env.NEXT_PUBLIC_SOCIAL_MEDIA_INTEGRATION_INSTAGRAM_REDIRECT_URI;
-
-if (!redirect_uri) {
-  throw new Error("Missing Instagram redirect URI");
-}
+const redirect_uri = `${apiUrl}/oauth2-redirect/instagram`;
 
 // Instagram API endpoints
 const instagramApiUrl = "https://api.instagram.com";
@@ -34,15 +28,27 @@ const scope =
 
 export const instagram: SocialMediaApiFunctions = {
   oauthPageUrl: (brandId: string) => {
+    const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_INSTAGRAM_CLIENT_ID;
+
+    if (!client_id) {
+      throw new Error("Missing Instagram client ID");
+    }
+
     return `${instagramApiUrl}/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=${brandId}`;
   },
 
   consumeAuthorizationCode: async (code: string): Promise<Tokens> => {
+    const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_INSTAGRAM_CLIENT_ID;
+
+    if (!client_id) {
+      throw new Error("Missing Instagram client ID");
+    }
+
     const client_secret =
       process.env.SOCIAL_MEDIA_INTEGRATION_INSTAGRAM_CLIENT_SECRET;
 
-    if (!client_id || !client_secret) {
-      throw new Error("Missing Instagram client credentials");
+    if (!client_secret) {
+      throw new Error("Missing Instagram client secret");
     }
 
     // Step 1: Exchange authorization code for short-lived access token
