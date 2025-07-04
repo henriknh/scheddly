@@ -6,6 +6,7 @@ import config from "@/config";
 import prisma from "@/lib/prisma";
 import {
   AccountInfo,
+  getValidAccessToken,
   SocialMediaApiFunctions,
   Tokens,
 } from "./social-media-api-functions";
@@ -19,7 +20,7 @@ if (!apiUrl) {
 
 const redirect_uri = `${apiUrl}/oauth2-redirect/pinterest`;
 
-const pinterestApiUrl = "https://api.pinterest.com/v5";
+const pinterestApiUrl = "https://api-sandbox.pinterest.com/v5";
 const scope =
   "boards:read,pins:read,user_accounts:read,boards:read,boards:write,pins:read,pins:write";
 
@@ -142,30 +143,6 @@ export const pinterest: SocialMediaApiFunctions = {
     };
   },
 
-  getValidAccessToken: async (id: string): Promise<string> => {
-    const integration = await prisma.socialMediaIntegration.findFirst({
-      where: {
-        id,
-      },
-    });
-
-    if (!integration?.accessToken) {
-      throw new Error("Integration not found or missing access token");
-    }
-
-    if (integration.accessTokenExpiresAt < new Date()) {
-      return (
-        await pinterest.refreshAccessTokenAndUpdateSocialMediaIntegration(id)
-      ).accessToken;
-    }
-
-    if (!integration.accessToken) {
-      throw new Error("Integration not found or missing access token");
-    }
-
-    return integration.accessToken;
-  },
-
   revokeTokens: async (id: string): Promise<void> => {
     const integration = await prisma.socialMediaIntegration.findFirst({
       where: {
@@ -240,7 +217,7 @@ export const pinterest: SocialMediaApiFunctions = {
       throw new Error("No images provided");
     }
 
-    const accessToken = await pinterest.getValidAccessToken(
+    const accessToken = await getValidAccessToken(
       socialMediaPost.socialMediaIntegrationId
     );
 
@@ -324,7 +301,7 @@ export const pinterest: SocialMediaApiFunctions = {
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
   ) => {
-    const accessToken = await pinterest.getValidAccessToken(
+    const accessToken = await getValidAccessToken(
       socialMediaPost.socialMediaIntegrationId
     );
 

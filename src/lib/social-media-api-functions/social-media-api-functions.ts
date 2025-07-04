@@ -5,7 +5,8 @@ import {
 import { SocialMedia, SocialMediaIntegration } from "@/generated/prisma";
 import { instagram } from "./instagram";
 import { pinterest } from "./pinterest";
-import { tumblr } from "./tumblr";
+import { tumblr } from "./tumblr/index";
+import prisma from "@/lib/prisma";
 
 export const SocialMediaApiErrors = {
   INVALID_TOKEN: "Invalid token",
@@ -31,13 +32,14 @@ export interface Auth {
 }
 
 export interface SocialMediaApiFunctions {
-  oauthPageUrl: (brandId: string) => string;
+  oauthPageUrl:
+    | ((brandId: string) => string)
+    | ((brandId: string) => Promise<string>);
   consumeAuthorizationCode: (code: string) => Promise<Tokens>;
   refreshAccessTokenAndUpdateSocialMediaIntegration: (
     id: string
   ) => Promise<Tokens>;
   revokeTokens: (id: string) => Promise<void>;
-  getValidAccessToken: (id: string) => Promise<string>;
 
   fetchAccountInfoByAccessToken: (accessToken: string) => Promise<AccountInfo>;
   postText: (
@@ -75,4 +77,47 @@ export const getSocialMediaApiFunctions = (
   }
 
   throw new Error(`Social media ${socialMedia} not supported`);
+};
+
+export const getValidAccessToken = async (
+  integrationId: string
+): Promise<string> => {
+  const integration = await prisma.socialMediaIntegration.findFirst({
+    where: {
+      id: integrationId,
+    },
+  });
+
+  if (!integration?.accessToken) {
+    throw new Error("Integration not found or missing access token");
+  }
+
+  if (integration.accessTokenExpiresAt < new Date()) {
+    switch (integration.socialMedia) {
+      case SocialMedia.INSTAGRAM:
+        return (
+          await instagram.refreshAccessTokenAndUpdateSocialMediaIntegration(
+            integrationId
+          )
+        ).accessToken;
+      case SocialMedia.PINTEREST:
+        return (
+          await pinterest.refreshAccessTokenAndUpdateSocialMediaIntegration(
+            integrationId
+          )
+        ).accessToken;
+      case SocialMedia.TUMBLR:
+        return (
+          await tumblr.refreshAccessTokenAndUpdateSocialMediaIntegration(
+            integrationId
+          )
+        ).accessToken;
+      default:
+        throw new Error(
+          `Social media ${integration.socialMedia} not supported`
+        );
+    }
+  } else {
+    return integration.accessToken;
+  }
 };

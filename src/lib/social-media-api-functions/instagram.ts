@@ -5,6 +5,7 @@ import {
 import prisma from "@/lib/prisma";
 import {
   AccountInfo,
+  getValidAccessToken,
   SocialMediaApiFunctions,
   Tokens,
 } from "./social-media-api-functions";
@@ -177,28 +178,6 @@ export const instagram: SocialMediaApiFunctions = {
     };
   },
 
-  getValidAccessToken: async (id: string): Promise<string> => {
-    const integration = await prisma.socialMediaIntegration.findFirst({
-      where: {
-        id,
-      },
-    });
-
-    if (!integration?.accessToken) {
-      throw new Error("Integration not found or missing access token");
-    }
-
-    // Check if token is expired (with 5 minute buffer)
-    const bufferTime = 5 * 60 * 1000; // 5 minutes in milliseconds
-    if (integration.accessTokenExpiresAt.getTime() - bufferTime < Date.now()) {
-      return (
-        await instagram.refreshAccessTokenAndUpdateSocialMediaIntegration(id)
-      ).accessToken;
-    }
-
-    return integration.accessToken;
-  },
-
   revokeTokens: async (id: string): Promise<void> => {
     const integration = await prisma.socialMediaIntegration.findFirst({
       where: {
@@ -254,7 +233,7 @@ export const instagram: SocialMediaApiFunctions = {
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
   ): Promise<void> => {
-    const accessToken = await instagram.getValidAccessToken(
+    const accessToken = await getValidAccessToken(
       socialMediaPost.socialMediaIntegrationId
     );
 
@@ -269,7 +248,7 @@ export const instagram: SocialMediaApiFunctions = {
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
   ): Promise<void> => {
-    const accessToken = await instagram.getValidAccessToken(
+    const accessToken = await getValidAccessToken(
       socialMediaPost.socialMediaIntegrationId
     );
 
@@ -345,7 +324,7 @@ export const instagram: SocialMediaApiFunctions = {
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
   ): Promise<void> => {
-    const accessToken = await instagram.getValidAccessToken(
+    const accessToken = await getValidAccessToken(
       socialMediaPost.socialMediaIntegrationId
     );
 
@@ -428,7 +407,7 @@ export const instagram: SocialMediaApiFunctions = {
       throw new Error("No Instagram post ID found");
     }
 
-    const accessToken = await instagram.getValidAccessToken(
+    const accessToken = await getValidAccessToken(
       socialMediaPost.socialMediaIntegrationId
     );
 
