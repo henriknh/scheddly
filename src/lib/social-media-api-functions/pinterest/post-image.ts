@@ -5,32 +5,45 @@ import {
   SocialMediaPostWithRelations,
 } from "@/app/api/post/types";
 import { getValidAccessToken } from "../social-media-api-functions";
-const pinterestApiUrl = "https://api-sandbox.pinterest.com/v5";
+import { getPresignedUrl } from "@/lib/minio";
+import prisma from "@/lib/prisma";
+import { pinterestApiUrl } from ".";
 
 export async function postImage(
   post: PostWithRelations,
   socialMediaPost: SocialMediaPostWithRelations
 ) {
-  if (!post.images?.length) throw new Error("No images provided");
+  let media_source;
+  if (post.images.length === 1) {
+    // Single image
+    media_source = {
+      source_type: "image_url",
+      url: await getPresignedUrl(post.images[0].path),
+    };
+  } else if (post.images.length > 1) {
+    // Multiple images
+    const items = await Promise.all(
+      post.images.map(async (image) => ({
+        url: await getPresignedUrl(image.path),
+      }))
+    );
+    media_source = {
+      source_type: "multiple_image_urls",
+      items,
+      index: 0,
+    };
+  } else {
+    throw new Error("No images provided");
+  }
   const accessToken = await getValidAccessToken(
-    socialMediaPost.socialMediaIntegrationId
+    socialMediaPost.socialMedia,
+    socialMediaPost.brandId
   );
-  // TODO: Replace hardcoded board_id and image URLs with real data
   const body = {
     link: "https://www.pinterest.com/",
     title: post.description,
     description: post.description,
-    board_id: "1049972169315366740",
-    media_source: {
-      source_type: "multiple_image_urls",
-      items: post.images.map(() => ({
-        title: "string",
-        description: "string",
-        link: "string",
-        url: "https://commons.wikimedia.org/wiki/File:PNG_Test.png",
-      })),
-      index: 0,
-    },
+    media_source,
     note: `Created with Scheddly`,
     is_removable: true,
   };
@@ -48,5 +61,10 @@ export async function postImage(
     console.error("Failed to post image", error);
     throw new Error("Failed to post image");
   }
-  return await response.json();
+  const data = await response.json();
+
+  await prisma.socialMediaPost.update({
+    where: { id: socialMediaPost.id },
+    data: { socialMediaPostId: data.id, postedAt: new Date() },
+  });
 }

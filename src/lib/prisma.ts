@@ -1,4 +1,5 @@
-import { PrismaClient } from "../generated/prisma";
+import { Prisma, PrismaClient } from "@/generated/prisma";
+import { DefaultArgs } from "@/generated/prisma/runtime/library";
 
 declare global {
   // eslint-disable-next-line no-var
@@ -12,3 +13,8 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export default prisma;
+
+export type PrismaTransaction = Omit<
+  PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;

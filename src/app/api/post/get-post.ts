@@ -19,16 +19,10 @@ export async function getPost(id: string): Promise<PostWithRelations> {
       include: {
         socialMediaPosts: {
           include: {
-            socialMediaIntegration: {
-              include: {
-                brand: true,
-              },
-            },
+            brand: true,
           },
           orderBy: {
-            socialMediaIntegration: {
-              socialMedia: "asc",
-            },
+            socialMedia: "asc",
           },
         },
         images: true,

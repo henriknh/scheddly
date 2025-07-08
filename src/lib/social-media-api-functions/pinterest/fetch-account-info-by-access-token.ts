@@ -1,8 +1,7 @@
 "use server";
 
 import { AccountInfo } from "../social-media-api-functions";
-
-const pinterestApiUrl = "https://api-sandbox.pinterest.com/v5";
+import { pinterestApiUrl } from ".";
 
 export async function fetchAccountInfoByAccessToken(
   accessToken: string

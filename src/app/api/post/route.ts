@@ -29,11 +29,12 @@ export async function GET() {
           postedAt: null,
         },
       },
+      archived: false,
     },
     include: {
       socialMediaPosts: {
         include: {
-          socialMediaIntegration: true,
+          brand: true,
         },
       },
       images: true,

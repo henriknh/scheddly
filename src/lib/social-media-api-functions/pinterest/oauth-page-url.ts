@@ -1,7 +1,5 @@
 "use server";
 
-import { SocialMediaApiFunctions } from "../social-media-api-functions";
-
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) throw new Error("Missing API URL");
 const redirect_uri = `${apiUrl}/oauth2-redirect/pinterest`;

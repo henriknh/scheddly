@@ -1,12 +1,11 @@
 "use server";
 
 import { Tokens } from "../social-media-api-functions";
+import { instagramGraphUrl, instagramApiUrl } from ".";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) throw new Error("Missing API URL");
 const redirect_uri = `${apiUrl}/oauth2-redirect/instagram`;
-const instagramApiUrl = "https://api.instagram.com";
-const instagramGraphUrl = "https://graph.instagram.com";
 
 export async function consumeAuthorizationCode(code: string): Promise<Tokens> {
   const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_INSTAGRAM_CLIENT_ID;

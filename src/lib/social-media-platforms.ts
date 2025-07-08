@@ -17,6 +17,7 @@ export type SocialMediaPlatform = {
   Icon: React.ComponentType<{ className?: string }>;
   socialMediaApiFunctions: SocialMediaApiFunctions;
   supportsPostTypes: PostType[];
+  supportsDeletePost: boolean;
 };
 
 export const socialMediaPlatforms: SocialMediaPlatform[] = [
@@ -26,6 +27,7 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
     Icon: InstagramIcon,
     socialMediaApiFunctions: instagram,
     supportsPostTypes: [PostType.IMAGE, PostType.VIDEO],
+    supportsDeletePost: true,
   },
   {
     id: SocialMedia.PINTEREST,
@@ -33,6 +35,7 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
     Icon: PinterestIcon,
     socialMediaApiFunctions: pinterest,
     supportsPostTypes: [PostType.IMAGE, PostType.VIDEO],
+    supportsDeletePost: true,
   },
   {
     id: SocialMedia.TUMBLR,
@@ -40,6 +43,7 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
     Icon: TumblrIcon,
     socialMediaApiFunctions: tumblr,
     supportsPostTypes: [PostType.TEXT, PostType.IMAGE, PostType.VIDEO],
+    supportsDeletePost: true,
   },
   {
     id: SocialMedia.X,
@@ -47,6 +51,7 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
     Icon: XIcon,
     socialMediaApiFunctions: x,
     supportsPostTypes: [PostType.TEXT, PostType.IMAGE, PostType.VIDEO],
+    supportsDeletePost: true,
   },
   //   {
   //     id: SocialMedia.FACEBOOK,

@@ -1,11 +1,11 @@
 "use server";
 
 import { Tokens } from "../social-media-api-functions";
+import { pinterestApiUrl } from ".";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) throw new Error("Missing API URL");
 const redirect_uri = `${apiUrl}/oauth2-redirect/pinterest`;
-const pinterestApiUrl = "https://api-sandbox.pinterest.com/v5";
 
 export async function consumeAuthorizationCode(code: string): Promise<Tokens> {
   const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID;

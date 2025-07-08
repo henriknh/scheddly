@@ -1,7 +1,10 @@
 "use client";
 
-import { PostWithRelations } from "@/app/api/post/types";
-import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
+import { Post, PostType, Brand, SocialMedia } from "@/generated/prisma";
+import {
+  PostWithRelations,
+  SocialMediaPostWithRelations,
+} from "@/app/api/post/types";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -16,13 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Brand,
-  Post,
-  PostType,
-  SocialMedia,
-  SocialMediaIntegration,
-} from "@/generated/prisma";
 import { formatDateIn, formatDateTime } from "@/lib/format-date";
 import { getPostTypeName } from "@/lib/post-type-name";
 import {
@@ -241,42 +237,33 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
   };
 
   const getBrandBadge = (post: PostWithRelations) => {
-    const socialMediaIntegrations = post.socialMediaPosts.map(
-      (socialMediaPost) => {
-        return socialMediaPost?.socialMediaIntegration;
-      }
+    const socialMediaPosts = post.socialMediaPosts;
+
+    const groupedSocialMediaPostsByBrand = socialMediaPosts.reduce(
+      (
+        acc: Record<
+          string,
+          { brand: Brand; socialMediaPosts: SocialMediaPostWithRelations[] }
+        >,
+        socialMediaPost: SocialMediaPostWithRelations
+      ) => {
+        const brand = socialMediaPost.brand;
+
+        if (!acc[brand.id]) {
+          acc[brand.id] = {
+            brand: brand,
+            socialMediaPosts: [],
+          };
+        }
+
+        acc[brand.id].socialMediaPosts.push(socialMediaPost);
+
+        return acc;
+      },
+      {}
     );
 
-    const groupedSocialMediaIntegrationsByBrand =
-      socialMediaIntegrations.reduce(
-        (
-          acc: Record<
-            string,
-            { brand: Brand; socialMediaIntegrations: SocialMediaIntegration[] }
-          >,
-          socialMediaIntegration: SocialMediaIntegrationWithRelations
-        ) => {
-          const brand = socialMediaIntegration?.brand;
-
-          if (!brand) {
-            return acc;
-          }
-
-          if (!acc[brand.id]) {
-            acc[brand.id] = {
-              brand: brand,
-              socialMediaIntegrations: [],
-            };
-          }
-
-          acc[brand.id].socialMediaIntegrations.push(socialMediaIntegration);
-
-          return acc;
-        },
-        {}
-      );
-
-    if (Object.keys(groupedSocialMediaIntegrationsByBrand).length === 0) {
+    if (Object.keys(groupedSocialMediaPostsByBrand).length === 0) {
       return null;
     }
 
@@ -284,32 +271,28 @@ export function PostGrid({ posts, brands, scheduledDates }: PostGridProps) {
       <Tooltip>
         <TooltipTrigger>
           <Badge variant="outline" className="bg-secondary">
-            {Object.values(groupedSocialMediaIntegrationsByBrand)[0].brand.name}
-            {Object.keys(groupedSocialMediaIntegrationsByBrand).length > 1
-              ? `+${
-                  Object.keys(groupedSocialMediaIntegrationsByBrand).length - 1
-                }`
+            {Object.values(groupedSocialMediaPostsByBrand)[0].brand.name}
+            {Object.keys(groupedSocialMediaPostsByBrand).length > 1
+              ? `+${Object.keys(groupedSocialMediaPostsByBrand).length - 1}`
               : ""}
           </Badge>
         </TooltipTrigger>
         <TooltipContent>
           <div className="flex flex-col gap-2">
-            {Object.values(groupedSocialMediaIntegrationsByBrand).map(
-              (group) => {
-                return (
-                  <div key={group.brand.id} className="flex flex-col gap-1">
-                    <div>{group.brand.name}</div>
-                    <div className="flex items-center gap-1">
-                      {group.socialMediaIntegrations.map((s) => {
-                        const platform = getSocialMediaPlatform(s.socialMedia);
-                        if (!platform) return null;
-                        return <platform.Icon key={s.id} className="h-4 w-4" />;
-                      })}
-                    </div>
+            {Object.values(groupedSocialMediaPostsByBrand).map((group) => {
+              return (
+                <div key={group.brand.id} className="flex flex-col gap-1">
+                  <div>{group.brand.name}</div>
+                  <div className="flex items-center gap-1">
+                    {group.socialMediaPosts.map((s) => {
+                      const platform = getSocialMediaPlatform(s.socialMedia);
+                      if (!platform) return null;
+                      return <platform.Icon key={s.id} className="h-4 w-4" />;
+                    })}
                   </div>
-                );
-              }
-            )}
+                </div>
+              );
+            })}
           </div>
         </TooltipContent>
       </Tooltip>

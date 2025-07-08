@@ -2,27 +2,26 @@
 
 import { createPost } from "@/app/api/post/create-post";
 import { PostWithRelations } from "@/app/api/post/types";
-import { ConfirmDeletePostModal } from "@/components/confirm-delete-post-modal";
+import { ArchivePostButton } from "@/components/archive-post-button";
 import { PostScheduler } from "@/components/post-scheduler";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Brand, PostType, SocialMediaIntegration } from "@/generated/prisma";
+import { PostType } from "@/generated/prisma";
 import { Video, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Slider } from "@/components/ui/slider";
 import { editPost } from "@/app/api/post/edit-post";
+import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 
 interface VideoPostFormProps {
-  integrations: (SocialMediaIntegration & {
-    brand?: Brand | null;
-  })[];
   post?: PostWithRelations;
+  integrations: SocialMediaIntegrationWithRelations[];
 }
 
-export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
+export function VideoPostForm({ post, integrations }: VideoPostFormProps) {
   const router = useRouter();
   const [description, setDescription] = useState(post?.description || "");
   const [video, setVideo] = useState<File | null>(null);
@@ -32,35 +31,53 @@ export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
   );
   const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
     string[]
-  >(post?.socialMediaPosts.map((p) => p.socialMediaIntegrationId) || []);
+  >(() => {
+    if (!post) return [];
+    // Map from social media types and brand IDs to integration IDs
+    const selectedSocialMediaPosts = post.socialMediaPosts;
+    return integrations
+      .filter((integration) =>
+        selectedSocialMediaPosts.some(
+          (post) =>
+            post.socialMedia === integration.socialMedia &&
+            post.brandId === integration.brandId
+        )
+      )
+      .map((integration) => integration.id);
+  });
 
   useEffect(() => {
     if (post) {
       setDescription(post.description);
       setScheduledDate(post.scheduledAt || null);
-      setSelectedIntegrationIds(
-        post.socialMediaPosts.map((p) => p.socialMediaIntegrationId)
-      );
+      // Map from social media types and brand IDs to integration IDs
+      const selectedSocialMediaPosts = post.socialMediaPosts;
+      const selectedIds = integrations
+        .filter((integration) =>
+          selectedSocialMediaPosts.some(
+            (post) =>
+              post.socialMedia === integration.socialMedia &&
+              post.brandId === integration.brandId
+          )
+        )
+        .map((integration) => integration.id);
+      setSelectedIntegrationIds(selectedIds);
 
-      const fetchVideo = async () => {
-        if (post.video) {
-          const response = await fetch(`/api/file/${post.video.id}`);
-          const blob = await response.blob();
-          setVideo(new File([blob], post.video.path));
-        }
-      };
-      const fetchVideoCover = async () => {
-        if (post.videoCover) {
-          const response = await fetch(`/api/file/${post.videoCover.id}`);
-          const blob = await response.blob();
-          setVideoCover(new File([blob], post.videoCover.path));
-        }
-      };
-
-      fetchVideo();
-      fetchVideoCover();
+      Promise.all([
+        post.video &&
+          fetch(`/api/file/${post.video.id}`)
+            .then((response) => response.blob())
+            .then((blob) => new File([blob], post.video!.path)),
+        post.videoCover &&
+          fetch(`/api/file/${post.videoCover.id}`)
+            .then((response) => response.blob())
+            .then((blob) => new File([blob], post.videoCover!.path)),
+      ]).then(([videoFile, videoCoverFile]) => {
+        if (videoFile) setVideo(videoFile);
+        if (videoCoverFile) setVideoCover(videoCoverFile);
+      });
     }
-  }, [post]);
+  }, [post, integrations]);
 
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -290,7 +307,7 @@ export function VideoPostForm({ integrations, post }: VideoPostFormProps) {
       </div>
 
       <div className="flex justify-end gap-2">
-        {post && <ConfirmDeletePostModal postId={post.id} />}
+        {post && <ArchivePostButton postId={post.id} />}
         <Button
           onClick={handleSubmit}
           disabled={!video || selectedIntegrationIds.length === 0}

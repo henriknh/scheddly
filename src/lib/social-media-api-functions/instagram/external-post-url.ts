@@ -1,7 +1,10 @@
+"use server";
+
 import { SocialMediaPostWithRelations } from "@/app/api/post/types";
-export function externalPostUrl(
+
+export async function externalPostUrl(
   socialMediaPost: SocialMediaPostWithRelations
-): string {
+): Promise<string> {
   if (!socialMediaPost.socialMediaPostId) return "";
   return `https://www.instagram.com/p/${socialMediaPost.socialMediaPostId}`;
 }

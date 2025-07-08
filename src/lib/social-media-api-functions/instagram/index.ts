@@ -11,6 +11,9 @@ import { deletePost } from "./delete-post";
 import { externalAccountUrl } from "./external-account-url";
 import { externalPostUrl } from "./external-post-url";
 
+export const instagramGraphUrl = "https://graph.instagram.com";
+export const instagramApiUrl = "https://api.instagram.com";
+
 export const instagram: SocialMediaApiFunctions = {
   oauthPageUrl,
   consumeAuthorizationCode,

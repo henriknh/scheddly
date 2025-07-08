@@ -2,9 +2,9 @@
 
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
-import { getPost } from "./get-post";
-import { getSocialMediaApiFunctions } from "@/lib/social-media-api-functions/social-media-api-functions";
 import { deleteFile } from "../file/delete-file";
+import { deleteSocialMediaPost } from "./delete-social-media-post";
+import { getPost } from "./get-post";
 
 export async function deletePost(postId: string) {
   const user = await getUserFromToken();
@@ -34,19 +34,9 @@ export async function deletePost(postId: string) {
     );
 
     await Promise.all(
-      socialMediaPosts.map(async (socialMediaPost) => {
-        const socialMediaApiFunctions = getSocialMediaApiFunctions(
-          socialMediaPost.socialMediaIntegration.socialMedia
-        );
-
-        if (socialMediaApiFunctions && socialMediaPost.socialMediaPostId) {
-          await socialMediaApiFunctions.deletePost(post, socialMediaPost);
-        }
-
-        await tx.socialMediaPost.delete({
-          where: { id: socialMediaPost.id },
-        });
-      })
+      socialMediaPosts.map(async (socialMediaPost) =>
+        deleteSocialMediaPost(socialMediaPost.id, { prismaTx: tx })
+      )
     );
 
     await tx.post.delete({

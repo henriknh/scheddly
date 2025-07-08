@@ -3,24 +3,23 @@
 import { createPost } from "@/app/api/post/create-post";
 import { editPost } from "@/app/api/post/edit-post";
 import { PostWithRelations } from "@/app/api/post/types";
-import { ConfirmDeletePostModal } from "@/components/confirm-delete-post-modal";
+import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
+import { ArchivePostButton } from "@/components/archive-post-button";
 import { PostScheduler } from "@/components/post-scheduler";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Brand, PostType, SocialMediaIntegration } from "@/generated/prisma";
+import { PostType } from "@/generated/prisma";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface TextPostFormProps {
-  integrations: (SocialMediaIntegration & {
-    brand?: Brand | null;
-  })[];
   post?: PostWithRelations;
+  integrations: SocialMediaIntegrationWithRelations[];
 }
 
-export function TextPostForm({ integrations, post }: TextPostFormProps) {
+export function TextPostForm({ post, integrations }: TextPostFormProps) {
   const router = useRouter();
   const [content, setContent] = useState(post?.description || "");
   const [scheduledDate, setScheduledDate] = useState<Date | null>(
@@ -28,17 +27,39 @@ export function TextPostForm({ integrations, post }: TextPostFormProps) {
   );
   const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
     string[]
-  >(post?.socialMediaPosts.map((p) => p.socialMediaIntegrationId) || []);
+  >(() => {
+    if (!post) return [];
+    // Map from social media types and brand IDs to integration IDs
+    const selectedSocialMediaPosts = post.socialMediaPosts;
+    return integrations
+      .filter((integration) =>
+        selectedSocialMediaPosts.some(
+          (post) =>
+            post.socialMedia === integration.socialMedia &&
+            post.brandId === integration.brandId
+        )
+      )
+      .map((integration) => integration.id);
+  });
 
   useEffect(() => {
     if (post) {
       setContent(post.description);
       setScheduledDate(post.scheduledAt || null);
-      setSelectedIntegrationIds(
-        post.socialMediaPosts.map((p) => p.socialMediaIntegrationId)
-      );
+      // Map from social media types and brand IDs to integration IDs
+      const selectedSocialMediaPosts = post.socialMediaPosts;
+      const selectedIds = integrations
+        .filter((integration) =>
+          selectedSocialMediaPosts.some(
+            (post) =>
+              post.socialMedia === integration.socialMedia &&
+              post.brandId === integration.brandId
+          )
+        )
+        .map((integration) => integration.id);
+      setSelectedIntegrationIds(selectedIds);
     }
-  }, [post]);
+  }, [post, integrations]);
 
   const handleSubmit = async () => {
     try {
@@ -129,7 +150,7 @@ export function TextPostForm({ integrations, post }: TextPostFormProps) {
       </div>
 
       <div className="flex justify-end gap-2">
-        {post && <ConfirmDeletePostModal postId={post.id} />}
+        {post && <ArchivePostButton postId={post.id} />}
         <Button
           onClick={handleSubmit}
           disabled={!content || selectedIntegrationIds.length === 0}

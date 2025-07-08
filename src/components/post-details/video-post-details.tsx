@@ -2,14 +2,19 @@ import { PostWithRelations } from "@/app/api/post/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { Calendar } from "lucide-react";
-import { ConfirmDeletePostModal } from "../confirm-delete-post-modal";
+import { ArchivePostButton } from "../archive-post-button";
 import { BrandsWithIntegrationsAndTheirStatuses } from "./brands-with-integrations-and-their-statuses";
+import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 
 interface VideoPostDetailsProps {
   post: PostWithRelations;
+  integrations: SocialMediaIntegrationWithRelations[];
 }
 
-export function VideoPostDetails({ post }: VideoPostDetailsProps) {
+export function VideoPostDetails({
+  post,
+  integrations,
+}: VideoPostDetailsProps) {
   return (
     <div className="space-y-4">
       {/* Content Section */}
@@ -37,9 +42,12 @@ export function VideoPostDetails({ post }: VideoPostDetailsProps) {
         </CardContent>
       </Card>
 
-      <BrandsWithIntegrationsAndTheirStatuses post={post} />
+      <BrandsWithIntegrationsAndTheirStatuses
+        post={post}
+        integrations={integrations}
+      />
 
-      {post && <ConfirmDeletePostModal postId={post.id} />}
+      {post && <ArchivePostButton postId={post.id} />}
     </div>
   );
 }

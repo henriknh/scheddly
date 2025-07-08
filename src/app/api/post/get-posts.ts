@@ -12,6 +12,7 @@ export interface GetPostsFilter {
   socialMedia?: SocialMedia;
   dateFrom?: string;
   dateTo?: string;
+  archived?: boolean;
 }
 
 export async function getPosts(
@@ -29,11 +30,7 @@ export async function getPosts(
         ...(filter?.brandId && {
           socialMediaPosts: {
             some: {
-              socialMediaIntegration: {
-                brand: {
-                  id: filter.brandId,
-                },
-              },
+              brandId: filter.brandId,
             },
           },
         }),
@@ -43,9 +40,7 @@ export async function getPosts(
         ...(filter?.socialMedia && {
           socialMediaPosts: {
             some: {
-              socialMediaIntegration: {
-                socialMedia: filter.socialMedia,
-              },
+              socialMedia: filter.socialMedia,
             },
           },
         }),
@@ -117,6 +112,7 @@ export async function getPosts(
               not: null,
             },
           }),
+        archived: !!filter?.archived,
       },
       orderBy: [
         {
@@ -132,11 +128,7 @@ export async function getPosts(
       include: {
         socialMediaPosts: {
           include: {
-            socialMediaIntegration: {
-              include: {
-                brand: true,
-              },
-            },
+            brand: true,
           },
         },
         images: true,

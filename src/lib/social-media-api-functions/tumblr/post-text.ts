@@ -13,11 +13,20 @@ export async function postText(
   socialMediaPost: SocialMediaPostWithRelations
 ) {
   const accessToken = await getValidAccessToken(
-    socialMediaPost.socialMediaIntegrationId
+    socialMediaPost.socialMedia,
+    socialMediaPost.brandId
   );
 
+  const integration = await prisma.socialMediaIntegration.findFirst({
+    where: {
+      socialMedia: socialMediaPost.socialMedia,
+      brandId: socialMediaPost.brandId,
+    },
+  });
+  if (!integration) throw new Error("Integration not found");
+
   const response = await fetch(
-    `${tumblrApiUrl}/blog/${socialMediaPost.socialMediaIntegration.accountId}/posts`,
+    `${tumblrApiUrl}/blog/${integration.accountId}/posts`,
     {
       method: "POST",
       headers: {
@@ -25,7 +34,7 @@ export async function postText(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        blog_identifier: socialMediaPost.socialMediaIntegration.accountId,
+        blog_identifier: integration.accountId,
         content: [
           {
             type: "text",

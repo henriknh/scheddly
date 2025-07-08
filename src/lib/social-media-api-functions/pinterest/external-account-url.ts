@@ -1,4 +1,5 @@
 import { SocialMediaIntegration } from "@/generated/prisma";
+
 export function externalAccountUrl(
   socialMediaIntegration: SocialMediaIntegration
 ) {

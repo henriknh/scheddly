@@ -3,6 +3,7 @@
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/lib/auth-context";
 import {
+  Archive,
   Blocks,
   ChevronLeft,
   HomeIcon,
@@ -129,6 +130,19 @@ export function DashboardSidebar() {
                 <Link href="/dashboard/posts">
                   <LayoutDashboard className="h-4 w-4" />
                   <span>Posts</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                tooltip={"Posts"}
+                isActive={pathname === "/dashboard/archive"}
+              >
+                <Link href="/dashboard/archive">
+                  <Archive className="h-4 w-4" />
+                  <span>Archive</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

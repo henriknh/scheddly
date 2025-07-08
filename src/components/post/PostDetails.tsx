@@ -90,8 +90,7 @@ export function PostDetails({ post }: PostDetailsProps) {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="font-medium">
-                          {socialMediaPost.socialMediaIntegration.brand?.name ||
-                            socialMediaPost.socialMediaIntegration.accountName}
+                          {socialMediaPost.brand.name}
                         </span>
                       </div>
                       {getStatusBadge(socialMediaPost)}

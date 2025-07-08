@@ -39,23 +39,25 @@ export default async function PostPage({ params }: PostPageProps) {
         {postIsEditable(post) ? (
           <>
             {post.postType === PostType.TEXT && (
-              <TextPostForm integrations={integrations} post={post} />
+              <TextPostForm post={post} integrations={integrations} />
             )}
             {post.postType === PostType.IMAGE && (
-              <ImagePostForm integrations={integrations} post={post} />
+              <ImagePostForm post={post} integrations={integrations} />
             )}
             {post.postType === PostType.VIDEO && (
-              <VideoPostForm integrations={integrations} post={post} />
+              <VideoPostForm post={post} integrations={integrations} />
             )}
           </>
         ) : (
           <div>
-            {post.postType === PostType.TEXT && <TextPostDetails post={post} />}
+            {post.postType === PostType.TEXT && (
+              <TextPostDetails post={post} integrations={integrations} />
+            )}
             {post.postType === PostType.IMAGE && (
-              <ImagePostDetails post={post} />
+              <ImagePostDetails post={post} integrations={integrations} />
             )}
             {post.postType === PostType.VIDEO && (
-              <VideoPostDetails post={post} />
+              <VideoPostDetails post={post} integrations={integrations} />
             )}
           </div>
         )}

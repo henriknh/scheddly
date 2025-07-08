@@ -17,8 +17,17 @@ export async function postVideo(
   }
 
   const accessToken = await getValidAccessToken(
-    socialMediaPost.socialMediaIntegrationId
+    socialMediaPost.socialMedia,
+    socialMediaPost.brandId
   );
+
+  const integration = await prisma.socialMediaIntegration.findFirst({
+    where: {
+      socialMedia: socialMediaPost.socialMedia,
+      brandId: socialMediaPost.brandId,
+    },
+  });
+  if (!integration) throw new Error("Integration not found");
 
   // Create a FormData object for multipart/form-data
   const formData = new FormData();
@@ -36,7 +45,7 @@ export async function postVideo(
 
     // Create the JSON payload
     const jsonPayload = {
-      blog_identifier: socialMediaPost.socialMediaIntegration.accountId,
+      blog_identifier: integration.accountId,
       content: [
         {
           type: "video",
@@ -63,7 +72,7 @@ export async function postVideo(
   }
 
   const response = await fetch(
-    `${tumblrApiUrl}/blog/${socialMediaPost.socialMediaIntegration.accountId}/posts`,
+    `${tumblrApiUrl}/blog/${integration.accountId}/posts`,
     {
       method: "POST",
       headers: {
@@ -81,6 +90,8 @@ export async function postVideo(
 
   try {
     const data = await response.json();
+
+    console.log("data", data);
 
     await prisma.socialMediaPost.update({
       where: {

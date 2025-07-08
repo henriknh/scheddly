@@ -57,18 +57,15 @@ export async function editPost(
         socialMediaPosts: {
           deleteMany: {},
           create: socialMediaIntegrations.map((integration) => ({
-            socialMediaIntegrationId: integration.id,
+            socialMedia: integration.socialMedia,
+            brandId: integration.brandId,
           })),
         },
       },
       include: {
         socialMediaPosts: {
           include: {
-            socialMediaIntegration: {
-              include: {
-                brand: true,
-              },
-            },
+            brand: true,
           },
         },
         images: true,

@@ -6,14 +6,15 @@ import {
 } from "@/app/api/post/types";
 import prisma from "@/lib/prisma";
 import { getValidAccessToken } from "../social-media-api-functions";
-const instagramGraphUrl = "https://graph.instagram.com";
+import { instagramGraphUrl } from ".";
 
 export async function postImage(
   post: PostWithRelations,
   socialMediaPost: SocialMediaPostWithRelations
 ) {
   const accessToken = await getValidAccessToken(
-    socialMediaPost.socialMediaIntegrationId
+    socialMediaPost.socialMedia,
+    socialMediaPost.brandId
   );
   if (!post.images || post.images.length === 0)
     throw new Error("No images found in post");

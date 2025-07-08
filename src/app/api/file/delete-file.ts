@@ -1,16 +1,11 @@
 "use server";
 
-import { Prisma, PrismaClient } from "@/generated/prisma";
-import { DefaultArgs } from "@/generated/prisma/runtime/library";
 import { deleteFromMinio } from "@/lib/minio";
-import _prisma from "@/lib/prisma";
+import _prisma, { PrismaTransaction } from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
 
 export interface DeleteFileOptions {
-  prismaTx?: Omit<
-    PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-    "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
-  >;
+  prismaTx?: PrismaTransaction;
 }
 
 export async function deleteFile(

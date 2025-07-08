@@ -3,26 +3,25 @@
 import { createPost } from "@/app/api/post/create-post";
 import { editPost } from "@/app/api/post/edit-post";
 import { PostWithRelations } from "@/app/api/post/types";
-import { ConfirmDeletePostModal } from "@/components/confirm-delete-post-modal";
+import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 import { PostScheduler } from "@/components/post-scheduler";
 import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Brand, PostType, SocialMediaIntegration } from "@/generated/prisma";
+import { PostType } from "@/generated/prisma";
 import { Plus, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { ArchivePostButton } from "@/components/archive-post-button";
 
 interface ImagePostFormProps {
-  integrations: (SocialMediaIntegration & {
-    brand?: Brand | null;
-  })[];
   post?: PostWithRelations;
+  integrations: SocialMediaIntegrationWithRelations[];
 }
 
-export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
+export function ImagePostForm({ post, integrations }: ImagePostFormProps) {
   const router = useRouter();
   const [caption, setCaption] = useState(post?.description || "");
   const [images, setImages] = useState<File[]>([]);
@@ -31,15 +30,37 @@ export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
   );
   const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
     string[]
-  >(post?.socialMediaPosts.map((p) => p.socialMediaIntegrationId) || []);
+  >(() => {
+    if (!post) return [];
+    // Map from social media types and brand IDs to integration IDs
+    const selectedSocialMediaPosts = post.socialMediaPosts;
+    return integrations
+      .filter((integration) =>
+        selectedSocialMediaPosts.some(
+          (post) =>
+            post.socialMedia === integration.socialMedia &&
+            post.brandId === integration.brandId
+        )
+      )
+      .map((integration) => integration.id);
+  });
 
   useEffect(() => {
     if (post) {
       setCaption(post.description);
       setScheduledDate(post.scheduledAt || null);
-      setSelectedIntegrationIds(
-        post.socialMediaPosts.map((p) => p.socialMediaIntegrationId)
-      );
+      // Map from social media types and brand IDs to integration IDs
+      const selectedSocialMediaPosts = post.socialMediaPosts;
+      const selectedIds = integrations
+        .filter((integration) =>
+          selectedSocialMediaPosts.some(
+            (post) =>
+              post.socialMedia === integration.socialMedia &&
+              post.brandId === integration.brandId
+          )
+        )
+        .map((integration) => integration.id);
+      setSelectedIntegrationIds(selectedIds);
 
       Promise.all(
         post.images.map(async (image) => {
@@ -49,7 +70,7 @@ export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
         })
       ).then((files) => setImages(files));
     }
-  }, [post]);
+  }, [post, integrations]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -190,7 +211,7 @@ export function ImagePostForm({ integrations, post }: ImagePostFormProps) {
       </div>
 
       <div className="flex justify-end gap-2">
-        {post && <ConfirmDeletePostModal postId={post.id} />}
+        {post && <ArchivePostButton postId={post.id} />}
         <Button
           onClick={handleSubmit}
           disabled={images.length === 0 || selectedIntegrationIds.length === 0}

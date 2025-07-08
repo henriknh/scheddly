@@ -2,8 +2,8 @@
 
 import prisma from "@/lib/prisma";
 import { Tokens } from "../social-media-api-functions";
+import { pinterestApiUrl } from ".";
 
-const pinterestApiUrl = "https://api-sandbox.pinterest.com/v5";
 const scope =
   "boards:read,pins:read,user_accounts:read,boards:read,boards:write,pins:read,pins:write";
 

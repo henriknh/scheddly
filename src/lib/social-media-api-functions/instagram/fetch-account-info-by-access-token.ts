@@ -1,8 +1,7 @@
 "use server";
 
 import { AccountInfo } from "../social-media-api-functions";
-
-const instagramGraphUrl = "https://graph.instagram.com";
+import { instagramGraphUrl } from ".";
 
 export async function fetchAccountInfoByAccessToken(
   accessToken: string

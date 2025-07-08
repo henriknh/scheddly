@@ -12,12 +12,14 @@ model SocialMediaPost {
   id                    String              @id @default(cuid())
   post                  Post                @relation(fields: [postId], references: [id])
   postId                String
-  socialMediaIntegration SocialMediaIntegration @relation(fields: [socialMediaIntegrationId], references: [id])
-  socialMediaIntegrationId String
+  socialMedia           SocialMedia
+  brandId               String
+  brand                 Brand               @relation(fields: [brandId], references: [id])
   socialMediaPostId     String?
   failedReason          String?
   postedAt             DateTime?
   failedAt             DateTime?
+  permalink            String?
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
 }
@@ -37,6 +39,8 @@ model Post {
   teamId           String
   team             Team              @relation(fields: [teamId], references: [id])
   socialMediaPosts SocialMediaPost[]
+  archived         Boolean?
+  archivedAt       DateTime?
 }
 
 model User {
@@ -84,7 +88,6 @@ model SocialMediaIntegration {
   accountName                       String
   accountUsername                   String?
   accountAvatarUrl                  String?
-  socialMediaPosts                  SocialMediaPost[]
 
   @@unique([socialMedia, accountId, teamId])
 }
@@ -93,6 +96,7 @@ model Brand {
   id                      String                  @id @default(cuid())
   name                    String
   socialMediaIntegrations SocialMediaIntegration[]
+  socialMediaPosts        SocialMediaPost[]
   createdAt               DateTime                @default(now())
   updatedAt               DateTime                @updatedAt
   teamId                  String

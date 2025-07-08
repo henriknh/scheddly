@@ -17,8 +17,18 @@ export async function postImage(
   }
 
   const accessToken = await getValidAccessToken(
-    socialMediaPost.socialMediaIntegrationId
+    socialMediaPost.socialMedia,
+    socialMediaPost.brandId
   );
+
+  // Fetch the integration for this post
+  const integration = await prisma.socialMediaIntegration.findFirst({
+    where: {
+      socialMedia: socialMediaPost.socialMedia,
+      brandId: socialMediaPost.brandId,
+    },
+  });
+  if (!integration) throw new Error("Integration not found");
 
   // Create a FormData object for multipart/form-data
   const formData = new FormData();
@@ -47,7 +57,7 @@ export async function postImage(
 
     // Create the JSON payload
     const jsonPayload = {
-      blog_identifier: socialMediaPost.socialMediaIntegration.accountId,
+      blog_identifier: integration.accountId,
       content: [
         ...mediaIdentifiers.map((mediaIdentifier) => ({
           type: "image",
@@ -69,7 +79,7 @@ export async function postImage(
   }
 
   const response = await fetch(
-    `${tumblrApiUrl}/blog/${socialMediaPost.socialMediaIntegration.accountId}/posts`,
+    `${tumblrApiUrl}/blog/${integration.accountId}/posts`,
     {
       method: "POST",
       headers: {

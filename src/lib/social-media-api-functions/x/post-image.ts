@@ -14,7 +14,8 @@ export async function postImage(
   socialMediaPost: SocialMediaPostWithRelations
 ) {
   const accessToken = await getValidAccessToken(
-    socialMediaPost.socialMediaIntegrationId
+    socialMediaPost.socialMedia,
+    socialMediaPost.brandId
   );
 
   if (!post.images || post.images.length === 0) {

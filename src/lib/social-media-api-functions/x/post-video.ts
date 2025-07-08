@@ -14,7 +14,8 @@ export async function postVideo(
   socialMediaPost: SocialMediaPostWithRelations
 ) {
   const accessToken = await getValidAccessToken(
-    socialMediaPost.socialMediaIntegrationId
+    socialMediaPost.socialMedia,
+    socialMediaPost.brandId
   );
 
   if (!post.video) {

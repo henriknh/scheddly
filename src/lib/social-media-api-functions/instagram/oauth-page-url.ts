@@ -1,9 +1,10 @@
 "use server";
 
+import { instagramApiUrl } from ".";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) throw new Error("Missing API URL");
 const redirect_uri = `${apiUrl}/oauth2-redirect/instagram`;
-const instagramApiUrl = "https://api.instagram.com";
 const scope =
   "instagram_business_basic,instagram_business_content_publish,instagram_business_manage_messages,instagram_business_manage_comments";
 

@@ -6,9 +6,9 @@ import {
 } from "@/app/api/post/types";
 import { getValidAccessToken } from "../social-media-api-functions";
 import { tumblrApiUrl } from ".";
+import prisma from "@/lib/prisma";
 
 export async function deletePost(
-  post: PostWithRelations,
   socialMediaPost: SocialMediaPostWithRelations
 ) {
   if (!socialMediaPost.socialMediaPostId) {
@@ -16,11 +16,20 @@ export async function deletePost(
   }
 
   const accessToken = await getValidAccessToken(
-    socialMediaPost.socialMediaIntegrationId
+    socialMediaPost.socialMedia,
+    socialMediaPost.brandId
   );
 
+  const integration = await prisma.socialMediaIntegration.findFirst({
+    where: {
+      socialMedia: socialMediaPost.socialMedia,
+      brandId: socialMediaPost.brandId,
+    },
+  });
+  if (!integration) throw new Error("Integration not found");
+
   const response = await fetch(
-    `${tumblrApiUrl}/blog/${socialMediaPost.socialMediaIntegration.accountId}/post/delete`,
+    `${tumblrApiUrl}/blog/${integration.accountId}/post/delete`,
     {
       method: "POST",
       headers: {

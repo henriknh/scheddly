@@ -1,26 +1,40 @@
 "use server";
 
-import {
-  PostWithRelations,
-  SocialMediaPostWithRelations,
-} from "@/app/api/post/types";
+import { SocialMediaPostWithRelations } from "@/app/api/post/types";
 import { getValidAccessToken } from "../social-media-api-functions";
-const pinterestApiUrl = "https://api-sandbox.pinterest.com/v5";
+import { pinterestApiUrl } from ".";
 
 export async function deletePost(
-  post: PostWithRelations,
   socialMediaPost: SocialMediaPostWithRelations
 ) {
+  if (!socialMediaPost.socialMediaPostId) {
+    throw new Error("Missing Pinterest post ID (socialMediaPostId)");
+  }
+
   const accessToken = await getValidAccessToken(
-    socialMediaPost.socialMediaIntegrationId
+    socialMediaPost.socialMedia,
+    socialMediaPost.brandId
   );
-  const response = await fetch(`${pinterestApiUrl}/pins/${post.id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-      Accept: "application/json",
-    },
-  });
-  if (!response.ok) throw new Error("Failed to delete post");
+
+  try {
+    const response = await fetch(
+      `${pinterestApiUrl}/pins/${socialMediaPost.socialMediaPostId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => null);
+      console.error("Failed to delete Pinterest post", error);
+      throw new Error("Failed to delete Pinterest post");
+    }
+  } catch (err) {
+    console.error("Pinterest deletePost error", err);
+    throw err;
+  }
 }

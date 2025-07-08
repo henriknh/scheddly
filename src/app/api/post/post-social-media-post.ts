@@ -20,12 +20,12 @@ export async function postSocialMediaPost(
   }
 
   const socialMediaApiFunctions = getSocialMediaApiFunctions(
-    socialMediaPost.socialMediaIntegration.socialMedia
+    socialMediaPost.socialMedia
   );
 
   if (!socialMediaApiFunctions) {
     throw new Error(
-      `Social media API functions not found for ${socialMediaPost.socialMediaIntegration.socialMedia}`
+      `Social media API functions not found for ${socialMediaPost.socialMedia}`
     );
   }
 
@@ -38,11 +38,16 @@ export async function postSocialMediaPost(
       await socialMediaApiFunctions.postVideo(post, socialMediaPost);
     }
 
+    const permalink = await socialMediaApiFunctions.externalPostUrl(
+      socialMediaPost
+    );
+
     await prisma.socialMediaPost.update({
       where: { id: socialMediaPost.id },
       data: {
         failedAt: null,
         failedReason: null,
+        permalink,
       },
     });
   } catch (error) {

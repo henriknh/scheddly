@@ -6,14 +6,15 @@ import {
 } from "@/app/api/post/types";
 import prisma from "@/lib/prisma";
 import { getValidAccessToken } from "../social-media-api-functions";
-const instagramGraphUrl = "https://graph.instagram.com";
+import { instagramGraphUrl } from ".";
 
 export async function postVideo(
   post: PostWithRelations,
   socialMediaPost: SocialMediaPostWithRelations
 ) {
   const accessToken = await getValidAccessToken(
-    socialMediaPost.socialMediaIntegrationId
+    socialMediaPost.socialMedia,
+    socialMediaPost.brandId
   );
   if (!post.video) throw new Error("No video found in post");
   const videoUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/file/${post.video.id}`;

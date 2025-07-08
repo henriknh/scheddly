@@ -3,14 +3,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { Calendar } from "lucide-react";
 import Image from "next/image";
-import { ConfirmDeletePostModal } from "../confirm-delete-post-modal";
+import { ArchivePostButton } from "../archive-post-button";
 import { BrandsWithIntegrationsAndTheirStatuses } from "./brands-with-integrations-and-their-statuses";
+import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 
 interface ImagePostDetailsProps {
   post: PostWithRelations;
+  integrations: SocialMediaIntegrationWithRelations[];
 }
 
-export function ImagePostDetails({ post }: ImagePostDetailsProps) {
+export function ImagePostDetails({
+  post,
+  integrations,
+}: ImagePostDetailsProps) {
   return (
     <div className="space-y-4">
       {/* Content Section */}
@@ -46,9 +51,12 @@ export function ImagePostDetails({ post }: ImagePostDetailsProps) {
         </CardContent>
       </Card>
 
-      <BrandsWithIntegrationsAndTheirStatuses post={post} />
+      <BrandsWithIntegrationsAndTheirStatuses
+        post={post}
+        integrations={integrations}
+      />
 
-      {post && <ConfirmDeletePostModal postId={post.id} />}
+      {post && <ArchivePostButton postId={post.id} />}
     </div>
   );
 }

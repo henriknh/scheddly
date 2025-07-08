@@ -10,7 +10,6 @@ import { getValidAccessToken } from "../social-media-api-functions";
 const xApiUrl = "https://api.twitter.com";
 
 export async function deletePost(
-  post: PostWithRelations,
   socialMediaPost: SocialMediaPostWithRelations
 ) {
   if (!socialMediaPost.socialMediaPostId) {
@@ -18,7 +17,8 @@ export async function deletePost(
   }
 
   const accessToken = await getValidAccessToken(
-    socialMediaPost.socialMediaIntegrationId
+    socialMediaPost.socialMedia,
+    socialMediaPost.brandId
   );
 
   const response = await fetch(

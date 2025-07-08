@@ -9,10 +9,9 @@ import { postImage } from "./post-image";
 import { postVideo } from "./post-video";
 import { deletePost } from "./delete-post";
 import { externalAccountUrl } from "./external-account-url";
+import { externalPostUrl } from "./external-post-url";
 
-function externalPostUrl(): string {
-  throw new Error("Not implemented");
-}
+export const pinterestApiUrl = "https://api-sandbox.pinterest.com/v5";
 
 export const pinterest: SocialMediaApiFunctions = {
   oauthPageUrl,

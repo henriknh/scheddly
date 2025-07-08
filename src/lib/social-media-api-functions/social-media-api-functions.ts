@@ -55,14 +55,13 @@ export interface SocialMediaApiFunctions {
     post: PostWithRelations,
     socialMediaPost: SocialMediaPostWithRelations
   ) => Promise<void>;
-  deletePost: (
-    post: PostWithRelations,
-    socialMediaPost: SocialMediaPostWithRelations
-  ) => Promise<void>;
+  deletePost: (socialMediaPost: SocialMediaPostWithRelations) => Promise<void>;
   externalAccountUrl: (
     socialMediaIntegration: SocialMediaIntegration
   ) => string;
-  externalPostUrl: (socialMediaPost: SocialMediaPostWithRelations) => string;
+  externalPostUrl: (
+    socialMediaPost: SocialMediaPostWithRelations
+  ) => Promise<string>;
 }
 
 export const getSocialMediaApiFunctions = (
@@ -83,16 +82,20 @@ export const getSocialMediaApiFunctions = (
 };
 
 export const getValidAccessToken = async (
-  integrationId: string
+  socialMedia: SocialMedia,
+  brandId: string
 ): Promise<string> => {
   const integration = await prisma.socialMediaIntegration.findFirst({
     where: {
-      id: integrationId,
+      socialMedia,
+      brandId,
     },
   });
 
   if (!integration?.accessToken) {
-    throw new Error("Integration not found or missing access token");
+    throw new Error(
+      `No active ${socialMedia} integration found for brand ${brandId}`
+    );
   }
 
   if (integration.accessTokenExpiresAt < new Date()) {
@@ -100,25 +103,25 @@ export const getValidAccessToken = async (
       case SocialMedia.INSTAGRAM:
         return (
           await instagram.refreshAccessTokenAndUpdateSocialMediaIntegration(
-            integrationId
+            integration.id
           )
         ).accessToken;
       case SocialMedia.PINTEREST:
         return (
           await pinterest.refreshAccessTokenAndUpdateSocialMediaIntegration(
-            integrationId
+            integration.id
           )
         ).accessToken;
       case SocialMedia.TUMBLR:
         return (
           await tumblr.refreshAccessTokenAndUpdateSocialMediaIntegration(
-            integrationId
+            integration.id
           )
         ).accessToken;
       case SocialMedia.X:
         return (
           await x.refreshAccessTokenAndUpdateSocialMediaIntegration(
-            integrationId
+            integration.id
           )
         ).accessToken;
       default:

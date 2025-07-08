@@ -1,8 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-
-const pinterestApiUrl = "https://api-sandbox.pinterest.com/v5";
+import { pinterestApiUrl } from ".";
 
 export async function revokeTokens(id: string): Promise<void> {
   const integration = await prisma.socialMediaIntegration.findFirst({

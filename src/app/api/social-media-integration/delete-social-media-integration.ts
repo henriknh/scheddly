@@ -1,9 +1,7 @@
 "use server";
 
-import { SocialMedia } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
-import { pinterest } from "@/lib/social-media-api-functions/pinterest";
 
 export async function deleteSocialMediaIntegration(
   socialMediaIntegrationId: string
@@ -26,16 +24,23 @@ export async function deleteSocialMediaIntegration(
       throw new Error("SocialMediaIntegration not found or unauthorized");
     }
 
-    switch (integration.socialMedia) {
-      case SocialMedia.PINTEREST:
-        await pinterest.revokeTokens(socialMediaIntegrationId);
-        break;
-    }
-
-    // First delete all associated social media posts
-    await prisma.socialMediaPost.deleteMany({
-      where: { socialMediaIntegrationId },
-    });
+    // switch (integration.socialMedia) {
+    //   case SocialMedia.PINTEREST:
+    //     await pinterest.revokeTokens(socialMediaIntegrationId);
+    //   case SocialMedia.TUMBLR:
+    //     await tumblr.revokeTokens(socialMediaIntegrationId);
+    //     break;
+    //   case SocialMedia.X:
+    //     await x.revokeTokens(socialMediaIntegrationId);
+    //     break;
+    //   case SocialMedia.INSTAGRAM:
+    //     await instagram.revokeTokens(socialMediaIntegrationId);
+    //     break;
+    //   default:
+    //     throw new Error(
+    //       `Social media ${integration.socialMedia} not supported`
+    //     );
+    // }
 
     // Then delete the social media integration
     await prisma.socialMediaIntegration.delete({

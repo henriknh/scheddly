@@ -2,8 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { Tokens } from "../social-media-api-functions";
-
-const instagramGraphUrl = "https://graph.instagram.com";
+import { instagramGraphUrl } from ".";
 
 export async function refreshAccessTokenAndUpdateSocialMediaIntegration(
   id: string
