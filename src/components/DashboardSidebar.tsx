@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import {
   Archive,
   Blocks,
+  BugIcon,
   ChevronLeft,
   HomeIcon,
   ImageIcon,
@@ -42,6 +43,8 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
   const { open, toggleSidebar } = useSidebar();
+
+  const isDevMode = process.env.NODE_ENV === "development";
 
   return (
     <Sidebar collapsible="icon" variant="sidebar">
@@ -137,7 +140,7 @@ export function DashboardSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                tooltip={"Posts"}
+                tooltip={"Archive"}
                 isActive={pathname === "/dashboard/archive"}
               >
                 <Link href="/dashboard/archive">
@@ -192,6 +195,21 @@ export function DashboardSidebar() {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+
+          {isDevMode && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                tooltip={"Debug"}
+                isActive={pathname === "/dashboard/debug"}
+              >
+                <Link href="/dashboard/debug">
+                  <BugIcon />
+                  <span>Debug</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
 
           <SidebarMenuItem>
             <SidebarMenuButton
