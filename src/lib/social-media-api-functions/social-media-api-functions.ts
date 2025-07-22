@@ -7,6 +7,7 @@ import { instagram } from "./instagram/index";
 import { pinterest } from "./pinterest/index";
 import { tumblr } from "./tumblr/index";
 import { x } from "./x/index";
+import { tiktok } from "./tiktok/index";
 import prisma from "@/lib/prisma";
 
 export const SocialMediaApiErrors = {
@@ -76,6 +77,8 @@ export const getSocialMediaApiFunctions = (
       return tumblr;
     case SocialMedia.X:
       return x;
+    case SocialMedia.TIKTOK:
+      return tiktok;
   }
 
   throw new Error(`Social media ${socialMedia} not supported`);
@@ -121,6 +124,12 @@ export const getValidAccessToken = async (
       case SocialMedia.X:
         return (
           await x.refreshAccessTokenAndUpdateSocialMediaIntegration(
+            integration.id
+          )
+        ).accessToken;
+      case SocialMedia.TIKTOK:
+        return (
+          await tiktok.refreshAccessTokenAndUpdateSocialMediaIntegration(
             integration.id
           )
         ).accessToken;
