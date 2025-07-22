@@ -11,7 +11,7 @@ import { deletePost } from "./delete-post";
 import { externalAccountUrl } from "./external-account-url";
 import { externalPostUrl } from "./external-post-url";
 
-// TODO2: Remove me
+// TODO2: Remove me2
 
 export const tiktok: SocialMediaApiFunctions = {
   oauthPageUrl,
