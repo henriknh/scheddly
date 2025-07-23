@@ -1,18 +1,18 @@
 [phases.setup]
-nixPkgs = ["nodejs", "yarn"]
+nixPkgs = ["nodejs", "npm"]
 
 [phases.install]
-cmds = ["yarn install"]
+cmds = ["npm install"]
 
 [phases.build]
 cmds = [
-    "yarn prisma generate",
-    "yarn prisma migrate deploy",
-    "yarn build"
+    "npx prisma generate",
+    "npx prisma migrate deploy",
+    "npm run build"
 ]
 
 [start]
-cmd = "yarn start"
+cmd = "npm start"
 
 [env]
 NODE_ENV = "production"
