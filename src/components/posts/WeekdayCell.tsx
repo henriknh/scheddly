@@ -30,7 +30,7 @@ export function WeekdayCell({ date, posts, onDateClick }: WeekdayCellProps) {
   return (
     <div
       className={cn(
-        "min-h-36 flex flex-col cursor-pointer transition-colors p-2 bg-card/50 rounded-md",
+        "min-h-36 flex flex-col cursor-pointer transition-colors p-2 bg-card rounded-md",
         isCurrentDay && "bg-accent text-accent-foreground"
       )}
       onClick={handleCellClick}

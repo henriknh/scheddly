@@ -82,8 +82,8 @@ export function PostCell({ post }: PostCellProps) {
     <Link
       href={`/dashboard/posts/${post.id}`}
       className={cn(
-        "flex flex-col gap-1 p-1 rounded cursor-pointer border",
-        "bg-secondary/30 hover:bg-secondary/50 transition-colors"
+        "flex flex-col gap-1 p-1 rounded cursor-pointer",
+        "bg-accent hover:bg-accent/50 transition-colors"
       )}
     >
       {/* Post type icon and status dot */}

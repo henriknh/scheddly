@@ -84,12 +84,12 @@ export function PostFilters({ brands }: PostFiltersProps) {
   }, [dateFrom, dateTo, router, searchParams]);
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="grid grid-cols-7 gap-2">
       <Select
         value={searchParams.get("brandId") || "all"}
         onValueChange={(value) => updateQueryParam("brandId", value)}
       >
-        <SelectTrigger className="w-[160px]">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Filter by brand" />
         </SelectTrigger>
         <SelectContent>
@@ -106,7 +106,7 @@ export function PostFilters({ brands }: PostFiltersProps) {
         value={searchParams.get("postType") || "all"}
         onValueChange={(value) => updateQueryParam("postType", value)}
       >
-        <SelectTrigger className="w-[160px]">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Filter by type" />
         </SelectTrigger>
         <SelectContent>
@@ -123,7 +123,7 @@ export function PostFilters({ brands }: PostFiltersProps) {
         value={searchParams.get("socialMedia") || "all"}
         onValueChange={(value) => updateQueryParam("socialMedia", value)}
       >
-        <SelectTrigger className="w-[160px]">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Filter by platform" />
         </SelectTrigger>
         <SelectContent>
@@ -147,7 +147,7 @@ export function PostFilters({ brands }: PostFiltersProps) {
         value={searchParams.get("status") || "all"}
         onValueChange={(value) => updateQueryParam("status", value)}
       >
-        <SelectTrigger className="w-[160px]">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Filter by status" />
         </SelectTrigger>
         <SelectContent>
@@ -161,7 +161,7 @@ export function PostFilters({ brands }: PostFiltersProps) {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="w-[240px]">
+          <Button variant="outline" className="w-full col-span-2">
             <CalendarIcon className="w-4 h-4" />
             <span className="flex-1">
               {searchParams.get("dateFrom") && searchParams.get("dateTo")
