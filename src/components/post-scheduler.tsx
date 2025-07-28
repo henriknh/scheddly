@@ -15,7 +15,8 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface PostSchedulerProps {
   initialDate?: Date | null;
@@ -33,6 +34,16 @@ export function PostScheduler({
   const [minute, setMinute] = useState<string>(
     date ? format(date, "mm") : "00"
   );
+
+  const params = useSearchParams();
+  const dateParam = params.get("date");
+
+  useEffect(() => {
+    if (dateParam) {
+      setDate(new Date(dateParam));
+      // TODO: Delete search param date
+    }
+  }, [dateParam]);
 
   const handleDateSelect = (newDate: Date | null | undefined) => {
     if (newDate) {

@@ -2,9 +2,7 @@
 
 import { getBrands } from "@/app/api/brand/get-brands";
 import { getPosts, GetPostsFilter } from "@/app/api/post/get-posts";
-import { getScheduledDates } from "@/app/api/post/get-scheduled-dates";
-import { Header } from "@/components/common/Header";
-import { PostGrid } from "@/components/post/PostsGrid";
+import { WeeklyCalendar } from "@/components/posts/WeeklyCalendar";
 
 type PostsProps = {
   searchParams: Promise<{
@@ -25,14 +23,7 @@ export default async function PostsPage({ searchParams }: PostsProps) {
     dateTo,
   });
 
-  const scheduledDates = await getScheduledDates();
-
   const brands = await getBrands();
 
-  return (
-    <div className="space-y-4">
-      <Header>Posts</Header>
-      <PostGrid posts={posts} brands={brands} scheduledDates={scheduledDates} />
-    </div>
-  );
+  return <WeeklyCalendar posts={posts} brands={brands} />;
 }

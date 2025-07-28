@@ -112,17 +112,18 @@ export async function getPosts(
               not: null,
             },
           }),
-        archived: !!filter?.archived,
+        archived:
+          typeof filter?.archived === "boolean" ? filter.archived : undefined,
       },
       orderBy: [
         {
           scheduledAt: {
-            sort: "desc",
+            sort: "asc",
             nulls: "last",
           },
         },
         {
-          createdAt: "desc",
+          createdAt: "asc",
         },
       ],
       include: {
