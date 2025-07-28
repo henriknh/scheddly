@@ -211,7 +211,7 @@ export function ImagePostForm({ post, integrations }: ImagePostFormProps) {
       </div>
 
       <div className="flex justify-end gap-2">
-        {post && <ArchivePostButton postId={post.id} />}
+        {post && <ArchivePostButton post={post} />}
         <Button
           onClick={handleSubmit}
           disabled={images.length === 0 || selectedIntegrationIds.length === 0}

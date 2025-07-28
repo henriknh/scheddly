@@ -56,7 +56,7 @@ export function ImagePostDetails({
         integrations={integrations}
       />
 
-      {post && <ArchivePostButton postId={post.id} />}
+      {post && <ArchivePostButton post={post} />}
     </div>
   );
 }

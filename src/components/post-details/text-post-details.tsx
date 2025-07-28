@@ -33,7 +33,7 @@ export function TextPostDetails({ post, integrations }: TextPostDetailsProps) {
         integrations={integrations}
       />
 
-      {post && <ArchivePostButton postId={post.id} />}
+      {post && <ArchivePostButton post={post} />}
     </div>
   );
 }

@@ -11,14 +11,6 @@ import {
 import { getPostTypeName } from "@/lib/post-type-name";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 
@@ -159,7 +151,7 @@ export function PostFilters({ brands }: PostFiltersProps) {
         </SelectContent>
       </Select>
 
-      <DropdownMenu>
+      {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="w-full col-span-2">
             <CalendarIcon className="w-4 h-4" />
@@ -202,7 +194,7 @@ export function PostFilters({ brands }: PostFiltersProps) {
             </Button>
           </div>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
     </div>
   );
 }

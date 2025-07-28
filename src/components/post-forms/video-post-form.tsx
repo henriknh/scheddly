@@ -307,7 +307,7 @@ export function VideoPostForm({ post, integrations }: VideoPostFormProps) {
       </div>
 
       <div className="flex justify-end gap-2">
-        {post && <ArchivePostButton postId={post.id} />}
+        {post && <ArchivePostButton post={post} />}
         <Button
           onClick={handleSubmit}
           disabled={!video || selectedIntegrationIds.length === 0}

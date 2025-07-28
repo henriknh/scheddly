@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { getPost } from "./get-post";
+import { canUnarchivePost } from "@/lib/post";
 
 export async function unarchivePost(postId: string) {
   const post = await getPost(postId);
@@ -13,11 +14,7 @@ export async function unarchivePost(postId: string) {
     throw new Error("Post is not archived");
   }
 
-  const tooOldToUnarchive =
-    post.archivedAt &&
-    post.archivedAt < new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-
-  if (tooOldToUnarchive) {
+  if (!canUnarchivePost(post)) {
     throw new Error("Post is too old to unarchive");
   }
 

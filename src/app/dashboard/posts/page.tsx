@@ -21,6 +21,7 @@ export default async function PostsPage({ searchParams }: PostsProps) {
     socialMedia,
     dateFrom,
     dateTo,
+    archived: false,
   });
 
   const brands = await getBrands();

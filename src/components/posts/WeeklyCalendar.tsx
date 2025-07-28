@@ -2,13 +2,15 @@
 
 import { format, startOfWeek, addDays, isSameDay } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PostWithRelations } from "@/app/api/post/types";
 import { WeekdayCell } from "./WeekdayCell";
 import { Brand } from "@/generated/prisma";
 import { PostFilters } from "./PostFilters";
 import { Header } from "../common/Header";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 interface WeeklyCalendarProps {
   posts?: PostWithRelations[];
@@ -21,6 +23,8 @@ export function WeeklyCalendar({
   brands,
   onDateSelect,
 }: WeeklyCalendarProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   // Get the Monday of the current week
@@ -62,10 +66,28 @@ export function WeeklyCalendar({
 
   const getPostsForDate = (date: Date) => {
     return posts.filter((post) => {
-      if (!post.scheduledAt) return false;
-      return isSameDay(new Date(post.scheduledAt), date);
+      if (post.scheduledAt) {
+        return isSameDay(new Date(post.scheduledAt), date);
+      } else {
+        return isSameDay(new Date(post.updatedAt), date);
+      }
     });
   };
+
+  useEffect(() => {
+    const newDateFrom = format(dates[0], "yyyy-MM-dd");
+    const newDateTo = format(dates[dates.length - 1], "yyyy-MM-dd");
+
+    const dateFrom = searchParams.get("dateFrom");
+    const dateTo = searchParams.get("dateTo");
+
+    if (dateFrom !== newDateFrom || dateTo !== newDateTo) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("dateFrom", newDateFrom);
+      params.set("dateTo", newDateTo);
+      router.push(`?${params.toString()}`);
+    }
+  }, [dates, router, searchParams]);
 
   return (
     <div className="space-y-4">

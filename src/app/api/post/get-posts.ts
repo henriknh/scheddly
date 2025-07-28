@@ -106,14 +106,25 @@ export async function getPosts(
         }),
         ...(filter?.dateFrom &&
           filter?.dateTo && {
-            scheduledAt: {
-              gte: new Date(filter.dateFrom),
-              lt: new Date(filter.dateTo),
-              not: null,
-            },
+            OR: [
+              {
+                scheduledAt: {
+                  gte: new Date(filter.dateFrom),
+                  lt: new Date(filter.dateTo),
+                  not: null,
+                },
+              },
+              {
+                updatedAt: {
+                  gte: new Date(filter.dateFrom),
+                  lt: new Date(filter.dateTo),
+                },
+              },
+            ],
           }),
-        archived:
-          typeof filter?.archived === "boolean" ? filter.archived : undefined,
+        ...(filter?.archived
+          ? { archived: true }
+          : { OR: [{ archived: false }, { archived: null }] }),
       },
       orderBy: [
         {

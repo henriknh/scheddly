@@ -47,7 +47,7 @@ export function VideoPostDetails({
         integrations={integrations}
       />
 
-      {post && <ArchivePostButton postId={post.id} />}
+      {post && <ArchivePostButton post={post} />}
     </div>
   );
 }

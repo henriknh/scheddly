@@ -150,7 +150,7 @@ export function TextPostForm({ post, integrations }: TextPostFormProps) {
       </div>
 
       <div className="flex justify-end gap-2">
-        {post && <ArchivePostButton postId={post.id} />}
+        {post && <ArchivePostButton post={post} />}
         <Button
           onClick={handleSubmit}
           disabled={!content || selectedIntegrationIds.length === 0}
