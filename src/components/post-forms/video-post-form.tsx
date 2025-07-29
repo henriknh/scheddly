@@ -310,7 +310,9 @@ export function VideoPostForm({ post, integrations }: VideoPostFormProps) {
         {post && <ArchivePostButton post={post} />}
         <Button
           onClick={handleSubmit}
-          disabled={!video || selectedIntegrationIds.length === 0}
+          disabled={
+            !video || selectedIntegrationIds.length === 0 || !!post?.archived
+          }
         >
           {post
             ? scheduledDate

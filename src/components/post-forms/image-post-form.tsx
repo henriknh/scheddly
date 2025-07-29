@@ -214,7 +214,11 @@ export function ImagePostForm({ post, integrations }: ImagePostFormProps) {
         {post && <ArchivePostButton post={post} />}
         <Button
           onClick={handleSubmit}
-          disabled={images.length === 0 || selectedIntegrationIds.length === 0}
+          disabled={
+            images.length === 0 ||
+            selectedIntegrationIds.length === 0 ||
+            !!post?.archived
+          }
         >
           {post
             ? scheduledDate

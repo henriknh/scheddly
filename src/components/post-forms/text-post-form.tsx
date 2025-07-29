@@ -153,7 +153,9 @@ export function TextPostForm({ post, integrations }: TextPostFormProps) {
         {post && <ArchivePostButton post={post} />}
         <Button
           onClick={handleSubmit}
-          disabled={!content || selectedIntegrationIds.length === 0}
+          disabled={
+            !content || selectedIntegrationIds.length === 0 || !!post?.archived
+          }
         >
           {post
             ? scheduledDate
