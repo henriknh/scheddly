@@ -2,24 +2,30 @@
 
 import { PostWithRelations } from "@/app/api/post/types";
 import { cn } from "@/lib/utils";
-import { format, isToday, isPast } from "date-fns";
-import { PostCell } from "./PostCell";
-import Link from "next/link";
+import { format, isPast, isToday } from "date-fns";
 import { ImageIcon, PlusIcon, TextIcon } from "lucide-react";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { PostCell } from "./PostCell";
 
 interface WeekdayCellProps {
   date: Date;
   posts: PostWithRelations[];
   onDateClick?: (date: Date) => void;
+  screenSize: "mobile" | "tablet" | "desktop";
 }
 
-export function WeekdayCell({ date, posts, onDateClick }: WeekdayCellProps) {
+export function WeekdayCell({
+  date,
+  posts,
+  onDateClick,
+  screenSize,
+}: WeekdayCellProps) {
   const isCurrentDay = isToday(date);
   const isPastDate = isPast(date) && !isToday(date);
 
@@ -31,7 +37,8 @@ export function WeekdayCell({ date, posts, onDateClick }: WeekdayCellProps) {
     <div
       className={cn(
         "min-h-36 flex flex-col cursor-pointer transition-colors p-2 bg-card rounded-md",
-        isCurrentDay && "bg-accent text-accent-foreground"
+        isCurrentDay && "bg-accent text-accent-foreground",
+        (date.getDay() === 6 || date.getDay() === 0) && "bg-destructive/5"
       )}
       onClick={handleCellClick}
     >
@@ -39,14 +46,13 @@ export function WeekdayCell({ date, posts, onDateClick }: WeekdayCellProps) {
       <div className="flex justify-between items-start w-full">
         <div
           className={cn(
-            "flex items-end justify-end gap-1",
-            isPastDate && "text-muted-foreground opacity-50"
+            "text-xs text-muted-foreground font-medium",
+            isPastDate && "opacity-50"
           )}
         >
-          <span className="text-sm font-medium">{format(date, "d")}</span>
-          <span className="text-xs text-muted-foreground pb-[2px]">
-            {format(date, "MMM")}
-          </span>
+          {screenSize === "desktop"
+            ? format(date, "d MMM")
+            : format(date, "EEE, d MMM")}
         </div>
         {!isPastDate && (
           <DropdownMenu>

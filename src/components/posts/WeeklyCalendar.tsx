@@ -2,7 +2,7 @@
 
 import { PostWithRelations } from "@/app/api/post/types";
 import { Brand } from "@/generated/prisma";
-import { addDays, format, isSameDay, startOfWeek } from "date-fns";
+import { addDays, format, isSameDay } from "date-fns";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PostFilters } from "./PostFilters";
@@ -14,6 +14,32 @@ interface WeeklyCalendarProps {
   onDateSelect?: (date: Date) => void;
 }
 
+// Custom hook to detect screen size
+function useScreenSize() {
+  const [screenSize, setScreenSize] = useState<"mobile" | "tablet" | "desktop">(
+    "desktop"
+  );
+
+  useEffect(() => {
+    const updateScreenSize = () => {
+      const width = window.innerWidth;
+      if (width <= 768) {
+        setScreenSize("mobile");
+      } else if (width <= 1024) {
+        setScreenSize("tablet");
+      } else {
+        setScreenSize("desktop");
+      }
+    };
+
+    updateScreenSize();
+    window.addEventListener("resize", updateScreenSize);
+    return () => window.removeEventListener("resize", updateScreenSize);
+  }, []);
+
+  return screenSize;
+}
+
 export function WeeklyCalendar({
   posts = [],
   brands,
@@ -22,24 +48,31 @@ export function WeeklyCalendar({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const screenSize = useScreenSize();
 
-  // Get the Monday of the current week
-  const getMondayOfWeek = (date: Date) => {
-    const monday = startOfWeek(date, { weekStartsOn: 1 });
-    return monday;
-  };
-
-  // Generate dates: 1 week back + current week + 3 weeks forward = 5 weeks total
+  // Generate dates based on screen size
   const generateCalendarDates = () => {
-    const monday = getMondayOfWeek(currentDate);
     const dates: Date[] = [];
+    const today = new Date();
 
-    // Start 1 week back from the current week's Monday
-    const startDate = addDays(monday, -7);
-
-    // Generate 35 days (5 weeks * 7 days)
-    for (let i = 0; i < 35; i++) {
-      dates.push(addDays(startDate, i));
+    if (screenSize === "mobile") {
+      // Mobile (<640px): 1 day back + 7 days forward (8 days total)
+      const startDate = addDays(today, -1);
+      for (let i = 0; i < 8; i++) {
+        dates.push(addDays(startDate, i));
+      }
+    } else if (screenSize === "tablet") {
+      // Tablet (<1024px): 2-3 days back + 13-14 days forward (16 days total)
+      const startDate = addDays(today, -2);
+      for (let i = 0; i < 16; i++) {
+        dates.push(addDays(startDate, i));
+      }
+    } else {
+      // Desktop (≥1024px): 7-13 days back + good number forward (21 days total)
+      const startDate = addDays(today, -7 - new Date().getDay() + 1);
+      for (let i = 0; i < 7 * 4; i++) {
+        dates.push(addDays(startDate, i));
+      }
     }
 
     return dates;
@@ -85,7 +118,7 @@ export function WeeklyCalendar({
         onCurrentDateChange={setCurrentDate}
       />
       <div className="space-y-2">
-        {/* Week day headers */}
+        {/* Week day headers - only show on desktop */}
         <div className="grid-cols-7 gap-2 bg-card rounded-md hidden lg:grid">
           {weekDays.map((day) => (
             <div
@@ -108,6 +141,7 @@ export function WeeklyCalendar({
                 date={date}
                 posts={postsForDate}
                 onDateClick={handleDateClick}
+                screenSize={screenSize}
               />
             );
           })}

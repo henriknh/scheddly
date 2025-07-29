@@ -1,6 +1,6 @@
 "use client";
 
-import { PostType, Brand, SocialMedia } from "@/generated/prisma";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -8,18 +8,52 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Brand, PostType, SocialMedia } from "@/generated/prisma";
 import { getPostTypeName } from "@/lib/post-type-name";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
+import { addDays, format } from "date-fns";
+import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { format, addDays, startOfWeek } from "date-fns";
 import { useEffect, useState } from "react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
 
 interface PostFiltersProps {
   brands: Brand[];
   currentDate: Date;
   onCurrentDateChange: (date: Date) => void;
+}
+
+// Custom hook to detect screen size
+function useScreenSize() {
+  const [screenSize, setScreenSize] = useState<"mobile" | "tablet" | "desktop">(
+    "desktop"
+  );
+
+  useEffect(() => {
+    const updateScreenSize = () => {
+      const width = window.innerWidth;
+      if (width <= 768) {
+        setScreenSize("mobile");
+      } else if (width <= 1024) {
+        setScreenSize("tablet");
+      } else {
+        setScreenSize("desktop");
+      }
+    };
+
+    updateScreenSize();
+    window.addEventListener("resize", updateScreenSize);
+    return () => window.removeEventListener("resize", updateScreenSize);
+  }, []);
+
+  return screenSize;
 }
 
 export function PostFilters({
@@ -31,6 +65,7 @@ export function PostFilters({
   const searchParams = useSearchParams();
   const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
   const [dateTo, setDateTo] = useState<Date | undefined>(undefined);
+  const screenSize = useScreenSize();
 
   useEffect(() => {
     setDateFrom(
@@ -83,118 +118,152 @@ export function PostFilters({
     }
   }, [dateFrom, dateTo, router, searchParams]);
 
-  const handlePreviousWeek = () => {
-    onCurrentDateChange(addDays(currentDate, -7));
+  const handlePrevious = () => {
+    if (screenSize === "mobile") {
+      // Mobile: Navigate by days
+      onCurrentDateChange(addDays(currentDate, -1));
+    } else {
+      // Tablet and Desktop: Navigate by weeks
+      onCurrentDateChange(addDays(currentDate, -7));
+    }
   };
 
-  const handleNextWeek = () => {
-    onCurrentDateChange(addDays(currentDate, 7));
+  const handleNext = () => {
+    if (screenSize === "mobile") {
+      // Mobile: Navigate by days
+      onCurrentDateChange(addDays(currentDate, 1));
+    } else {
+      // Tablet and Desktop: Navigate by weeks
+      onCurrentDateChange(addDays(currentDate, 7));
+    }
   };
 
   const handleToday = () => {
     onCurrentDateChange(new Date());
   };
 
-  // Get the Monday of the current week
-  const getMondayOfWeek = (date: Date) => {
-    const monday = startOfWeek(date, { weekStartsOn: 1 });
-    return monday;
-  };
-
   return (
-    <div className="grid md:grid-cols-4 lg:grid-cols-7 gap-2">
-      <Select
-        value={searchParams.get("brandId") || "all"}
-        onValueChange={(value) => updateQueryParam("brandId", value)}
+    <div className="flex items-center justify-end gap-2">
+      <Button
+        variant="outline"
+        onClick={handleToday}
+        className="flex-1 md:flex-none"
       >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Filter by brand" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All brands</SelectItem>
-          {brands.map((brand) => (
-            <SelectItem key={brand.id} value={brand.id}>
-              {brand.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        Today
+      </Button>
 
-      <Select
-        value={searchParams.get("postType") || "all"}
-        onValueChange={(value) => updateQueryParam("postType", value)}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Filter by type" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All post types</SelectItem>
-          {Object.values(PostType).map((type) => (
-            <SelectItem key={type} value={type}>
-              {getPostTypeName(type)}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <Button variant="outline" size="icon" onClick={handlePrevious}>
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
 
-      <Select
-        value={searchParams.get("socialMedia") || "all"}
-        onValueChange={(value) => updateQueryParam("socialMedia", value)}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Filter by platform" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All platforms</SelectItem>
-          {Object.values(SocialMedia)
-            .filter((media) =>
-              socialMediaPlatforms.some((platform) => platform.id === media)
-            )
-            .map((media) => (
-              <SelectItem key={media} value={media}>
-                {
-                  socialMediaPlatforms.find((platform) => platform.id === media)
-                    ?.name
-                }
-              </SelectItem>
-            ))}
-        </SelectContent>
-      </Select>
+      <Button variant="outline" size="icon" onClick={handleNext}>
+        <ChevronRight className="h-4 w-4" />
+      </Button>
 
-      <Select
-        value={searchParams.get("status") || "all"}
-        onValueChange={(value) => updateQueryParam("status", value)}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Filter by status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All statuses</SelectItem>
-          <SelectItem value="scheduled">Scheduled</SelectItem>
-          <SelectItem value="posted">Posted</SelectItem>
-          <SelectItem value="failed">Failed</SelectItem>
-          <SelectItem value="pending">Pending</SelectItem>
-        </SelectContent>
-      </Select>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Filter className="h-4 w-4" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent className="flex flex-col">
+          <SheetHeader>
+            <SheetTitle>Filters</SheetTitle>
+            <SheetDescription>
+              Make changes to your profile here. Click save when you&apos;re
+              done.
+            </SheetDescription>
+          </SheetHeader>
 
-      <div className="flex items-center justify-end gap-2 md:col-span-4 lg:col-span-3">
-        <div className="text-sm text-muted-foreground md:block hidden">
-          {format(getMondayOfWeek(currentDate), "MMM yyyy")}
-        </div>
-        <Button variant="outline" size="icon" onClick={handlePreviousWeek}>
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          onClick={handleToday}
-          className="flex-1 md:flex-none"
-        >
-          Today
-        </Button>
-        <Button variant="outline" size="icon" onClick={handleNextWeek}>
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
+          <div className="flex-1 flex flex-col gap-4">
+            <Select
+              value={searchParams.get("brandId") || "all"}
+              onValueChange={(value) => updateQueryParam("brandId", value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Filter by brand" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All brands</SelectItem>
+                {brands.map((brand) => (
+                  <SelectItem key={brand.id} value={brand.id}>
+                    {brand.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={searchParams.get("postType") || "all"}
+              onValueChange={(value) => updateQueryParam("postType", value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Filter by type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All post types</SelectItem>
+                {Object.values(PostType).map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {getPostTypeName(type)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={searchParams.get("socialMedia") || "all"}
+              onValueChange={(value) => updateQueryParam("socialMedia", value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Filter by platform" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All platforms</SelectItem>
+                {Object.values(SocialMedia)
+                  .filter((media) =>
+                    socialMediaPlatforms.some(
+                      (platform) => platform.id === media
+                    )
+                  )
+                  .map((media) => (
+                    <SelectItem key={media} value={media}>
+                      {
+                        socialMediaPlatforms.find(
+                          (platform) => platform.id === media
+                        )?.name
+                      }
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={searchParams.get("status") || "all"}
+              onValueChange={(value) => updateQueryParam("status", value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="scheduled">Scheduled</SelectItem>
+                <SelectItem value="posted">Posted</SelectItem>
+                <SelectItem value="failed">Failed</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* <SheetFooter>
+              <div className="w-full flex flex-col gap-2">
+                <Button type="submit">Apply filters</Button>
+                <SheetClose asChild>
+                  <Button variant="ghost">Reset filters</Button>
+                </SheetClose>
+              </div>
+            </SheetFooter> */}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
