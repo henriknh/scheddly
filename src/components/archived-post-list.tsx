@@ -2,10 +2,8 @@
 
 import { PostWithRelations } from "@/app/api/post/types";
 import { DataTable, DataTableColumnDef } from "@/components/ui/data-table";
-import { PostType } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { format } from "date-fns";
-import { FileTextIcon, ImageIcon, VideoIcon } from "lucide-react";
 import Link from "next/link";
 
 function getPlatforms(post: PostWithRelations) {
