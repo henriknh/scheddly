@@ -1,14 +1,12 @@
 "use client";
 
-import { format, startOfWeek, addDays, isSameDay } from "date-fns";
-import { useEffect, useState } from "react";
 import { PostWithRelations } from "@/app/api/post/types";
-import { WeekdayCell } from "./WeekdayCell";
 import { Brand } from "@/generated/prisma";
+import { addDays, format, isSameDay, startOfWeek } from "date-fns";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { PostFilters } from "./PostFilters";
-import { Header } from "../common/Header";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
+import { WeekdayCell } from "./WeekdayCell";
 
 interface WeeklyCalendarProps {
   posts?: PostWithRelations[];
