@@ -86,7 +86,7 @@ export function WeeklyCalendar({
       />
       <div className="space-y-2">
         {/* Week day headers */}
-        <div className="grid grid-cols-7 gap-2 bg-card rounded-md">
+        <div className="grid-cols-7 gap-2 bg-card rounded-md hidden lg:grid">
           {weekDays.map((day) => (
             <div
               key={day}
@@ -98,7 +98,7 @@ export function WeeklyCalendar({
         </div>
 
         {/* Calendar grid */}
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-2">
           {dates.map((date, index) => {
             const postsForDate = getPostsForDate(date);
 
