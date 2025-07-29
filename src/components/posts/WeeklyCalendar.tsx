@@ -1,9 +1,7 @@
 "use client";
 
 import { format, startOfWeek, addDays, isSameDay } from "date-fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { PostWithRelations } from "@/app/api/post/types";
 import { WeekdayCell } from "./WeekdayCell";
 import { Brand } from "@/generated/prisma";
@@ -52,14 +50,6 @@ export function WeeklyCalendar({
   const dates = generateCalendarDates();
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-  const handlePreviousWeek = () => {
-    setCurrentDate(addDays(currentDate, -7));
-  };
-
-  const handleNextWeek = () => {
-    setCurrentDate(addDays(currentDate, 7));
-  };
-
   const handleDateClick = (date: Date) => {
     onDateSelect?.(date);
   };
@@ -91,55 +81,38 @@ export function WeeklyCalendar({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <Header>Posts</Header>
-        <div className="flex items-center gap-2">
-          <div className="text-sm text-muted-foreground">
-            {format(getMondayOfWeek(currentDate), "MMM yyyy")}
-          </div>
-          <Button variant="outline" size="icon" onClick={handlePreviousWeek}>
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" onClick={() => setCurrentDate(new Date())}>
-            Today
-          </Button>
-          <Button variant="outline" size="icon" onClick={handleNextWeek}>
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+      <PostFilters
+        brands={brands}
+        currentDate={currentDate}
+        onCurrentDateChange={setCurrentDate}
+      />
+      <div className="space-y-2">
+        {/* Week day headers */}
+        <div className="grid grid-cols-7 gap-2 bg-card rounded-md">
+          {weekDays.map((day) => (
+            <div
+              key={day}
+              className="text-center text-sm font-medium text-muted-foreground py-2"
+            >
+              {day}
+            </div>
+          ))}
         </div>
-      </div>
-      <div>
-        <div className="space-y-4">
-          <PostFilters brands={brands} />
-          <div className="space-y-2">
-            {/* Week day headers */}
-            <div className="grid grid-cols-7 gap-2 bg-card rounded-md">
-              {weekDays.map((day) => (
-                <div
-                  key={day}
-                  className="text-center text-sm font-medium text-muted-foreground py-2"
-                >
-                  {day}
-                </div>
-              ))}
-            </div>
 
-            {/* Calendar grid */}
-            <div className="grid grid-cols-7 gap-2">
-              {dates.map((date, index) => {
-                const postsForDate = getPostsForDate(date);
+        {/* Calendar grid */}
+        <div className="grid grid-cols-7 gap-2">
+          {dates.map((date, index) => {
+            const postsForDate = getPostsForDate(date);
 
-                return (
-                  <WeekdayCell
-                    key={index}
-                    date={date}
-                    posts={postsForDate}
-                    onDateClick={handleDateClick}
-                  />
-                );
-              })}
-            </div>
-          </div>
+            return (
+              <WeekdayCell
+                key={index}
+                date={date}
+                posts={postsForDate}
+                onDateClick={handleDateClick}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

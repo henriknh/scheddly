@@ -8,17 +8,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getPostTypeName } from "@/lib/post-type-name";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { useRouter, useSearchParams } from "next/navigation";
-import { format } from "date-fns";
+import { format, addDays, startOfWeek } from "date-fns";
 import { useEffect, useState } from "react";
 
 interface PostFiltersProps {
   brands: Brand[];
+  currentDate: Date;
+  onCurrentDateChange: (date: Date) => void;
 }
 
-export function PostFilters({ brands }: PostFiltersProps) {
+export function PostFilters({
+  brands,
+  currentDate,
+  onCurrentDateChange,
+}: PostFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
@@ -75,8 +83,26 @@ export function PostFilters({ brands }: PostFiltersProps) {
     }
   }, [dateFrom, dateTo, router, searchParams]);
 
+  const handlePreviousWeek = () => {
+    onCurrentDateChange(addDays(currentDate, -7));
+  };
+
+  const handleNextWeek = () => {
+    onCurrentDateChange(addDays(currentDate, 7));
+  };
+
+  const handleToday = () => {
+    onCurrentDateChange(new Date());
+  };
+
+  // Get the Monday of the current week
+  const getMondayOfWeek = (date: Date) => {
+    const monday = startOfWeek(date, { weekStartsOn: 1 });
+    return monday;
+  };
+
   return (
-    <div className="grid grid-cols-7 gap-2">
+    <div className="grid md:grid-cols-4 lg:grid-cols-7 gap-2">
       <Select
         value={searchParams.get("brandId") || "all"}
         onValueChange={(value) => updateQueryParam("brandId", value)}
@@ -151,50 +177,24 @@ export function PostFilters({ brands }: PostFiltersProps) {
         </SelectContent>
       </Select>
 
-      {/* <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="w-full col-span-2">
-            <CalendarIcon className="w-4 h-4" />
-            <span className="flex-1">
-              {searchParams.get("dateFrom") && searchParams.get("dateTo")
-                ? format(
-                    new Date(searchParams.get("dateFrom")!),
-                    "yyyy-MM-dd"
-                  ) +
-                  " - " +
-                  format(new Date(searchParams.get("dateTo")!), "yyyy-MM-dd")
-                : "Select date range"}
-            </span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <Calendar
-            mode="range"
-            selected={{
-              from: dateFrom,
-              to: dateTo,
-            }}
-            onSelect={(date) => {
-              setDateFrom(date?.from || undefined);
-              setDateTo(date?.to || undefined);
-            }}
-          />
-
-          <div className="w-full px-3 pb-3">
-            <Button
-              variant="outline"
-              className="w-full"
-              disabled={!dateFrom && !dateTo}
-              onClick={() => {
-                setDateFrom(undefined);
-                setDateTo(undefined);
-              }}
-            >
-              Clear
-            </Button>
-          </div>
-        </DropdownMenuContent>
-      </DropdownMenu> */}
+      <div className="flex items-center justify-end gap-2 md:col-span-4 lg:col-span-3">
+        <div className="text-sm text-muted-foreground md:block hidden">
+          {format(getMondayOfWeek(currentDate), "MMM yyyy")}
+        </div>
+        <Button variant="outline" size="icon" onClick={handlePreviousWeek}>
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          onClick={handleToday}
+          className="flex-1 md:flex-none"
+        >
+          Today
+        </Button>
+        <Button variant="outline" size="icon" onClick={handleNextWeek}>
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 }
