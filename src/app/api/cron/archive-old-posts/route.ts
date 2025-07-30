@@ -12,6 +12,8 @@ export async function GET(request: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
+  console.info("CRON: Archive old posts");
+
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
   const posts = await prisma.post.findMany({
@@ -33,7 +35,7 @@ export async function GET(request: Request) {
     },
   });
 
-  console.info(`Found ${posts.length} posts to archive`);
+  console.info(`CRON: Found ${posts.length} posts to archive`);
 
   await Promise.all(
     posts.map(async (post) =>

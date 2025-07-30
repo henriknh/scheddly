@@ -13,6 +13,8 @@ export async function GET(request: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
+  console.info("CRON: Post posts");
+
   const posts = await prisma.post.findMany({
     where: {
       OR: [
@@ -44,13 +46,7 @@ export async function GET(request: Request) {
     },
   });
 
-  console.info(`Found ${posts.length} posts to post`);
-
-  const posts2 = await prisma.post.findMany({});
-
-  console.log("posts2", posts2);
-
-  console.log(new Date());
+  console.info(`CRON: Found ${posts.length} posts to post`);
 
   await Promise.all(posts.map(postPost));
 
