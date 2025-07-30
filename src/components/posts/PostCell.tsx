@@ -9,9 +9,10 @@ import Link from "next/link";
 
 interface PostCellProps {
   post: PostWithRelations;
+  isCurrentDay: boolean;
 }
 
-export function PostCell({ post }: PostCellProps) {
+export function PostCell({ post, isCurrentDay }: PostCellProps) {
   const getPostTypeIcon = (postType: PostType) => {
     switch (postType) {
       case PostType.TEXT:
@@ -83,7 +84,10 @@ export function PostCell({ post }: PostCellProps) {
       href={`/dashboard/posts/${post.id}`}
       className={cn(
         "flex flex-col gap-1 p-1 rounded cursor-pointer",
-        "bg-accent hover:bg-accent/50 transition-colors"
+        isCurrentDay
+          ? "bg-card hover:bg-card/50"
+          : "bg-accent hover:bg-accent/50",
+        "transition-colors"
       )}
     >
       {/* Post type icon and status dot */}

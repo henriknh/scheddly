@@ -36,7 +36,7 @@ export function WeekdayCell({
   return (
     <div
       className={cn(
-        "min-h-36 flex flex-col cursor-pointer transition-colors p-2 bg-card rounded-md",
+        "min-h-36 flex flex-col transition-colors p-2 bg-card rounded-md",
         isCurrentDay && "bg-accent text-accent-foreground",
         (date.getDay() === 6 || date.getDay() === 0) && "bg-destructive/5"
       )}
@@ -101,7 +101,7 @@ export function WeekdayCell({
       {/* Posts list */}
       <div className="flex-1 flex flex-col gap-1 mt-1 overflow-hidden">
         {posts.map((post) => (
-          <PostCell key={post.id} post={post} />
+          <PostCell key={post.id} post={post} isCurrentDay={isCurrentDay} />
         ))}
       </div>
     </div>
