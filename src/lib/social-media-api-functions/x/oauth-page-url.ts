@@ -4,7 +4,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) throw new Error("Missing API URL");
 const redirect_uri = `${apiUrl}/oauth2-redirect/x`;
 const xApiUrl = "https://twitter.com";
-const scope = "tweet.read tweet.write users.read offline.access";
+const scope = "tweet.read tweet.write users.read offline.access media.write";
 
 export async function oauthPageUrl(brandId: string): Promise<string> {
   const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_X_CLIENT_ID;
