@@ -1,11 +1,11 @@
 "use server";
 
 import { Tokens } from "../social-media-api-functions";
+import { xApiUrl } from "./index";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) throw new Error("Missing API URL");
 const redirect_uri = `${apiUrl}/oauth2-redirect/x`;
-const xApiUrl = "https://api.twitter.com";
 
 export async function consumeAuthorizationCode(code: string): Promise<Tokens> {
   const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_X_CLIENT_ID;

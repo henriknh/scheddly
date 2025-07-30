@@ -11,6 +11,8 @@ import { deletePost } from "./delete-post";
 import { externalAccountUrl } from "./external-account-url";
 import { externalPostUrl } from "./external-post-url";
 
+export const xApiUrl = "https://api.x.com";
+
 export const x: SocialMediaApiFunctions = {
   oauthPageUrl,
   consumeAuthorizationCode,

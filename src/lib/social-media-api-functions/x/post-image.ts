@@ -6,8 +6,7 @@ import {
 } from "@/app/api/post/types";
 import prisma from "@/lib/prisma";
 import { getValidAccessToken } from "../social-media-api-functions";
-
-const xApiUrl = "https://api.twitter.com";
+import { xApiUrl } from "./index";
 
 export async function postImage(
   post: PostWithRelations,

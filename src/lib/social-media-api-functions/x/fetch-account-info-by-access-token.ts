@@ -1,8 +1,7 @@
 "use server";
 
 import { AccountInfo } from "../social-media-api-functions";
-
-const xApiUrl = "https://api.twitter.com";
+import { xApiUrl } from "./index";
 
 export async function fetchAccountInfoByAccessToken(
   accessToken: string

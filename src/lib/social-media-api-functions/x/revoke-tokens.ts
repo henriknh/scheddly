@@ -1,8 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-
-const xApiUrl = "https://api.twitter.com";
+import { xApiUrl } from "./index";
 
 export async function revokeTokens(id: string): Promise<void> {
   const integration = await prisma.socialMediaIntegration.findFirst({
