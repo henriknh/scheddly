@@ -17,6 +17,7 @@ if (process.env.NODE_ENV === "production") {
 export const metadata: Metadata = {
   title: config.appName,
   description: config.appDescription,
+  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/logo_256.png", sizes: "256x256", type: "image/png" },
@@ -32,14 +33,41 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: config.appName,
+    startupImage: [
+      {
+        url: "/logo_padded_1024.png",
+        media:
+          "(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)",
+      },
+      {
+        url: "/logo_padded_1024.png",
+        media:
+          "(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)",
+      },
+      {
+        url: "/logo_padded_1024.png",
+        media:
+          "(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)",
+      },
+    ],
   },
   viewport: {
     width: "device-width",
     initialScale: 1,
     maximumScale: 1,
     userScalable: false,
+    viewportFit: "cover",
+  },
+  other: {
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "black-translucent",
+    "apple-mobile-web-app-title": config.appName,
+    "mobile-web-app-capable": "yes",
+    "theme-color": "#000000",
+    "msapplication-TileColor": "#000000",
+    "msapplication-config": "/browserconfig.xml",
   },
 };
 
