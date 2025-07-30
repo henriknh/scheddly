@@ -24,10 +24,10 @@ export const metadata: Metadata = {
       { url: "/logo_512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: [
-      { url: "/logo_1024.png", sizes: "1024x1024", type: "image/png" },
-      { url: "/logo_512.png", sizes: "512x512", type: "image/png" },
-      { url: "/logo_256.png", sizes: "256x256", type: "image/png" },
-      { url: "/logo_128.png", sizes: "128x128", type: "image/png" },
+      { url: "/logo_padded_1024.png", sizes: "1024x1024", type: "image/png" },
+      { url: "/logo_padded_512.png", sizes: "512x512", type: "image/png" },
+      { url: "/logo_padded_256.png", sizes: "256x256", type: "image/png" },
+      { url: "/logo_padded_128.png", sizes: "128x128", type: "image/png" },
     ],
   },
   appleWebApp: {
