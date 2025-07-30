@@ -122,9 +122,7 @@ export async function getPosts(
               },
             ],
           }),
-        ...(filter?.archived
-          ? { archived: true }
-          : { OR: [{ archived: false }, { archived: null }] }),
+        archived: !!filter?.archived,
       },
       orderBy: [
         {
