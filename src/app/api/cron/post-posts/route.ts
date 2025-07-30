@@ -1,23 +1,24 @@
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
-import { postPost } from "./post-post";
+import { postPost } from "../../post/post-post";
 
-export async function GET() {
-  const user = await getUserFromToken();
+if (!process.env.CRON_SECRET) {
+  throw new Error("CRON_SECRET is not set");
+}
 
-  if (!user || !user.id || !user.teamId) {
-    throw new Error("Unauthorized");
+export async function GET(request: Request) {
+  const params = new URLSearchParams(request.url.split("?")[1]);
+  const secret = params.get("secret");
+
+  if (secret !== process.env.CRON_SECRET) {
+    return new Response("Unauthorized", { status: 401 });
   }
 
   const posts = await prisma.post.findMany({
     where: {
-      teamId: user.teamId,
       OR: [
         {
           scheduledAt: {
-            not: {
-              gt: new Date(),
-            },
+            lte: new Date(),
           },
         },
         {
@@ -45,7 +46,13 @@ export async function GET() {
 
   console.info(`Found ${posts.length} posts to post`);
 
+  const posts2 = await prisma.post.findMany({});
+
+  console.log("posts2", posts2);
+
+  console.log(new Date());
+
   await Promise.all(posts.map(postPost));
 
-  return new Response("OK!");
+  return Response.json({ message: `${posts.length} posts posted` });
 }

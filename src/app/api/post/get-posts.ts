@@ -134,7 +134,7 @@ export async function getPosts(
           },
         },
         {
-          createdAt: "asc",
+          updatedAt: "asc",
         },
       ],
       include: {
