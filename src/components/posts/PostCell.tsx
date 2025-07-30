@@ -42,29 +42,47 @@ export function PostCell({ post, isCurrentDay }: PostCellProps) {
     });
   };
 
-  const getPostStatus = () => {
-    const socialMediaIcons = getSocialMediaPostIcons(post);
-    const hasFailed = socialMediaIcons.some((sm) => sm.failed);
-    const hasPosted = socialMediaIcons.some((sm) => sm.posted);
-    const hasPending = socialMediaIcons.some((sm) => !sm.failed && !sm.posted);
+  type BgColor =
+    | "bg-warning"
+    | "bg-destructive"
+    | "bg-success"
+    | "bg-info"
+    | "bg-border";
 
-    // Check if scheduled time has passed
-    const isScheduledTimePassed =
-      post.scheduledAt && new Date(post.scheduledAt) < new Date();
+  const getPostStatus = (): BgColor[] => {
+    const hasFailed = post.socialMediaPosts.some(
+      (socialMediaPost) => socialMediaPost.failedAt
+    );
 
-    if (hasFailed && hasPosted) {
-      return { status: "mixed", color: "bg-warning" };
-    } else if (hasFailed) {
-      return { status: "failed", color: "bg-destructive" };
-    } else if (hasPosted && !hasPending) {
-      return { status: "success", color: "bg-success" };
-    } else if (isScheduledTimePassed && hasPending) {
-      return { status: "overdue", color: "bg-warning" };
-    } else if (post.scheduledAt) {
-      return { status: "scheduled", color: "bg-info" };
+    const hasPosted = post.socialMediaPosts.some(
+      (socialMediaPost) => socialMediaPost.postedAt
+    );
+
+    const isPending = post.scheduledAt && post.scheduledAt < new Date();
+
+    const colors: BgColor[] = [];
+
+    if (hasFailed || hasPosted) {
+      if (hasFailed) {
+        colors.push("bg-destructive");
+      }
+
+      if (hasPosted) {
+        colors.push("bg-success");
+      }
     } else {
-      return { status: "pending", color: "bg-warning" };
+      if (post.socialMediaPosts.length === 0) {
+        colors.push("bg-border");
+      } else if (isPending) {
+        colors.push("bg-warning");
+      } else if (post.scheduledAt) {
+        colors.push("bg-info");
+      } else {
+        colors.push("bg-border");
+      }
     }
+
+    return colors;
   };
 
   const socialMediaIcons = getSocialMediaPostIcons(post);
@@ -99,8 +117,14 @@ export function PostCell({ post, isCurrentDay }: PostCellProps) {
           </span>
         </div>
         <div
-          className={cn("w-2 h-2 rounded-full flex-shrink-0", postStatus.color)}
-        />
+          className={cn(
+            "w-2 h-2 rounded-full flex-shrink-0 flex overflow-hidden"
+          )}
+        >
+          {postStatus.map((color) => {
+            return <div key={color} className={cn("flex-1 h-full", color)} />;
+          })}
+        </div>
       </div>
 
       {/* Brand rows with social media platforms */}
