@@ -6,7 +6,8 @@ const config = {
     "social media scheduling, social media management, content scheduling, social media automation, e-commerce marketing, social media analytics, multi-platform posting, social media tools",
   appAuthor: "Scheddly Team",
   appUrl: "https://scheddly.com",
-  appImage: "/logo_1024.png",
+  appImage: "/og-banner.png",
+  appTwitterImage: "/twitter-banner.png",
   appTwitterHandle: "@scheddly",
 };
 

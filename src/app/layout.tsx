@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: config.appImage,
-        width: 1024,
-        height: 1024,
+        width: 1200,
+        height: 630,
         alt: `${config.appName} - Social Media Scheduling Platform`,
       },
     ],
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: config.appName,
     description: config.appDescription,
-    images: [config.appImage],
+    images: [config.appTwitterImage || config.appImage],
     creator: config.appTwitterHandle,
   },
   robots: {
