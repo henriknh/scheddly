@@ -3,7 +3,7 @@
 import { PostWithRelations } from "@/app/api/post/types";
 import { cn } from "@/lib/utils";
 import { format, isPast, isToday } from "date-fns";
-import { ImageIcon, PlusIcon, TextIcon } from "lucide-react";
+import { ImageIcon, PlusIcon, TextIcon, VideoIcon } from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -89,7 +89,7 @@ export function WeekdayCell({
                     "yyyy-MM-dd"
                   )}`}
                 >
-                  <ImageIcon className="w-4 h-4" />
+                  <VideoIcon className="w-4 h-4" />
                   Video post
                 </Link>
               </DropdownMenuItem>
