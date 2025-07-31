@@ -12,7 +12,8 @@ export function HeroSection() {
         <p className="text-xl text-muted-foreground max-w-[600px]">
           Schedule posts, track performance, and grow your audience across all
           platforms. Perfect for creators and businesses who want to scale their
-          social media presence.
+          social media presence with our comprehensive social media management
+          platform.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Button size="lg" asChild>

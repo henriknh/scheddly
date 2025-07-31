@@ -9,25 +9,27 @@ import { Clock, BarChart3, Users, ShoppingBag } from "lucide-react";
 export function FeaturesSection() {
   const features = [
     {
-      title: "Smart Scheduling",
-      description: "Schedule posts across all platforms with optimal timing",
+      title: "Smart Social Media Scheduling",
+      description:
+        "Schedule posts across Instagram, Facebook, Twitter, LinkedIn, Pinterest, and TikTok with optimal timing algorithms. Our social media scheduling tool ensures your content reaches your audience when they're most active.",
       icon: <Clock className="h-6 w-6 text-primary" />,
     },
     {
-      title: "Analytics & Insights",
+      title: "Advanced Analytics & Performance Tracking",
       description:
-        "Track performance, understand your audience, and optimize your content",
+        "Track engagement rates, audience growth, and content performance with detailed analytics. Understand which posts perform best and optimize your social media strategy with data-driven insights.",
       icon: <BarChart3 className="h-6 w-6 text-primary" />,
     },
     {
-      title: "Team Collaboration",
-      description: "Work together with your team and manage multiple brands",
+      title: "Team Collaboration & Brand Management",
+      description:
+        "Work together with your team, manage multiple brands, and streamline your social media workflow. Perfect for agencies and businesses managing multiple social media accounts.",
       icon: <Users className="h-6 w-6 text-primary" />,
     },
     {
-      title: "E-commerce Integration",
+      title: "E-commerce Integration & ROI Tracking",
       description:
-        "Connect your online stores and track how your content drives sales",
+        "Connect your online stores and track how your social media content drives sales. Measure the ROI of your social media marketing efforts with our comprehensive e-commerce integration.",
       icon: <ShoppingBag className="h-6 w-6 text-primary" />,
     },
   ];

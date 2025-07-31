@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { StructuredData } from "@/components/root/StructuredData";
 import config from "@/config";
 import { ensureBucketExists } from "@/lib/minio";
 import type { Metadata, Viewport } from "next";
@@ -15,8 +16,63 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export const metadata: Metadata = {
-  title: config.appName,
+  title: {
+    default: config.appName,
+    template: `%s | ${config.appName}`,
+  },
   description: config.appDescription,
+  keywords: config.appKeywords,
+  authors: [{ name: config.appAuthor }],
+  creator: config.appAuthor,
+  publisher: config.appName,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL(config.appUrl),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: config.appUrl,
+    title: config.appName,
+    description: config.appDescription,
+    siteName: config.appName,
+    images: [
+      {
+        url: config.appImage,
+        width: 1024,
+        height: 1024,
+        alt: `${config.appName} - Social Media Scheduling Platform`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: config.appName,
+    description: config.appDescription,
+    images: [config.appImage],
+    creator: config.appTwitterHandle,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "your-google-verification-code",
+    yandex: "your-yandex-verification-code",
+    yahoo: "your-yahoo-verification-code",
+  },
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -79,6 +135,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <StructuredData />
+      </head>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
