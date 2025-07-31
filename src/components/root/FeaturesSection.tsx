@@ -10,8 +10,7 @@ export function FeaturesSection() {
   const features = [
     {
       title: "Smart Scheduling",
-      description:
-        "Schedule posts across all platforms with AI-powered optimal timing",
+      description: "Schedule posts across all platforms with optimal timing",
       icon: <Clock className="h-6 w-6 text-primary" />,
     },
     {
@@ -22,8 +21,7 @@ export function FeaturesSection() {
     },
     {
       title: "Team Collaboration",
-      description:
-        "Work together with your team, assign roles, and manage multiple brands",
+      description: "Work together with your team and manage multiple brands",
       icon: <Users className="h-6 w-6 text-primary" />,
     },
     {

@@ -4,7 +4,6 @@ import { HeroSection } from "@/components/root/HeroSection";
 import { HowItWorksSection } from "@/components/root/HowItWorksSection";
 import { PlatformsSection } from "@/components/root/PlatformsSection";
 import { PricingSection } from "@/components/root/PricingSection";
-import { StatisticsSection } from "@/components/root/StatisticsSection";
 
 export default function LandingPage() {
   return (
@@ -12,7 +11,7 @@ export default function LandingPage() {
       <HeroSection />
       <PlatformsSection />
       <FeaturesSection />
-      <StatisticsSection />
+      {/* <StatisticsSection /> */}
       {/* <TestimonialsSection /> */}
       <HowItWorksSection />
       <PricingSection />
