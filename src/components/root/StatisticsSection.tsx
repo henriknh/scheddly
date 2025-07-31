@@ -7,19 +7,19 @@ export async function StatisticsSection() {
 
   const statistics = [
     {
-      value: `${stats.successfulPosts.toLocaleString()}+`,
+      value: stats.totalPosts.toLocaleString(),
       label: "Posts Scheduled",
       description: "Content published across all platforms",
       icon: <Calendar className="h-8 w-8 text-primary" />,
     },
     {
-      value: `${(stats.totalImpressions / 1000000).toFixed(1)}M+`,
+      value: stats.totalImpressions.toLocaleString(),
       label: "Reach Generated",
       description: "Total impressions across all platforms",
       icon: <Eye className="h-8 w-8 text-primary" />,
     },
     {
-      value: `${stats.totalUsers.toLocaleString()}+`,
+      value: stats.totalUsers.toLocaleString(),
       label: "Active Users",
       description: "Creators and businesses trust our platform",
       icon: <Users className="h-8 w-8 text-primary" />,

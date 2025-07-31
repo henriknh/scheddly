@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 export interface StatisticsData {
   successfulPosts: number;
   failedPosts: number;
+  totalPosts: number;
   totalUsers: number;
   totalImpressions: number;
 }
@@ -29,6 +30,9 @@ export async function getStatistics(): Promise<StatisticsData> {
       },
     });
 
+    // Count total posts created
+    const totalPosts = await prisma.socialMediaPost.count();
+
     // Count total users
     const totalUsers = await prisma.user.count();
 
@@ -38,6 +42,7 @@ export async function getStatistics(): Promise<StatisticsData> {
     return {
       successfulPosts,
       failedPosts,
+      totalPosts,
       totalUsers,
       totalImpressions,
     };
