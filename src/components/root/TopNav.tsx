@@ -15,12 +15,32 @@ export function TopNav() {
   }, []);
 
   return (
-    <nav className="border-b w-full overflow-hidden">
+    <nav className="w-full overflow-hidden">
       <div className="flex h-16 items-center justify-between w-full px-8">
-        <Link href="/" className="text-xl font-bold flex gap-2 items-center">
-          <Image src="/logo.svg" alt="Logo" width={20} height={20} />
-          {config.appName}
-        </Link>
+        <div className="flex items-center gap-8">
+          <Link href="/" className="text-xl font-bold flex gap-2 items-center">
+            <Image src="/logo.svg" alt="Logo" width={20} height={20} />
+            {config.appName}
+          </Link>
+
+          <div className="hidden md:flex items-center gap-2">
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="#pricing">Pricing</Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="#features">Features</Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="#platforms">Platforms</Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="#how-it-works">How It Works</Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="#faq">FAQ</Link>
+            </Button>
+          </div>
+        </div>
 
         <div className="relative flex items-center gap-4">
           <div

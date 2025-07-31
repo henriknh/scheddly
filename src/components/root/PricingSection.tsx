@@ -38,7 +38,7 @@ export function PricingSection() {
   ];
 
   return (
-    <section className="container">
+    <section id="pricing" className="container">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold mb-4">Simple, Transparent Pricing</h2>
         <p className="text-lg text-muted-foreground">
