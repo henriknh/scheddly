@@ -15,7 +15,7 @@ export function TopNav() {
   }, []);
 
   return (
-    <nav className="border-b w-full">
+    <nav className="border-b w-full overflow-hidden">
       <div className="flex h-16 items-center justify-between w-full px-8">
         <Link href="/" className="text-xl font-bold flex gap-2 items-center">
           <Image src="/logo.svg" alt="Logo" width={20} height={20} />
