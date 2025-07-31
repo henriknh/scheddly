@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function HeroSection() {
   return (
-    <section className="container">
+    <section className="container py-16">
       <div className="flex flex-col items-center text-center gap-8 py-16">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">
           Manage All Your Social Media

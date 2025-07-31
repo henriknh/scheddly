@@ -14,6 +14,26 @@ export function TopNav() {
     (async () => setUser(await getUserFromToken()))();
   }, []);
 
+  const handleSmoothScroll = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    targetId: string
+  ) => {
+    e.preventDefault();
+
+    // Update URL with target ID
+    const url = new URL(window.location.href);
+    url.hash = targetId;
+    window.history.pushState({}, "", url.toString());
+
+    const element = document.getElementById(targetId);
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <nav className="w-full overflow-hidden">
       <div className="flex h-16 items-center justify-between w-full px-8">
@@ -25,19 +45,41 @@ export function TopNav() {
 
           <div className="hidden md:flex items-center gap-2">
             <Button variant="ghost" size="sm" asChild>
-              <Link href="#pricing">Pricing</Link>
+              <Link
+                href="#pricing"
+                onClick={(e) => handleSmoothScroll(e, "pricing")}
+              >
+                Pricing
+              </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="#features">Features</Link>
+              <Link
+                href="#features"
+                onClick={(e) => handleSmoothScroll(e, "features")}
+              >
+                Features
+              </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="#platforms">Platforms</Link>
+              <Link
+                href="#platforms"
+                onClick={(e) => handleSmoothScroll(e, "platforms")}
+              >
+                Platforms
+              </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="#how-it-works">How It Works</Link>
+              <Link
+                href="#how-it-works"
+                onClick={(e) => handleSmoothScroll(e, "how-it-works")}
+              >
+                How It Works
+              </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link href="#faq">FAQ</Link>
+              <Link href="#faq" onClick={(e) => handleSmoothScroll(e, "faq")}>
+                FAQ
+              </Link>
             </Button>
           </div>
         </div>

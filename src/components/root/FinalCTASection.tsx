@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export function FinalCTASection() {
   return (
-    <section className="container">
-      <div className="flex flex-col items-center text-center gap-8 py-16 bg-primary/5 rounded-lg">
+    <section className="container py-16">
+      <div className="flex flex-col items-center text-center gap-8 py-16 bg-secondary rounded-lg">
         <h2 className="text-3xl font-bold">
           Ready to Transform Your Social Media?
         </h2>

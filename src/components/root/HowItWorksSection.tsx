@@ -21,7 +21,7 @@ export function HowItWorksSection() {
   ];
 
   return (
-    <section id="how-it-works" className="container">
+    <section id="how-it-works" className="container py-16">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold mb-4">
           Get Started in 3 Simple Steps
