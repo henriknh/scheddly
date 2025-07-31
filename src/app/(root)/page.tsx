@@ -1,9 +1,10 @@
-import { HeroSection } from "@/components/root/HeroSection";
-import { PlatformsSection } from "@/components/root/PlatformsSection";
 import { FeaturesSection } from "@/components/root/FeaturesSection";
-import { HowItWorksSection } from "@/components/root/HowItWorksSection";
-import { PricingSection } from "@/components/root/PricingSection";
 import { FinalCTASection } from "@/components/root/FinalCTASection";
+import { HeroSection } from "@/components/root/HeroSection";
+import { HowItWorksSection } from "@/components/root/HowItWorksSection";
+import { PlatformsSection } from "@/components/root/PlatformsSection";
+import { PricingSection } from "@/components/root/PricingSection";
+import { StatisticsSection } from "@/components/root/StatisticsSection";
 
 export default function LandingPage() {
   return (
@@ -11,6 +12,8 @@ export default function LandingPage() {
       <HeroSection />
       <PlatformsSection />
       <FeaturesSection />
+      <StatisticsSection />
+      {/* <TestimonialsSection /> */}
       <HowItWorksSection />
       <PricingSection />
       <FinalCTASection />
