@@ -46,7 +46,6 @@ export function ConnectToBrandModal({
         <Button
           variant={isMobile ? "ghost" : "outline"}
           size={isMobile ? "icon" : "sm"}
-          disabled={brands.length === 0}
         >
           <Link className="h-4 w-4" />
           {isMobile ? null : "Connect to Brand"}

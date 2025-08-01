@@ -25,9 +25,10 @@ export function IntegrationAccountButton({
         rel="noopener noreferrer"
       >
         <UserAvatar src={integration.accountAvatarUrl || undefined} />
-        <div className="flex flex-col">
-          <span className="text-sm font-medium">{integration.accountName}</span>
-        </div>
+
+        <span className="text-sm font-medium truncate">
+          {integration.accountName}
+        </span>
       </Link>
     </Button>
   );
