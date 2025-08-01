@@ -2,6 +2,7 @@
 
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { useAuth } from "@/lib/auth-context";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Archive,
   Blocks,
@@ -25,7 +26,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
@@ -35,19 +35,22 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import config from "@/config";
+import { MobileAwareSidebar } from "@/components/MobileAwareSidebar";
+import config from "../../app.config";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 export function DashboardSidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const { open, toggleSidebar } = useSidebar();
+  const { open, toggleSidebar, isMobile } = useSidebar();
+  const isMobileHook = useIsMobile();
 
   const isDevMode = process.env.NODE_ENV === "development";
+  const isMobileDevice = isMobile || isMobileHook;
 
   return (
-    <Sidebar collapsible="icon" variant="sidebar">
+    <MobileAwareSidebar>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem
@@ -211,21 +214,23 @@ export function DashboardSidebar() {
             </SidebarMenuItem>
           )}
 
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip={open ? "Collapse" : "Expand"}
-              onClick={() => toggleSidebar()}
-            >
-              <ChevronLeft
-                className={`h-4 w-4 transition-transform ${
-                  !open ? "rotate-180" : ""
-                }`}
-              />
-              <span>Collapse</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {!isMobileDevice && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip={open ? "Collapse" : "Expand"}
+                onClick={() => toggleSidebar()}
+              >
+                <ChevronLeft
+                  className={`h-4 w-4 transition-transform ${
+                    !open ? "rotate-180" : ""
+                  }`}
+                />
+                <span>Collapse</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarFooter>
-    </Sidebar>
+    </MobileAwareSidebar>
   );
 }
