@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Link } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -25,6 +26,7 @@ export function ConnectToBrandModal({
 }: ConnectToBrandModalProps) {
   const [isConnecting, setIsConnecting] = useState(false);
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const onConnect = async (brandId: string) => {
     try {
@@ -41,9 +43,13 @@ export function ConnectToBrandModal({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" disabled={brands.length === 0}>
+        <Button
+          variant={isMobile ? "ghost" : "outline"}
+          size={isMobile ? "icon" : "sm"}
+          disabled={brands.length === 0}
+        >
           <Link className="h-4 w-4" />
-          Connect to Brand
+          {isMobile ? null : "Connect to Brand"}
         </Button>
       </DialogTrigger>
 

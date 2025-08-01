@@ -27,9 +27,9 @@ export function AllIntegrationsList({
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Integrations connect your social media accounts to Scheddly. Add your
-        Facebook, Instagram, LinkedIn, and other accounts to schedule and manage
-        posts across all your platforms.
+        Integrations connect your social media accounts to Scheddly. You can
+        link social media integrations to brands to organize and manage posts
+        across all your platforms.
       </p>
 
       <IntegrationsHeader />

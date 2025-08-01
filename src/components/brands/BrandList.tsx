@@ -60,7 +60,7 @@ export function BrandList({ brands }: BrandListProps) {
       </p>
 
       <div className="flex items-center justify-end gap-2">
-        <Button variant="outline" asChild>
+        <Button variant="outline" size="sm" className="max-md:flex-1" asChild>
           <Link
             href="/dashboard/integrations"
             className="flex items-center gap-2"
@@ -70,7 +70,11 @@ export function BrandList({ brands }: BrandListProps) {
           </Link>
         </Button>
 
-        <Button onClick={() => setIsAddModalOpen(true)}>
+        <Button
+          size="sm"
+          className="max-md:flex-1"
+          onClick={() => setIsAddModalOpen(true)}
+        >
           <Plus className="h-4 w-4 mr-2" />
           Add Brand
         </Button>
