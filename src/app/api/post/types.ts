@@ -1,4 +1,10 @@
-import { Post, SocialMediaPost, File, Brand } from "@/generated/prisma";
+import {
+  Post,
+  SocialMediaPost,
+  File,
+  Brand,
+  SocialMediaIntegration,
+} from "@/generated/prisma";
 
 export type PostWithRelations = Post & {
   socialMediaPosts: SocialMediaPostWithRelations[];
@@ -8,5 +14,7 @@ export type PostWithRelations = Post & {
 };
 
 export type SocialMediaPostWithRelations = SocialMediaPost & {
-  brand: Brand;
+  socialMediaIntegration: SocialMediaIntegration & {
+    brand: Brand | null;
+  };
 };

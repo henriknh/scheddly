@@ -1,10 +1,10 @@
 "use server";
 
-import { Brand } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
+import { BrandWithRelations } from "./types";
 
-export async function getBrands(): Promise<Brand[]> {
+export async function getBrands(): Promise<BrandWithRelations[]> {
   try {
     const user = await getUserFromToken();
     if (!user || !user.id || !user.teamId) {

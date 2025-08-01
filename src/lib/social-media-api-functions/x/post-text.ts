@@ -14,7 +14,7 @@ export async function postText(
 ) {
   const accessToken = await getValidAccessToken(
     socialMediaPost.socialMedia,
-    socialMediaPost.brandId
+    socialMediaPost.socialMediaIntegrationId
   );
 
   const response = await fetch(`${xApiUrl}/2/tweets`, {

@@ -33,7 +33,7 @@ export function PostCell({ post, isCurrentDay }: PostCellProps) {
 
       return {
         id: socialMediaPost.id,
-        brand: socialMediaPost.brand.name,
+        brand: socialMediaPost.socialMediaIntegration.brand?.name || "No Brand",
         platform: platform?.name || socialMediaPost.socialMedia,
         icon: PlatformIcon,
         failed: !!socialMediaPost.failedAt,

@@ -18,13 +18,12 @@ export async function postVideo(
 
   const accessToken = await getValidAccessToken(
     socialMediaPost.socialMedia,
-    socialMediaPost.brandId
+    socialMediaPost.socialMediaIntegrationId
   );
 
-  const integration = await prisma.socialMediaIntegration.findFirst({
+  const integration = await prisma.socialMediaIntegration.findUnique({
     where: {
-      socialMedia: socialMediaPost.socialMedia,
-      brandId: socialMediaPost.brandId,
+      id: socialMediaPost.socialMediaIntegrationId,
     },
   });
   if (!integration) throw new Error("Integration not found");

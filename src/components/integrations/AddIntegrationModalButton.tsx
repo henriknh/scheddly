@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 
 interface AddIntegrationModalProps {
-  brandId: string;
+  brandId?: string | null;
   integrations: SocialMediaIntegration[];
   socialMediaPlatform: SocialMediaPlatform;
   setIsAddModalOpen: (isAddModalOpen: boolean) => void;

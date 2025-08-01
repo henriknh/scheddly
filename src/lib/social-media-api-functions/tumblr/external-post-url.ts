@@ -6,10 +6,9 @@ import prisma from "@/lib/prisma";
 export async function externalPostUrl(
   socialMediaPost: SocialMediaPostWithRelations
 ) {
-  const integration = await prisma.socialMediaIntegration.findFirst({
+  const integration = await prisma.socialMediaIntegration.findUnique({
     where: {
-      socialMedia: socialMediaPost.socialMedia,
-      brandId: socialMediaPost.brandId,
+      id: socialMediaPost.socialMediaIntegrationId,
     },
   });
   if (!integration) throw new Error("Integration not found");

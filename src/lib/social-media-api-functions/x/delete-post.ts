@@ -17,7 +17,7 @@ export async function deletePost(
 
   const accessToken = await getValidAccessToken(
     socialMediaPost.socialMedia,
-    socialMediaPost.brandId
+    socialMediaPost.socialMediaIntegrationId
   );
 
   const response = await fetch(

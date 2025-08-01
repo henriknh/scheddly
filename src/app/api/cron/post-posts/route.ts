@@ -37,7 +37,11 @@ export async function GET(request: Request) {
     include: {
       socialMediaPosts: {
         include: {
-          brand: true,
+          socialMediaIntegration: {
+            include: {
+              brand: true,
+            },
+          },
         },
       },
       images: true,

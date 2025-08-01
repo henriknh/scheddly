@@ -14,7 +14,7 @@ export async function postVideo(
 ) {
   const accessToken = await getValidAccessToken(
     socialMediaPost.socialMedia,
-    socialMediaPost.brandId
+    socialMediaPost.socialMediaIntegrationId
   );
   if (!post.video) throw new Error("No video found in post");
   const videoUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/file/${post.video.id}`;

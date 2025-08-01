@@ -1,9 +1,8 @@
 "use client";
 
-import { Team } from "@/generated/prisma";
-import { DataTable, DataTableColumnDef } from "@/components/ui/data-table";
 import { UserAvatar } from "@/components/common/UserAvatar";
-import { Header } from "@/components/common/Header";
+import { DataTable, DataTableColumnDef } from "@/components/ui/data-table";
+import { Team } from "@/generated/prisma";
 import { UserWithRelations } from "@/lib/user";
 
 interface TeamListProps {
@@ -40,7 +39,12 @@ export function TeamList({ team }: TeamListProps) {
 
   return (
     <div className="space-y-4">
-      <Header>Team Members</Header>
+      <p className="text-sm text-muted-foreground">
+        Teams allow you to collaborate with others on your social media content.
+        Invite team members to help create, schedule, and manage posts across
+        your brands and integrations.
+      </p>
+
       <DataTable columns={columns} data={team.members} />
     </div>
   );

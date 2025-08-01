@@ -1,4 +1,4 @@
-import { SocialMediaIntegration } from "@/generated/prisma";
+import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
@@ -14,8 +14,8 @@ import {
 import { AddIntegrationModalButton } from "./AddIntegrationModalButton";
 
 interface AddIntegrationModalProps {
-  brandId: string;
-  integrations: SocialMediaIntegration[];
+  brandId?: string | null;
+  integrations: SocialMediaIntegrationWithRelations[];
 }
 
 export function AddIntegrationModal({

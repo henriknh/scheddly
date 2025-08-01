@@ -28,7 +28,11 @@ export async function deleteSocialMediaPost(
       },
     },
     include: {
-      brand: true,
+      socialMediaIntegration: {
+        include: {
+          brand: true,
+        },
+      },
     },
   });
 

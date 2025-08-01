@@ -34,9 +34,7 @@ export function TextPostForm({ post, integrations }: TextPostFormProps) {
     return integrations
       .filter((integration) =>
         selectedSocialMediaPosts.some(
-          (post) =>
-            post.socialMedia === integration.socialMedia &&
-            post.brandId === integration.brandId
+          (post) => post.socialMediaIntegrationId === integration.id
         )
       )
       .map((integration) => integration.id);
@@ -46,14 +44,12 @@ export function TextPostForm({ post, integrations }: TextPostFormProps) {
     if (post) {
       setContent(post.description);
       setScheduledDate(post.scheduledAt || null);
-      // Map from social media types and brand IDs to integration IDs
+      // Map from social media posts to integration IDs
       const selectedSocialMediaPosts = post.socialMediaPosts;
       const selectedIds = integrations
         .filter((integration) =>
           selectedSocialMediaPosts.some(
-            (post) =>
-              post.socialMedia === integration.socialMedia &&
-              post.brandId === integration.brandId
+            (post) => post.socialMediaIntegrationId === integration.id
           )
         )
         .map((integration) => integration.id);

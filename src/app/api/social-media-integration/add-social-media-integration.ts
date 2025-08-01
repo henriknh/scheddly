@@ -8,11 +8,11 @@ import { getUserFromToken } from "@/lib/user";
 export async function addSocialMediaIntegration(
   platform: SocialMedia,
   code: string,
-  brandId: string
+  brandId?: string | null
 ) {
   try {
-    if (!platform || !code || !brandId) {
-      throw new Error("Platform, code, and brandId are required");
+    if (!platform || !code) {
+      throw new Error("Platform and code are required");
     }
 
     const user = await getUserFromToken();
@@ -76,13 +76,26 @@ export async function addSocialMediaIntegration(
     const { accountId, accountName, accountUsername, accountAvatarUrl } =
       await getAccountInfo();
 
+    if (brandId) {
+      const brandExists = await prisma.brand.findFirst({
+        where: {
+          id: brandId,
+          teamId: user.teamId,
+        },
+      });
+
+      if (!brandExists) {
+        throw new Error("Brand not found");
+      }
+    }
+
     const existingIntegration = await prisma.socialMediaIntegration.findFirst({
       where: {
         AND: {
           accountId,
           socialMedia: platform,
-          brandId,
           teamId: user.teamId,
+          brandId: brandId || null,
         },
       },
     });
@@ -114,14 +127,14 @@ export async function addSocialMediaIntegration(
           accountUsername,
           accountAvatarUrl,
           teamId: user.teamId,
-          brandId,
+          brandId: brandId || null,
         },
       });
 
       return integration;
     }
   } catch (error) {
-    console.error(error);
+    console.log(error);
     throw new Error("Internal Server Error");
   }
 }

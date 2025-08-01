@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Brand } from "@/generated/prisma";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2, Settings } from "lucide-react";
 import { AddBrandModal } from "./AddBrandModal";
 import { EditBrandModal } from "./EditBrandModal";
 import { DeleteBrandDialog } from "./DeleteBrandDialog";
@@ -26,6 +26,7 @@ import {
   XIcon,
   YouTubeIcon,
 } from "@/components/icons";
+import Link from "next/link";
 
 interface BrandListProps {
   brands: (Brand & {
@@ -52,8 +53,23 @@ export function BrandList({ brands }: BrandListProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Brands</h1>
+      <p className="text-sm text-muted-foreground">
+        Brands help you organize your social media management. Create separate
+        brands for different businesses, clients, or projects to keep your
+        content and integrations organized.
+      </p>
+
+      <div className="flex items-center justify-end gap-2">
+        <Button variant="outline" asChild>
+          <Link
+            href="/dashboard/integrations"
+            className="flex items-center gap-2"
+          >
+            <Settings className="h-4 w-4" />
+            Manage integrations
+          </Link>
+        </Button>
+
         <Button onClick={() => setIsAddModalOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Add Brand
@@ -70,7 +86,6 @@ export function BrandList({ brands }: BrandListProps) {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Integrations</TableHead>
-              <TableHead>Created</TableHead>
               <TableHead className="text-right"></TableHead>
             </TableRow>
           </TableHeader>
@@ -95,9 +110,6 @@ export function BrandList({ brands }: BrandListProps) {
                       </span>
                     )}
                   </div>
-                </TableCell>
-                <TableCell>
-                  {new Date(brand.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-2">

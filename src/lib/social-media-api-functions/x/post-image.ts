@@ -14,14 +14,14 @@ export async function postImage(
 ) {
   const accessToken = await getValidAccessToken(
     socialMediaPost.socialMedia,
-    socialMediaPost.brandId
+    socialMediaPost.socialMediaIntegrationId
   );
 
   if (!post.images || post.images.length === 0) {
     throw new Error("No images found in post");
   }
 
-  // Upload images to X
+  // Upload images to X using v2 API
   const mediaIds: string[] = [];
 
   for (const image of post.images) {
@@ -36,19 +36,18 @@ export async function postImage(
     const imageBuffer = await imageResponse.arrayBuffer();
     const base64Image = Buffer.from(imageBuffer).toString("base64");
 
-    // Step 1: Initialize media upload
-    const initResponse = await fetch(`${xApiUrl}/1.1/media/upload.json`, {
+    // Step 1: Initialize media upload using v2 API
+    const initResponse = await fetch(`${xApiUrl}/2/media`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
-      body: new URLSearchParams({
-        command: "INIT",
-        total_bytes: imageBuffer.byteLength.toString(),
-        media_type: image.mimeType,
+      body: JSON.stringify({
         media_category: "tweet_image",
-      }).toString(),
+        media_type: image.mimeType,
+        total_bytes: imageBuffer.byteLength,
+      }),
     });
 
     if (!initResponse.ok) {
@@ -61,18 +60,17 @@ export async function postImage(
     const mediaId = initData.media_id_string;
 
     // Step 2: Upload media data
-    const appendResponse = await fetch(`${xApiUrl}/1.1/media/upload.json`, {
+    const appendResponse = await fetch(`${xApiUrl}/2/media`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
-      body: new URLSearchParams({
-        command: "APPEND",
+      body: JSON.stringify({
         media_id: mediaId,
-        segment_index: "0",
+        segment_index: 0,
         media_data: base64Image,
-      }).toString(),
+      }),
     });
 
     if (!appendResponse.ok) {
@@ -82,16 +80,15 @@ export async function postImage(
     }
 
     // Step 3: Finalize media upload
-    const finalizeResponse = await fetch(`${xApiUrl}/1.1/media/upload.json`, {
+    const finalizeResponse = await fetch(`${xApiUrl}/2/media`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
-      body: new URLSearchParams({
-        command: "FINALIZE",
+      body: JSON.stringify({
         media_id: mediaId,
-      }).toString(),
+      }),
     });
 
     if (!finalizeResponse.ok) {

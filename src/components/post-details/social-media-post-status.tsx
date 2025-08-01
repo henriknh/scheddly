@@ -40,9 +40,7 @@ export function SocialMediaPostStatus({
   const PlatformIcon = platform?.Icon;
 
   const integrationExists = integrations.some(
-    (integration) =>
-      integration.socialMedia === socialMediaPost.socialMedia &&
-      integration.brandId === socialMediaPost.brandId
+    (integration) => integration.id === socialMediaPost.socialMediaIntegrationId
   );
 
   // Click outside to deactivate

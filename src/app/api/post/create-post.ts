@@ -54,7 +54,7 @@ export async function createPost({
         socialMediaPosts: {
           create: socialMediaIntegrations.map((integration) => ({
             socialMedia: integration.socialMedia,
-            brandId: integration.brandId,
+            socialMediaIntegrationId: integration.id,
           })),
         },
         teamId: user.teamId!,
@@ -138,7 +138,11 @@ export async function createPost({
       include: {
         socialMediaPosts: {
           include: {
-            brand: true,
+            socialMediaIntegration: {
+              include: {
+                brand: true,
+              },
+            },
           },
         },
         images: true,

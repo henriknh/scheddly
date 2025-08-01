@@ -33,13 +33,11 @@ export function ImagePostForm({ post, integrations }: ImagePostFormProps) {
   >(() => {
     if (!post) return [];
     // Map from social media types and brand IDs to integration IDs
-    const selectedSocialMediaPosts = post.socialMediaPosts;
+    const selectedSocialMediaPosts = post?.socialMediaPosts || [];
     return integrations
       .filter((integration) =>
         selectedSocialMediaPosts.some(
-          (post) =>
-            post.socialMedia === integration.socialMedia &&
-            post.brandId === integration.brandId
+          (post) => post.socialMediaIntegrationId === integration.id
         )
       )
       .map((integration) => integration.id);
@@ -49,14 +47,12 @@ export function ImagePostForm({ post, integrations }: ImagePostFormProps) {
     if (post) {
       setCaption(post.description);
       setScheduledDate(post.scheduledAt || null);
-      // Map from social media types and brand IDs to integration IDs
+      // Map from social media posts to integration IDs
       const selectedSocialMediaPosts = post.socialMediaPosts;
       const selectedIds = integrations
         .filter((integration) =>
           selectedSocialMediaPosts.some(
-            (post) =>
-              post.socialMedia === integration.socialMedia &&
-              post.brandId === integration.brandId
+            (post) => post.socialMediaIntegrationId === integration.id
           )
         )
         .map((integration) => integration.id);

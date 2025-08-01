@@ -14,7 +14,7 @@ export async function postImage(
 ) {
   const accessToken = await getValidAccessToken(
     socialMediaPost.socialMedia,
-    socialMediaPost.brandId
+    socialMediaPost.socialMediaIntegrationId
   );
   if (!post.images || post.images.length === 0)
     throw new Error("No images found in post");

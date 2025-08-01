@@ -37,7 +37,7 @@ export async function postImage(
   }
   const accessToken = await getValidAccessToken(
     socialMediaPost.socialMedia,
-    socialMediaPost.brandId
+    socialMediaPost.socialMediaIntegrationId
   );
   const body = {
     link: "https://www.pinterest.com/",

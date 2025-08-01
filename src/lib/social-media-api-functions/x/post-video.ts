@@ -14,7 +14,7 @@ export async function postVideo(
 ) {
   const accessToken = await getValidAccessToken(
     socialMediaPost.socialMedia,
-    socialMediaPost.brandId
+    socialMediaPost.socialMediaIntegrationId
   );
 
   if (!post.video) {
@@ -32,19 +32,18 @@ export async function postVideo(
   const videoBuffer = await videoResponse.arrayBuffer();
   const base64Video = Buffer.from(videoBuffer).toString("base64");
 
-  // Step 1: Initialize media upload
-  const initResponse = await fetch(`${xApiUrl}/1.1/media/upload.json`, {
+  // Step 1: Initialize media upload using v2 API
+  const initResponse = await fetch(`${xApiUrl}/2/media`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
     },
-    body: new URLSearchParams({
-      command: "INIT",
-      total_bytes: videoBuffer.byteLength.toString(),
-      media_type: post.video.mimeType,
+    body: JSON.stringify({
       media_category: "tweet_video",
-    }).toString(),
+      media_type: post.video.mimeType,
+      total_bytes: videoBuffer.byteLength,
+    }),
   });
 
   if (!initResponse.ok) {
@@ -66,18 +65,17 @@ export async function postVideo(
     const chunk = videoBuffer.slice(start, end);
     const base64Chunk = Buffer.from(chunk).toString("base64");
 
-    const appendResponse = await fetch(`${xApiUrl}/1.1/media/upload.json`, {
+    const appendResponse = await fetch(`${xApiUrl}/2/media`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
-      body: new URLSearchParams({
-        command: "APPEND",
+      body: JSON.stringify({
         media_id: mediaId,
-        segment_index: i.toString(),
+        segment_index: i,
         media_data: base64Chunk,
-      }).toString(),
+      }),
     });
 
     if (!appendResponse.ok) {
@@ -88,16 +86,15 @@ export async function postVideo(
   }
 
   // Step 3: Finalize media upload
-  const finalizeResponse = await fetch(`${xApiUrl}/1.1/media/upload.json`, {
+  const finalizeResponse = await fetch(`${xApiUrl}/2/media`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
     },
-    body: new URLSearchParams({
-      command: "FINALIZE",
+    body: JSON.stringify({
       media_id: mediaId,
-    }).toString(),
+    }),
   });
 
   if (!finalizeResponse.ok) {
@@ -114,16 +111,15 @@ export async function postVideo(
   while (!processingComplete && attempts < maxAttempts) {
     await new Promise((resolve) => setTimeout(resolve, 10000)); // Wait 10 seconds
 
-    const statusResponse = await fetch(`${xApiUrl}/1.1/media/upload.json`, {
+    const statusResponse = await fetch(`${xApiUrl}/2/media`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
-      body: new URLSearchParams({
-        command: "STATUS",
+      body: JSON.stringify({
         media_id: mediaId,
-      }).toString(),
+      }),
     });
 
     if (statusResponse.ok) {

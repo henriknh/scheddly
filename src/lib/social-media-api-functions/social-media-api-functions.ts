@@ -35,8 +35,8 @@ export interface Auth {
 
 export interface SocialMediaApiFunctions {
   oauthPageUrl:
-    | ((brandId: string) => string)
-    | ((brandId: string) => Promise<string>);
+    | ((brandId?: string | null) => string)
+    | ((brandId?: string | null) => Promise<string>);
   consumeAuthorizationCode: (code: string) => Promise<Tokens>;
   refreshAccessTokenAndUpdateSocialMediaIntegration: (
     id: string
@@ -86,18 +86,17 @@ export const getSocialMediaApiFunctions = (
 
 export const getValidAccessToken = async (
   socialMedia: SocialMedia,
-  brandId: string
+  socialMediaIntegrationId: string
 ): Promise<string> => {
-  const integration = await prisma.socialMediaIntegration.findFirst({
+  const integration = await prisma.socialMediaIntegration.findUnique({
     where: {
-      socialMedia,
-      brandId,
+      id: socialMediaIntegrationId,
     },
   });
 
   if (!integration?.accessToken) {
     throw new Error(
-      `No active ${socialMedia} integration found for brand ${brandId}`
+      `No active ${socialMedia} integration found with id ${socialMediaIntegrationId}`
     );
   }
 

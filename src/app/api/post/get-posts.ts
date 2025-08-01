@@ -30,7 +30,9 @@ export async function getPosts(
         ...(filter?.brandId && {
           socialMediaPosts: {
             some: {
-              brandId: filter.brandId,
+              socialMediaIntegration: {
+                brandId: filter.brandId,
+              },
             },
           },
         }),
@@ -138,7 +140,11 @@ export async function getPosts(
       include: {
         socialMediaPosts: {
           include: {
-            brand: true,
+            socialMediaIntegration: {
+              include: {
+                brand: true,
+              },
+            },
           },
         },
         images: true,

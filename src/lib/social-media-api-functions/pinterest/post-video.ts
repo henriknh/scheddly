@@ -12,7 +12,7 @@ export async function postVideo(
 ) {
   const accessToken = await getValidAccessToken(
     socialMediaPost.socialMedia,
-    socialMediaPost.brandId
+    socialMediaPost.socialMediaIntegrationId
   );
   throw new Error("Not implemented");
 }

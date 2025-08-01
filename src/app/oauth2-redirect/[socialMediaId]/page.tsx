@@ -35,13 +35,6 @@ export default function PinterestRedirectPage() {
       return;
     }
 
-    if (!brandId) {
-      const channel = new BroadcastChannel("oauth2_integration_complete");
-      channel.postMessage({
-        error: `[INTEGRATION_ERROR][${matchingSocialMedia}] No brand id provided`,
-      });
-      return;
-    }
     const createIntegration = async () => {
       try {
         await addSocialMediaIntegration(matchingSocialMedia, code, brandId);

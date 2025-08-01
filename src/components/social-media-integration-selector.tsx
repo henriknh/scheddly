@@ -2,9 +2,9 @@
 
 import { Brand, SocialMediaIntegration } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardHeader, CardTitle } from "./ui/card";
+import { Checkbox } from "./ui/checkbox";
 
 interface SocialMediaIntegrationSelectorProps {
   onSelectionChange: (integrationIds: string[]) => void;
@@ -75,11 +75,9 @@ export function SocialMediaIntegrationSelector({
         );
 
         return (
-          <Card key={brandId} className="space-y-2">
-            <CardHeader className="flex flex-row gap-2 items-center space-x-2 space-y-0">
-              <CardTitle className="space-x-4">
-                {data.brand?.name || "No Brand"}
-              </CardTitle>
+          <div key={brandId} className="space-y-4">
+            <div className="flex gap-2 items-center">
+              {data.brand?.name || "No Brand"}
               <Button
                 variant="ghost"
                 size="sm"
@@ -103,11 +101,11 @@ export function SocialMediaIntegrationSelector({
                   }
                 }}
               >
-                {allIntegrationsSelected ? "All selected" : "Select all"}
+                {allIntegrationsSelected ? "Deselect all" : "Select all"}
               </Button>
-            </CardHeader>
+            </div>
 
-            <CardContent className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2">
               {integrationsByBrand.map((integration) => {
                 const platform = socialMediaPlatforms.find(
                   (p) => p.id === integration.socialMedia
@@ -115,32 +113,56 @@ export function SocialMediaIntegrationSelector({
                 if (!platform) return null;
 
                 return (
-                  <div
+                  <Card
                     key={integration.id}
-                    className="flex items-center space-x-2"
+                    onClick={() =>
+                      handleIntegrationChange(
+                        integration.id,
+                        !selectedIntegrationIds.includes(integration.id)
+                      )
+                    }
                   >
-                    <Badge
-                      variant={
-                        selectedIntegrationIds.includes(integration.id)
-                          ? "default"
-                          : "outline"
-                      }
-                      className="flex items-center gap-2 cursor-pointer"
-                      onClick={() =>
-                        handleIntegrationChange(
-                          integration.id,
-                          !selectedIntegrationIds.includes(integration.id)
-                        )
-                      }
-                    >
-                      <platform.Icon className="h-4 w-4" />
-                      {platform.name}
-                    </Badge>
-                  </div>
+                    <CardHeader>
+                      <CardTitle>
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-2">
+                            <platform.Icon className="h-4 w-4" />
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium">
+                                {platform.name}
+                              </span>
+                              {integration.accountUsername && (
+                                <span className="text-xs opacity-70">
+                                  @{integration.accountUsername}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div>
+                            <Checkbox
+                              checked={selectedIntegrationIds.includes(
+                                integration.id
+                              )}
+                              onCheckedChange={() =>
+                                handleIntegrationChange(
+                                  integration.id,
+                                  !selectedIntegrationIds.includes(
+                                    integration.id
+                                  )
+                                )
+                              }
+                              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                            />
+                          </div>
+                        </div>
+                      </CardTitle>
+                    </CardHeader>
+                  </Card>
                 );
               })}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         );
       })}
     </div>

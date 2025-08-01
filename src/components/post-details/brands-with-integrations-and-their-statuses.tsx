@@ -19,11 +19,12 @@ export function BrandsWithIntegrationsAndTheirStatuses({
 }: BrandsWithIntegrationsAndTheirStatusProps) {
   const groupSocialMediaPostsByBrand = post.socialMediaPosts.reduce(
     (acc, socialMediaPost) => {
-      const brand = socialMediaPost.brand;
-      if (!acc[brand.id]) {
-        acc[brand.id] = [];
+      const brand = socialMediaPost.socialMediaIntegration.brand;
+      const brandId = brand?.id || "no-brand";
+      if (!acc[brandId]) {
+        acc[brandId] = [];
       }
-      acc[brand.id].push(socialMediaPost);
+      acc[brandId].push(socialMediaPost);
       return acc;
     },
     {} as Record<string, SocialMediaPostWithRelations[]>
@@ -34,7 +35,10 @@ export function BrandsWithIntegrationsAndTheirStatuses({
       {Object.entries(groupSocialMediaPostsByBrand).map(
         ([brandId, socialMediaPosts]) => (
           <div key={brandId} className="space-y-4">
-            <SubHeader>{socialMediaPosts[0].brand.name}</SubHeader>
+            <SubHeader>
+              {socialMediaPosts[0].socialMediaIntegration.brand?.name ||
+                "No Brand"}
+            </SubHeader>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
               {socialMediaPosts.map(
                 (socialMediaPost: SocialMediaPostWithRelations) => (

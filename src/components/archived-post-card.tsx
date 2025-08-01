@@ -35,7 +35,7 @@ interface ArchivedPostCardProps {
 
 export function ArchivedPostCard({ post }: ArchivedPostCardProps) {
   const platforms = getPlatforms(post);
-  const brand = post.socialMediaPosts[0]?.brand;
+  const brand = post.socialMediaPosts[0]?.socialMediaIntegration?.brand;
 
   return (
     <Link href={`/dashboard/posts/${post.id}`} className="block">
