@@ -22,21 +22,10 @@ export async function deleteBrand(brandId: string) {
       throw new Error("Brand not found");
     }
 
-    // Use a transaction to ensure both operations succeed or fail together
-    await prisma.$transaction(async (tx) => {
-      // Delete all associated social media integrations first
-      await tx.socialMediaIntegration.deleteMany({
-        where: {
-          brandId: brandId,
-        },
-      });
-
-      // Then delete the brand
-      await tx.brand.delete({
-        where: {
-          id: brandId,
-        },
-      });
+    await prisma.brand.delete({
+      where: {
+        id: brandId,
+      },
     });
 
     return { success: true };

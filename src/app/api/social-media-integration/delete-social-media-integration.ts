@@ -42,12 +42,19 @@ export async function deleteSocialMediaIntegration(
     //     );
     // }
 
-    // Then delete the social media integration
-    await prisma.socialMediaIntegration.delete({
-      where: { id: socialMediaIntegrationId, teamId: user.teamId },
+    await prisma.$transaction(async (tx) => {
+      await tx.socialMediaPost.deleteMany({
+        where: {
+          socialMediaIntegrationId: socialMediaIntegrationId,
+        },
+      });
+
+      await tx.socialMediaIntegration.delete({
+        where: { id: socialMediaIntegrationId },
+      });
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     throw new Error("Internal Server Error");
   }
 }
