@@ -26,7 +26,7 @@ export function MobileAwareSidebar({
         {/* Overlay */}
         <div
           className={cn(
-            "fixed inset-0 z-50 bg-black/50 transition-opacity duration-300 ease-out md:hidden",
+            "fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ease-out md:hidden",
             openMobile ? "opacity-100" : "opacity-0 pointer-events-none"
           )}
           onClick={() => setOpenMobile(false)}
@@ -34,7 +34,7 @@ export function MobileAwareSidebar({
         {/* Sidebar */}
         <div
           className={cn(
-            "fixed inset-y-0 z-[60] h-svh w-[--sidebar-width] transition-all duration-300 ease-out",
+            "fixed inset-y-0 z-50 h-svh w-[--sidebar-width] transition-all duration-300 ease-out",
             "left-0 border-r border-sidebar-border",
             openMobile ? "translate-x-0" : "-translate-x-full",
             className
