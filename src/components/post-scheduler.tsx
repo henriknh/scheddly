@@ -69,7 +69,7 @@ export function PostScheduler({
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-wrap gap-y-1">
       <Popover>
         <PopoverTrigger asChild>
           <Button
