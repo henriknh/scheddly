@@ -32,7 +32,7 @@ export function AllIntegrationsList({
         posts across all your platforms.
       </p>
 
-      <IntegrationsHeader integrations={integrations} />
+      <IntegrationsHeader />
 
       {/* Connected integrations grouped by brand */}
       {brands.map((brand) => {

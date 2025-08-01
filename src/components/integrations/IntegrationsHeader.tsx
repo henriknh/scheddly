@@ -1,18 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Brand, SocialMediaIntegration } from "@/generated/prisma";
 import { Settings } from "lucide-react";
 import Link from "next/link";
 import { AddIntegrationModal } from "./AddIntegrationModal";
 
-interface IntegrationsHeaderProps {
-  integrations: (SocialMediaIntegration & {
-    brand?: Brand | null;
-  })[];
-}
-
-export function IntegrationsHeader({ integrations }: IntegrationsHeaderProps) {
+export function IntegrationsHeader() {
   return (
     <div className="flex items-center justify-end">
       <div className="flex items-center gap-2">
@@ -23,7 +16,7 @@ export function IntegrationsHeader({ integrations }: IntegrationsHeaderProps) {
           </Link>
         </Button>
 
-        <AddIntegrationModal integrations={integrations} />
+        <AddIntegrationModal />
       </div>
     </div>
   );

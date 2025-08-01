@@ -1,4 +1,3 @@
-import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
@@ -15,13 +14,9 @@ import { AddIntegrationModalButton } from "./AddIntegrationModalButton";
 
 interface AddIntegrationModalProps {
   brandId?: string | null;
-  integrations: SocialMediaIntegrationWithRelations[];
 }
 
-export function AddIntegrationModal({
-  brandId,
-  integrations,
-}: AddIntegrationModalProps) {
+export function AddIntegrationModal({ brandId }: AddIntegrationModalProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   return (
@@ -45,7 +40,6 @@ export function AddIntegrationModal({
               key={socialMediaPlatform.id}
               socialMediaPlatform={socialMediaPlatform}
               brandId={brandId}
-              integrations={integrations}
               setIsAddModalOpen={setIsAddModalOpen}
             />
           ))}
