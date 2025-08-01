@@ -15,6 +15,13 @@ export async function getBrands(): Promise<Brand[]> {
       where: {
         teamId: user.teamId,
       },
+      include: {
+        socialMediaIntegrations: {
+          select: {
+            socialMedia: true,
+          },
+        },
+      },
       orderBy: {
         name: "asc",
       },

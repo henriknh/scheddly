@@ -1,4 +1,3 @@
-import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { deleteBrand } from "@/app/api/brand/delete-brand";
 import {
@@ -10,16 +9,20 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 
 interface DeleteBrandDialogProps {
   brandId: string;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export function DeleteBrandDialog({ brandId }: DeleteBrandDialogProps) {
+export function DeleteBrandDialog({
+  brandId,
+  isOpen,
+  onClose,
+}: DeleteBrandDialogProps) {
   const router = useRouter();
 
   const handleDelete = async () => {
@@ -27,6 +30,7 @@ export function DeleteBrandDialog({ brandId }: DeleteBrandDialogProps) {
       await deleteBrand(brandId);
       router.refresh();
       toast.success("Brand removed successfully");
+      onClose();
     } catch (error) {
       console.error(error);
       toast.error("Failed to remove brand");
@@ -34,12 +38,7 @@ export function DeleteBrandDialog({ brandId }: DeleteBrandDialogProps) {
   };
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Trash2Icon className="h-4 w-4" />
-        </Button>
-      </AlertDialogTrigger>
+    <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

@@ -15,6 +15,7 @@ import {
   TextIcon,
   Users,
   VideoIcon,
+  Building2,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -182,6 +183,19 @@ export function DashboardSidebar() {
               <Link href="/dashboard/team" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 <span>Team</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              tooltip={"Brands"}
+              isActive={pathname === "/dashboard/brands"}
+            >
+              <Link href="/dashboard/brands">
+                <Building2 className="h-4 w-4" />
+                <span>Brands</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
