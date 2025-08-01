@@ -90,7 +90,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: config.appName,
     startupImage: [
       {
@@ -112,11 +112,11 @@ export const metadata: Metadata = {
   },
   other: {
     "apple-mobile-web-app-capable": "yes",
-    "apple-mobile-web-app-status-bar-style": "black-translucent",
+    "apple-mobile-web-app-status-bar-style": "default",
     "apple-mobile-web-app-title": config.appName,
     "mobile-web-app-capable": "yes",
-    "theme-color": "#000000",
-    "msapplication-TileColor": "#000000",
+    "theme-color": "#3b82f6",
+    "msapplication-TileColor": "#3b82f6",
     "msapplication-config": "/browserconfig.xml",
   },
 };
@@ -127,6 +127,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  themeColor: "#3b82f6",
 };
 
 export default function RootLayout({
@@ -138,6 +139,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <StructuredData />
+
+        {/* Safe area handling for mobile devices */}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
+        />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
 
         <Script
           defer

@@ -8,6 +8,10 @@
   "theme_color": "#3b82f6",
   "orientation": "portrait",
   "scope": "/",
+  "display_override": ["standalone", "minimal-ui"],
+  "categories": ["productivity", "social"],
+  "lang": "en",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/logo_padded_192.png",
