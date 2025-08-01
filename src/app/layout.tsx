@@ -1,10 +1,11 @@
+import { StructuredData } from "@/components/root/StructuredData";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { StructuredData } from "@/components/root/StructuredData";
 import config from "@/config";
 import { ensureBucketExists } from "@/lib/minio";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -137,6 +138,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <StructuredData />
+
+        <Script
+          defer
+          src="https://ohsosaasy.com/so-analytic-so-wow.js"
+          oh-so-saasy-project="hf8chxmq6m505q3"
+        />
       </head>
       <body className={inter.className}>
         <ThemeProvider
