@@ -47,8 +47,9 @@ export function DeleteIntegrationDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete this
-            integration.
+            This will permanently delete this integration and remove all posts
+            in Scheddly connected to this integration. This will not delete any
+            post published on the social media platform.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

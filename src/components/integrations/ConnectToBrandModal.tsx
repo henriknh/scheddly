@@ -48,13 +48,13 @@ export function ConnectToBrandModal({
           size={isMobile ? "icon" : "sm"}
         >
           <Link className="h-4 w-4" />
-          {isMobile ? null : "Connect to Brand"}
+          {isMobile ? null : "Connect to brand"}
         </Button>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Connect to Brand</DialogTitle>
+          <DialogTitle>Connect to brand</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           {brands.length === 0 ? (

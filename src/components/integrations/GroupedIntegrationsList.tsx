@@ -40,7 +40,7 @@ export function GroupedIntegrationsList({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="max-md:divide-y">
       {integrations.map((integration) => {
         const isConnected = integration.brand !== null;
 
@@ -51,7 +51,7 @@ export function GroupedIntegrationsList({
         if (!platform) return null;
 
         return (
-          <div key={integration.id} className="space-y-2">
+          <div key={integration.id} className="space-y-0.5 py-2">
             <div className="flex items-center gap-4">
               <div className="flex-1 flex items-center gap-2">
                 <platform.Icon className="h-4 w-4" />
@@ -73,7 +73,7 @@ export function GroupedIntegrationsList({
                         disabled={isConnecting === integration.id}
                       >
                         <Unlink className="h-4 w-4" />
-                        {isMobile ? null : "Disconnect from Brand"}
+                        {isMobile ? null : "Disconnect from brand"}
                       </Button>
                     ) : (
                       <ConnectToBrandModal
@@ -100,7 +100,7 @@ export function GroupedIntegrationsList({
                     disabled={isConnecting === integration.id}
                   >
                     <Unlink className="h-4 w-4" />
-                    {isMobile ? null : "Disconnect from Brand"}
+                    {isMobile ? null : "Disconnect from brand"}
                   </Button>
                 ) : (
                   <ConnectToBrandModal

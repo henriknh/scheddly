@@ -44,7 +44,7 @@ export function DeleteBrandDialog({
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete this
-            brand and remove it from any associated integrations.
+            brand and disconnect all associated integrations from this brand.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

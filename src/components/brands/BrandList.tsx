@@ -75,8 +75,8 @@ export function BrandList({ brands }: BrandListProps) {
           className="max-md:flex-1"
           onClick={() => setIsAddModalOpen(true)}
         >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Brand
+          <Plus className="h-4 w-4" />
+          Add brand
         </Button>
       </div>
 

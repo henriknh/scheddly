@@ -72,7 +72,7 @@ export function AddBrandModal({ isOpen, onClose }: AddBrandModalProps) {
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              Add Brand
+              Add brand
             </Button>
           </DialogFooter>
         </form>
