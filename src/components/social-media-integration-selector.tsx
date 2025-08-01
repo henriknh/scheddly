@@ -2,6 +2,7 @@
 
 import { Brand, SocialMediaIntegration } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
+import { UserAvatar } from "./common/UserAvatar";
 import { Button } from "./ui/button";
 import { Card, CardHeader, CardTitle } from "./ui/card";
 import { Checkbox } from "./ui/checkbox";
@@ -126,14 +127,20 @@ export function SocialMediaIntegrationSelector({
                       <CardTitle>
                         <div className="flex items-center justify-between gap-4">
                           <div className="flex items-center gap-2">
-                            <platform.Icon className="h-4 w-4" />
                             <div className="flex flex-col">
-                              <span className="text-sm font-medium">
-                                {platform.name}
-                              </span>
+                              <div className="text-base font-medium flex items-center gap-2">
+                                <platform.Icon className="h-4 w-4" />
+                                <span>{platform.name}</span>
+                              </div>
                               {integration.accountUsername && (
-                                <span className="text-xs opacity-70">
-                                  @{integration.accountUsername}
+                                <span className="text-xs opacity-70 flex items-center gap-2">
+                                  <UserAvatar
+                                    src={
+                                      integration.accountAvatarUrl || undefined
+                                    }
+                                  />
+
+                                  {integration.accountName}
                                 </span>
                               )}
                             </div>
