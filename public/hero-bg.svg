@@ -1,0 +1,72 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Enhanced gradient backgrounds -->
+    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#f1f5f9;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#e2e8f0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f8fafc;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Primary accent gradient -->
+    <radialGradient id="primaryAccent" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.15" />
+      <stop offset="70%" style="stop-color:#3b82f6;stop-opacity:0.08" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0" />
+    </radialGradient>
+    
+    <!-- Secondary accent gradient -->
+    <radialGradient id="secondaryAccent" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.12" />
+      <stop offset="70%" style="stop-color:#8b5cf6;stop-opacity:0.06" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0" />
+    </radialGradient>
+    
+    <!-- Tertiary accent gradient -->
+    <radialGradient id="tertiaryAccent" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:0.1" />
+      <stop offset="70%" style="stop-color:#06b6d4;stop-opacity:0.05" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:0" />
+    </radialGradient>
+    
+    <!-- Subtle pattern -->
+    <pattern id="subtlePattern" width="60" height="60" patternUnits="userSpaceOnUse">
+      <circle cx="30" cy="30" r="1" fill="#e2e8f0" opacity="0.3"/>
+    </pattern>
+  </defs>
+  
+  <!-- Main background -->
+  <rect width="1200" height="600" fill="url(#heroGradient)"/>
+  
+  <!-- Subtle pattern overlay -->
+  <rect width="1200" height="600" fill="url(#subtlePattern)"/>
+  
+  <!-- Large decorative circles -->
+  <circle cx="150" cy="120" r="100" fill="url(#primaryAccent)"/>
+  <circle cx="1050" cy="480" r="140" fill="url(#secondaryAccent)"/>
+  <circle cx="850" cy="80" r="80" fill="url(#tertiaryAccent)"/>
+  
+  <!-- Medium decorative circles -->
+  <circle cx="300" cy="450" r="60" fill="url(#primaryAccent)"/>
+  <circle cx="950" cy="150" r="50" fill="url(#secondaryAccent)"/>
+  <circle cx="500" cy="200" r="40" fill="url(#tertiaryAccent)"/>
+  
+  <!-- Small accent circles -->
+  <circle cx="750" cy="350" r="25" fill="url(#primaryAccent)"/>
+  <circle cx="200" cy="350" r="20" fill="url(#secondaryAccent)"/>
+  <circle cx="1100" cy="300" r="30" fill="url(#tertiaryAccent)"/>
+  
+  <!-- Geometric shapes for visual interest -->
+  <polygon points="50,50 100,50 75,100" fill="url(#primaryAccent)" opacity="0.6"/>
+  <polygon points="1150,500 1200,500 1175,550" fill="url(#secondaryAccent)" opacity="0.6"/>
+  <polygon points="400,100 450,100 425,150" fill="url(#tertiaryAccent)" opacity="0.6"/>
+  
+  <!-- Subtle grid lines -->
+  <defs>
+    <pattern id="gridLines" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#e2e8f0" stroke-width="0.5" opacity="0.2"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="600" fill="url(#gridLines)"/>
+</svg> 

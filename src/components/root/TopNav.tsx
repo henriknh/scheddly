@@ -9,9 +9,22 @@ import Image from "next/image";
 
 export function TopNav() {
   const [user, setUser] = useState<CleanedUser | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     (async () => setUser(await getUserFromToken()))();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    // Check initial scroll position on mount
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleSmoothScroll = (
@@ -35,7 +48,13 @@ export function TopNav() {
   };
 
   return (
-    <nav className="w-full overflow-hidden">
+    <nav
+      className={`w-full overflow-hidden fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "backdrop-blur-md bg-white/80 dark:bg-gray-900/80 shadow-sm border-b border-gray-200/20 dark:border-gray-700/20"
+          : "bg-transparent"
+      }`}
+    >
       <div className="flex h-16 items-center justify-between w-full px-8">
         <div className="flex items-center gap-8">
           <Link href="/" className="text-xl font-bold flex gap-2 items-center">

@@ -8,7 +8,7 @@ import { PricingSection } from "@/components/root/PricingSection";
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col py-8 items-center">
+    <div className="flex flex-col items-center">
       <HeroSection />
       <PlatformsSection />
       <FeaturesSection />
