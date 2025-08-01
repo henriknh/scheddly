@@ -95,7 +95,6 @@ export async function addSocialMediaIntegration(
           accountId,
           socialMedia: platform,
           teamId: user.teamId,
-          brandId: brandId || null,
         },
       },
     });
