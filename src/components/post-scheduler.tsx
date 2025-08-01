@@ -83,13 +83,17 @@ export function PostScheduler({
             {date ? format(date, "PPP HH:mm") : "Schedule post"}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
+        <PopoverContent className="w-auto p-0" align="start">
           <Calendar
             mode="single"
             selected={date ?? undefined}
             onSelect={handleDateSelect}
             initialFocus
-            disabled={(date) => date < new Date()}
+            disabled={(date) => {
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              return date < today;
+            }}
           />
           <div className="flex items-center gap-2 p-3 border-t">
             <Select
