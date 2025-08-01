@@ -44,11 +44,17 @@ import Image from "next/image";
 export function DashboardSidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const { open, toggleSidebar, isMobile } = useSidebar();
+  const { open, toggleSidebar, isMobile, setOpenMobile } = useSidebar();
   const isMobileHook = useIsMobile();
 
   const isDevMode = process.env.NODE_ENV === "development";
   const isMobileDevice = isMobile || isMobileHook;
+
+  const handleLinkClick = () => {
+    if (isMobileDevice) {
+      setOpenMobile(false);
+    }
+  };
 
   return (
     <MobileAwareSidebar>
@@ -62,7 +68,7 @@ export function DashboardSidebar() {
               tooltip={config.appName}
               className="py-6"
             >
-              <Link href="/dashboard">
+              <Link href="/dashboard" onClick={handleLinkClick}>
                 <Image src="/logo.svg" alt="Logo" width={20} height={20} />
 
                 <span className={cn("text-lg font-bold")}>
@@ -84,6 +90,7 @@ export function DashboardSidebar() {
                 <Link
                   href="/dashboard/create-new-post/text"
                   className="flex items-center gap-2"
+                  onClick={handleLinkClick}
                 >
                   <TextIcon className="h-4 w-4" />
                   <span>Text Post</span>
@@ -93,6 +100,7 @@ export function DashboardSidebar() {
                 <Link
                   href="/dashboard/create-new-post/image"
                   className="flex items-center gap-2"
+                  onClick={handleLinkClick}
                 >
                   <ImageIcon className="h-4 w-4" />
                   <span>Image Post</span>
@@ -102,6 +110,7 @@ export function DashboardSidebar() {
                 <Link
                   href="/dashboard/create-new-post/video"
                   className="flex items-center gap-2"
+                  onClick={handleLinkClick}
                 >
                   <VideoIcon className="h-4 w-4" />
                   <span>Video Post</span>
@@ -121,7 +130,7 @@ export function DashboardSidebar() {
                 tooltip={"Dashboard"}
                 isActive={pathname === "/dashboard"}
               >
-                <Link href="/dashboard">
+                <Link href="/dashboard" onClick={handleLinkClick}>
                   <HomeIcon className="h-4 w-4" />
                   <span>Dashboard</span>
                 </Link>
@@ -134,7 +143,7 @@ export function DashboardSidebar() {
                 tooltip={"Posts"}
                 isActive={pathname === "/dashboard/posts"}
               >
-                <Link href="/dashboard/posts">
+                <Link href="/dashboard/posts" onClick={handleLinkClick}>
                   <LayoutDashboard className="h-4 w-4" />
                   <span>Posts</span>
                 </Link>
@@ -147,7 +156,7 @@ export function DashboardSidebar() {
                 tooltip={"Archive"}
                 isActive={pathname === "/dashboard/archive"}
               >
-                <Link href="/dashboard/archive">
+                <Link href="/dashboard/archive" onClick={handleLinkClick}>
                   <Archive className="h-4 w-4" />
                   <span>Archive</span>
                 </Link>
@@ -168,6 +177,7 @@ export function DashboardSidebar() {
               <Link
                 href="/dashboard/profile"
                 className="flex items-center gap-2"
+                onClick={handleLinkClick}
               >
                 <UserAvatar src={user?.avatar?.id} />
                 <span className="truncate">{user?.name || "User"}</span>
@@ -180,7 +190,11 @@ export function DashboardSidebar() {
               tooltip={"Team"}
               isActive={pathname === "/dashboard/team"}
             >
-              <Link href="/dashboard/team" className="flex items-center gap-2">
+              <Link
+                href="/dashboard/team"
+                className="flex items-center gap-2"
+                onClick={handleLinkClick}
+              >
                 <Users className="h-4 w-4" />
                 <span>Team</span>
               </Link>
@@ -193,7 +207,7 @@ export function DashboardSidebar() {
               tooltip={"Brands"}
               isActive={pathname === "/dashboard/brands"}
             >
-              <Link href="/dashboard/brands">
+              <Link href="/dashboard/brands" onClick={handleLinkClick}>
                 <Building2 className="h-4 w-4" />
                 <span>Brands</span>
               </Link>
@@ -206,7 +220,7 @@ export function DashboardSidebar() {
               tooltip={"Integrations"}
               isActive={pathname === "/dashboard/integrations"}
             >
-              <Link href="/dashboard/integrations">
+              <Link href="/dashboard/integrations" onClick={handleLinkClick}>
                 <Blocks />
                 <span>Integrations</span>
               </Link>
@@ -220,7 +234,7 @@ export function DashboardSidebar() {
                 tooltip={"Debug"}
                 isActive={pathname === "/dashboard/debug"}
               >
-                <Link href="/dashboard/debug">
+                <Link href="/dashboard/debug" onClick={handleLinkClick}>
                   <BugIcon />
                   <span>Debug</span>
                 </Link>
