@@ -59,7 +59,7 @@ export function DashboardSidebar() {
             <SidebarMenuButton
               asChild
               tooltip={config.appName}
-              className={cn(open ? "py-6" : "")}
+              className="py-6"
             >
               <Link href="/dashboard">
                 <Image src="/logo.svg" alt="Logo" width={20} height={20} />

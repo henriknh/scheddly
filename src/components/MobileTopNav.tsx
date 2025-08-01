@@ -5,6 +5,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Menu } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import config from "../../app.config";
 
@@ -50,10 +51,12 @@ export function MobileTopNav() {
         <Menu />
         <span className="sr-only">Toggle Sidebar</span>
       </Button>
-      <div className="flex items-center gap-2">
-        <Image src="/logo.svg" alt="Logo" width={20} height={20} />
-        <span className="text-lg font-bold">{config.appName}</span>
-      </div>
+      <Button asChild variant="ghost" className="flex items-center gap-2">
+        <Link href="/dashboard">
+          <Image src="/logo.svg" alt="Logo" width={20} height={20} />
+          <span className="text-lg font-bold">{config.appName}</span>
+        </Link>
+      </Button>
     </div>
   );
 }
