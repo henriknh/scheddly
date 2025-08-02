@@ -66,6 +66,10 @@ const config = {
         sidebar: {
           DEFAULT: "hsl(var(--sidebar))",
           foreground: "hsl(var(--sidebar-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          ring: "hsl(var(--sidebar-ring))",
         },
         success: {
           DEFAULT: "hsl(var(--success))",
