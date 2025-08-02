@@ -20,12 +20,12 @@ export default function DashboardLayout({
   return (
     <AuthProviderWrapper>
       <SidebarProvider defaultOpen={false}>
-        <div className="flex w-full min-h-screen flex-col">
+        <div className="flex w-full min-h-screen flex-col pt-[env(safe-area-inset-top)]">
           <MobileTopNav />
           <div className="flex flex-1">
             <DashboardSidebar />
             <main className="flex-1 flex justify-center">
-              <div className="container flex flex-col space-y-4 py-8 max-sm:pt-4">
+              <div className="container flex flex-col space-y-4 py-8 max-sm:pt-4 max-sm:pl-[env(safe-area-inset-left)] max-sm:pr-[env(safe-area-inset-right)]">
                 <Breadcrumbs />
                 {children}
               </div>

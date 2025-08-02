@@ -9,7 +9,7 @@ export default function RootLayout({
   return (
     <div className="w-full min-h-screen flex flex-col">
       <TopNav />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pt-[env(safe-area-inset-top)]">{children}</main>
       <Footer />
     </div>
   );

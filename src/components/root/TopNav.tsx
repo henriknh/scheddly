@@ -55,7 +55,7 @@ export function TopNav() {
           : "bg-transparent"
       }`}
     >
-      <div className="flex h-16 items-center justify-between w-full px-8">
+      <div className="flex h-16 items-center justify-between w-full px-8 pl-[max(2rem,env(safe-area-inset-left))] pr-[max(2rem,env(safe-area-inset-right))] pt-[env(safe-area-inset-top)]">
         <div className="flex items-center gap-8">
           <Link href="/" className="text-xl font-bold flex gap-2 items-center">
             <Image src="/logo.svg" alt="Logo" width={20} height={20} />
