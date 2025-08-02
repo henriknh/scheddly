@@ -6,7 +6,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-export default function PinterestRedirectPage() {
+export default function OAuthRedirectPage() {
   const { socialMediaId } = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -18,22 +18,13 @@ export default function PinterestRedirectPage() {
 
     // Handle OAuth errors
     if (error) {
-      const storedPlatform = sessionStorage.getItem('oauth_platform');
-      if (storedPlatform) {
-        toast.error(`OAuth error: ${error}`);
-        const returnUrl = sessionStorage.getItem('oauth_return_url') || '/dashboard/integrations';
-        sessionStorage.removeItem('oauth_platform');
-        sessionStorage.removeItem('oauth_brand_id');
-        sessionStorage.removeItem('oauth_return_url');
-        router.push(returnUrl);
-        return;
-      } else {
-        const channel = new BroadcastChannel("oauth2_integration_complete");
-        channel.postMessage({
-          error: `[INTEGRATION_ERROR] OAuth error: ${error}`,
-        });
-        return;
-      }
+      toast.error(`OAuth error: ${error}`);
+      const returnUrl = sessionStorage.getItem('oauth_return_url') || '/dashboard/integrations';
+      sessionStorage.removeItem('oauth_platform');
+      sessionStorage.removeItem('oauth_brand_id');
+      sessionStorage.removeItem('oauth_return_url');
+      router.push(returnUrl);
+      return;
     }
 
     const matchingSocialMedia = Object.values(SocialMedia).find(
@@ -42,42 +33,22 @@ export default function PinterestRedirectPage() {
     );
 
     if (!matchingSocialMedia) {
-      // Check if this is a mobile OAuth flow
-      const storedPlatform = sessionStorage.getItem('oauth_platform');
-      if (storedPlatform) {
-        toast.error(`Invalid social media platform: ${socialMediaId}`);
-        const returnUrl = sessionStorage.getItem('oauth_return_url') || '/dashboard/integrations';
-        sessionStorage.removeItem('oauth_platform');
-        sessionStorage.removeItem('oauth_brand_id');
-        sessionStorage.removeItem('oauth_return_url');
-        router.push(returnUrl);
-        return;
-      }
-
-      const channel = new BroadcastChannel("oauth2_integration_complete");
-      channel.postMessage({
-        error: `[INTEGRATION_ERROR] Invalid social media id: ${socialMediaId}`,
-      });
+      toast.error(`Invalid social media platform: ${socialMediaId}`);
+      const returnUrl = sessionStorage.getItem('oauth_return_url') || '/dashboard/integrations';
+      sessionStorage.removeItem('oauth_platform');
+      sessionStorage.removeItem('oauth_brand_id');
+      sessionStorage.removeItem('oauth_return_url');
+      router.push(returnUrl);
       return;
     }
 
     if (!code) {
-      // Check if this is a mobile OAuth flow
-      const storedPlatform = sessionStorage.getItem('oauth_platform');
-      if (storedPlatform) {
-        toast.error(`No authorization code provided`);
-        const returnUrl = sessionStorage.getItem('oauth_return_url') || '/dashboard/integrations';
-        sessionStorage.removeItem('oauth_platform');
-        sessionStorage.removeItem('oauth_brand_id');
-        sessionStorage.removeItem('oauth_return_url');
-        router.push(returnUrl);
-        return;
-      }
-
-      const channel = new BroadcastChannel("oauth2_integration_complete");
-      channel.postMessage({
-        error: `[INTEGRATION_ERROR][${matchingSocialMedia}] No code provided`,
-      });
+      toast.error(`No authorization code provided`);
+      const returnUrl = sessionStorage.getItem('oauth_return_url') || '/dashboard/integrations';
+      sessionStorage.removeItem('oauth_platform');
+      sessionStorage.removeItem('oauth_brand_id');
+      sessionStorage.removeItem('oauth_return_url');
+      router.push(returnUrl);
       return;
     }
 
@@ -85,44 +56,23 @@ export default function PinterestRedirectPage() {
       try {
         await addSocialMediaIntegration(matchingSocialMedia, code, brandId);
         
-        // Check if this is a mobile OAuth flow
-        const storedPlatform = sessionStorage.getItem('oauth_platform');
-        if (storedPlatform) {
-          // Mobile flow - redirect back to the original page
-          toast.success(`Connection established to ${matchingSocialMedia}`);
-          const returnUrl = sessionStorage.getItem('oauth_return_url') || '/dashboard/integrations';
-          sessionStorage.removeItem('oauth_platform');
-          sessionStorage.removeItem('oauth_brand_id');
-          sessionStorage.removeItem('oauth_return_url');
-          router.push(returnUrl);
-        } else {
-          // Desktop flow - use BroadcastChannel
-          const channel = new BroadcastChannel("oauth2_integration_complete");
-          channel.postMessage({
-            success: true,
-          });
-          window.close();
-        }
+        // Success - redirect back to the original page
+        toast.success(`Connection established to ${matchingSocialMedia}`);
+        const returnUrl = sessionStorage.getItem('oauth_return_url') || '/dashboard/integrations';
+        sessionStorage.removeItem('oauth_platform');
+        sessionStorage.removeItem('oauth_brand_id');
+        sessionStorage.removeItem('oauth_return_url');
+        router.push(returnUrl);
       } catch (error) {
         console.error("Failed to create integration:", error);
         
-        // Check if this is a mobile OAuth flow
-        const storedPlatform = sessionStorage.getItem('oauth_platform');
-        if (storedPlatform) {
-          toast.error(`Connection failed to ${matchingSocialMedia}`);
-          const returnUrl = sessionStorage.getItem('oauth_return_url') || '/dashboard/integrations';
-          sessionStorage.removeItem('oauth_platform');
-          sessionStorage.removeItem('oauth_brand_id');
-          sessionStorage.removeItem('oauth_return_url');
-          router.push(returnUrl);
-        } else {
-          const channel = new BroadcastChannel("oauth2_integration_complete");
-          channel.postMessage({
-            error: `[INTEGRATION_ERROR][${matchingSocialMedia}]`,
-            errorDetails: error,
-          });
-        }
-      } finally {
+        // Error - redirect back to the original page
+        toast.error(`Connection failed to ${matchingSocialMedia}`);
+        const returnUrl = sessionStorage.getItem('oauth_return_url') || '/dashboard/integrations';
+        sessionStorage.removeItem('oauth_platform');
+        sessionStorage.removeItem('oauth_brand_id');
+        sessionStorage.removeItem('oauth_return_url');
+        router.push(returnUrl);
       }
     };
 
