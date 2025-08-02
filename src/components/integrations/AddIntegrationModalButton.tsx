@@ -6,11 +6,13 @@ import { useState } from "react";
 interface AddIntegrationModalProps {
   brandId?: string | null;
   socialMediaPlatform: SocialMediaPlatform;
+  setIsAddModalOpen: (open: boolean) => void;
 }
 
 export function AddIntegrationModalButton({
   brandId,
   socialMediaPlatform,
+  setIsAddModalOpen,
 }: AddIntegrationModalProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,6 +31,9 @@ export function AddIntegrationModalButton({
         
         // Show a toast to inform the user
         toast.info(`Redirecting to ${socialMediaPlatform.name}...`);
+        
+        // Close the modal before redirecting
+        setIsAddModalOpen(false);
         
         // Redirect to OAuth URL in the same window (works for all devices)
         window.location.href = oauthPageUrl;
