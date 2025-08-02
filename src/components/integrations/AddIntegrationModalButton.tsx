@@ -1,5 +1,4 @@
 import { SocialMediaPlatform } from "@/lib/social-media-platforms";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { useState } from "react";
@@ -7,15 +6,12 @@ import { useState } from "react";
 interface AddIntegrationModalProps {
   brandId?: string | null;
   socialMediaPlatform: SocialMediaPlatform;
-  setIsAddModalOpen: (isAddModalOpen: boolean) => void;
 }
 
 export function AddIntegrationModalButton({
   brandId,
   socialMediaPlatform,
-  setIsAddModalOpen,
 }: AddIntegrationModalProps) {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const handlePlatformSelect = async () => {
