@@ -26,7 +26,7 @@ export function MobileAwareSidebar({
         {/* Overlay */}
         <div
           className={cn(
-            "fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ease-out md:hidden",
+            "fixed inset-0 z-40 bg-background/50 transition-opacity duration-300 ease-out md:hidden",
             openMobile ? "opacity-100" : "opacity-0 pointer-events-none"
           )}
           onClick={() => setOpenMobile(false)}
