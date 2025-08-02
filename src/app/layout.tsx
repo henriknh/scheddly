@@ -141,10 +141,6 @@ export default function RootLayout({
         <StructuredData />
 
         {/* Safe area handling for mobile devices */}
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"
-        />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
 
