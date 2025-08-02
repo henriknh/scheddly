@@ -88,4 +88,30 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Safe area handling for iOS devices */
+  :root {
+    --sat: env(safe-area-inset-top);
+    --sab: env(safe-area-inset-bottom);
+    --sal: env(safe-area-inset-left);
+    --sar: env(safe-area-inset-right);
+  }
+  
+  /* Ensure body respects safe areas */
+  body {
+    padding-top: var(--sat);
+    padding-bottom: var(--sab);
+    padding-left: var(--sal);
+    padding-right: var(--sar);
+  }
+  
+  /* For full-height layouts, ensure content doesn't overlap with safe areas */
+  html {
+    height: 100%;
+  }
+  
+  body {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
+  }
 }
