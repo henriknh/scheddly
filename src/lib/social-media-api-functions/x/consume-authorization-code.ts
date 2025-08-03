@@ -5,32 +5,22 @@ import { xApiUrl } from "./index";
 import { sessionStore } from "./session-store";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-if (!apiUrl) {
-  console.error("Missing NEXT_PUBLIC_API_URL environment variable");
-  throw new Error("Missing API URL");
-}
+if (!apiUrl) throw new Error("Missing API URL");
 
 const redirect_uri = `${apiUrl}/oauth2-redirect/x`;
 
 export async function consumeAuthorizationCode(code: string, state?: string): Promise<Tokens> {
   const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_X_CLIENT_ID;
-  if (!client_id) {
-    console.error("Missing SOCIAL_MEDIA_INTEGRATION_X_CLIENT_ID environment variable");
-    throw new Error("Missing X client ID");
-  }
+  if (!client_id) throw new Error("Missing X client ID");
   
   const client_secret = process.env.SOCIAL_MEDIA_INTEGRATION_X_CLIENT_SECRET;
-  if (!client_secret) {
-    console.error("Missing SOCIAL_MEDIA_INTEGRATION_X_CLIENT_SECRET environment variable");
-    throw new Error("Missing X client secret");
-  }
+  if (!client_secret) throw new Error("Missing X client secret");
 
   // Get the code verifier from session store
   let codeVerifier: string;
   if (state) {
     const session = sessionStore.getSession(state);
     if (!session) {
-      console.error("Invalid or expired OAuth session for state:", state);
       throw new Error("Invalid or expired OAuth session");
     }
     codeVerifier = session.codeVerifier;
@@ -38,12 +28,9 @@ export async function consumeAuthorizationCode(code: string, state?: string): Pr
     sessionStore.deleteSession(state);
   } else {
     // Fallback for backward compatibility (remove this in production)
-    console.warn("No state parameter provided, using fallback code verifier");
     codeVerifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
   }
 
-  console.log("Exchanging authorization code for tokens...");
-  
   const tokenResponse = await fetch(`${xApiUrl}/2/oauth2/token`, {
     method: "POST",
     headers: {
@@ -62,12 +49,6 @@ export async function consumeAuthorizationCode(code: string, state?: string): Pr
 
   if (!tokenResponse.ok) {
     const errorText = await tokenResponse.text();
-    console.error("Failed to exchange authorization code:", {
-      status: tokenResponse.status,
-      statusText: tokenResponse.statusText,
-      error: errorText
-    });
-    
     let errorMessage = "Failed to exchange authorization code";
     try {
       const errorData = JSON.parse(errorText);
@@ -93,8 +74,6 @@ export async function consumeAuthorizationCode(code: string, state?: string): Pr
 
   if (!accessToken) throw new Error("No access token received from X");
   if (!refreshToken) throw new Error("No refresh token received from X");
-
-  console.log("Successfully obtained tokens from X");
 
   return {
     accessToken,
