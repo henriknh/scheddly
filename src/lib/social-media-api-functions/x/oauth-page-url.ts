@@ -2,7 +2,7 @@
 
 import { xApiUrl } from ".";
 import crypto from "crypto";
-import { sessionStore } from "./session-store";
+import { productionSessionStore } from "./production-session-store";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) throw new Error("Missing API URL");
@@ -21,8 +21,8 @@ export async function oauthPageUrl(brandId?: string | null): Promise<string> {
   // Generate state parameter
   const state = brandId || crypto.randomBytes(16).toString('hex');
   
-  // Store the code verifier in session store
-  sessionStore.setSession(state, codeVerifier, brandId || undefined);
+  // Store the code verifier in production session store
+  await productionSessionStore.setSession(state, codeVerifier, brandId || undefined);
   
   return `https://twitter.com/i/oauth2/authorize?client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&response_type=code&scope=${encodeURIComponent(scope)}&state=${encodeURIComponent(state)}&code_challenge_method=S256&code_challenge=${codeChallenge}`;
 }
