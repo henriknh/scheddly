@@ -5,12 +5,19 @@ import prisma from "@/lib/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { getUserFromToken } from "@/lib/user";
 
-export async function addSocialMediaIntegration(
-  platform: SocialMedia,
-  code: string,
-  brandId?: string | null,
-  state?: string
-) {
+interface AddSocialMediaIntegrationOptions {
+  platform: SocialMedia;
+  code: string;
+  brandId?: string | null;
+  state?: string;
+}
+
+export async function addSocialMediaIntegration({
+  platform,
+  code,
+  brandId,
+  state
+}: AddSocialMediaIntegrationOptions) {
   try {
     if (!platform || !code) {
       throw new Error("Platform and code are required");
