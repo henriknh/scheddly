@@ -2,7 +2,6 @@
 
 import { xApiUrl } from ".";
 import crypto from "crypto";
-import { productionSessionStore } from "./production-session-store";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) throw new Error("Missing API URL");
@@ -14,24 +13,8 @@ export async function oauthPageUrl(brandId?: string | null): Promise<string> {
   const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_X_CLIENT_ID;
   if (!client_id) throw new Error("Missing X client ID");
   
-  // Generate PKCE code verifier and challenge
-  const codeVerifier = generateCodeVerifier();
-  const codeChallenge = generateCodeChallenge(codeVerifier);
-  
-  // Generate state parameter
+  // Generate a simple state parameter
   const state = brandId || crypto.randomBytes(16).toString('hex');
   
-  // Store the code verifier in production session store
-  await productionSessionStore.setSession(state, codeVerifier, brandId || undefined);
-  
-  return `https://twitter.com/i/oauth2/authorize?client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&response_type=code&scope=${encodeURIComponent(scope)}&state=${encodeURIComponent(state)}&code_challenge_method=S256&code_challenge=${codeChallenge}`;
-}
-
-function generateCodeVerifier(): string {
-  return crypto.randomBytes(32).toString('base64url');
-}
-
-function generateCodeChallenge(codeVerifier: string): string {
-  const hash = crypto.createHash('sha256').update(codeVerifier).digest();
-  return hash.toString('base64url');
+  return `https://twitter.com/i/oauth2/authorize?client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&response_type=code&scope=${encodeURIComponent(scope)}&state=${encodeURIComponent(state)}`;
 }

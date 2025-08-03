@@ -2,7 +2,6 @@
 
 import { Tokens } from "../social-media-api-functions";
 import { xApiUrl } from "./index";
-import { productionSessionStore } from "./production-session-store";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) throw new Error("Missing API URL");
@@ -16,20 +15,6 @@ export async function consumeAuthorizationCode(code: string, state?: string): Pr
   const client_secret = process.env.SOCIAL_MEDIA_INTEGRATION_X_CLIENT_SECRET;
   if (!client_secret) throw new Error("Missing X client secret");
 
-  // Get the code verifier from production session store
-  let codeVerifier: string;
-  if (state) {
-    const session = await productionSessionStore.getSession(state);
-    if (!session) {
-      throw new Error("Invalid or expired OAuth session. Please try the authorization flow again.");
-    }
-    codeVerifier = session.codeVerifier;
-    // Clean up the session
-    await productionSessionStore.deleteSession(state);
-  } else {
-    throw new Error("Missing state parameter. This is required for secure OAuth flow.");
-  }
-
   const tokenResponse = await fetch(`${xApiUrl}/2/oauth2/token`, {
     method: "POST",
     headers: {
@@ -42,7 +27,6 @@ export async function consumeAuthorizationCode(code: string, state?: string): Pr
       grant_type: "authorization_code",
       code,
       redirect_uri,
-      code_verifier: codeVerifier,
     }).toString(),
   });
 
