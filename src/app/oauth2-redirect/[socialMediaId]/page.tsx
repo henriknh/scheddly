@@ -54,7 +54,7 @@ export default function OAuthRedirectPage() {
 
     const createIntegration = async () => {
       try {
-        await addSocialMediaIntegration(matchingSocialMedia, code, brandId);
+        await addSocialMediaIntegration(matchingSocialMedia, code, brandId, brandId);
         
         // Success - redirect back to the original page
         toast.success(`Connection established to ${matchingSocialMedia}`);

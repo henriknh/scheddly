@@ -8,7 +8,8 @@ import { getUserFromToken } from "@/lib/user";
 export async function addSocialMediaIntegration(
   platform: SocialMedia,
   code: string,
-  brandId?: string | null
+  brandId?: string | null,
+  state?: string
 ) {
   try {
     if (!platform || !code) {
@@ -39,7 +40,8 @@ export async function addSocialMediaIntegration(
       }
 
       return socialMediaPlatform.socialMediaApiFunctions.consumeAuthorizationCode(
-        code
+        code,
+        state
       );
     };
 
