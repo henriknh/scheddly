@@ -15,6 +15,20 @@ export async function consumeAuthorizationCode(code: string, state?: string): Pr
   const client_secret = process.env.SOCIAL_MEDIA_INTEGRATION_X_CLIENT_SECRET;
   if (!client_secret) throw new Error("Missing X client secret");
 
+  // Get the code verifier from the stored PKCE session
+  let codeVerifier: string;
+  if (state && globalThis.pkceStore) {
+    codeVerifier = globalThis.pkceStore.get(state);
+    if (!codeVerifier) {
+      throw new Error("Invalid or expired OAuth session. Please try the authorization flow again.");
+    }
+    // Clean up the stored code verifier
+    globalThis.pkceStore.delete(state);
+  } else {
+    throw new Error("Missing state parameter. This is required for secure OAuth flow.");
+  }
+
+  // Exchange authorization code for access token
   const tokenResponse = await fetch(`${xApiUrl}/2/oauth2/token`, {
     method: "POST",
     headers: {
@@ -27,6 +41,7 @@ export async function consumeAuthorizationCode(code: string, state?: string): Pr
       grant_type: "authorization_code",
       code,
       redirect_uri,
+      code_verifier: codeVerifier,
     }).toString(),
   });
 
