@@ -5,19 +5,11 @@ import prisma from "@/lib/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { getUserFromToken } from "@/lib/user";
 
-interface AddSocialMediaIntegrationOptions {
-  platform: SocialMedia;
-  code: string;
-  brandId?: string | null;
-  state?: string;
-}
-
-export async function addSocialMediaIntegration({
-  platform,
-  code,
-  brandId,
-  state
-}: AddSocialMediaIntegrationOptions) {
+export async function addSocialMediaIntegration(
+  platform: SocialMedia,
+  code: string,
+  state?: string
+) {
   try {
     if (!platform || !code) {
       throw new Error("Platform and code are required");
@@ -85,19 +77,6 @@ export async function addSocialMediaIntegration({
     const { accountId, accountName, accountUsername, accountAvatarUrl } =
       await getAccountInfo();
 
-    if (brandId) {
-      const brandExists = await prisma.brand.findFirst({
-        where: {
-          id: brandId,
-          teamId: user.teamId,
-        },
-      });
-
-      if (!brandExists) {
-        throw new Error("Brand not found");
-      }
-    }
-
     const existingIntegration = await prisma.socialMediaIntegration.findFirst({
       where: {
         AND: {
@@ -135,7 +114,7 @@ export async function addSocialMediaIntegration({
           accountUsername,
           accountAvatarUrl,
           teamId: user.teamId,
-          brandId: brandId || null,
+          brandId: null,
         },
       });
 

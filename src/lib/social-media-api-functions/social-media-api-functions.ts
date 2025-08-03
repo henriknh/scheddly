@@ -37,7 +37,7 @@ export interface SocialMediaApiFunctions {
   oauthPageUrl:
     | ((brandId?: string | null) => string)
     | ((brandId?: string | null) => Promise<string>);
-  consumeAuthorizationCode: (code: string) => Promise<Tokens>;
+  consumeAuthorizationCode: (code: string, state?: string) => Promise<Tokens>;
   refreshAccessTokenAndUpdateSocialMediaIntegration: (
     id: string
   ) => Promise<Tokens>;
