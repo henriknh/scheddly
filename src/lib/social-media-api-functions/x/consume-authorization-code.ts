@@ -5,18 +5,31 @@ import { xApiUrl } from "./index";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) throw new Error("Missing API URL");
+
 const redirect_uri = `${apiUrl}/oauth2-redirect/x`;
 
-export async function consumeAuthorizationCode(code: string): Promise<Tokens> {
+export async function consumeAuthorizationCode(code: string, state?: string): Promise<Tokens> {
   const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_X_CLIENT_ID;
   if (!client_id) throw new Error("Missing X client ID");
+  
   const client_secret = process.env.SOCIAL_MEDIA_INTEGRATION_X_CLIENT_SECRET;
   if (!client_secret) throw new Error("Missing X client secret");
 
-  // For PKCE, we need the code verifier that corresponds to the code challenge
-  // In a real implementation, this should be stored and retrieved based on the state parameter
-  const code_verifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
+  // Get the code verifier from the stored PKCE session
+  let codeVerifier: string;
+  if (state && globalThis.pkceStore) {
+    const storedCodeVerifier = globalThis.pkceStore.get(state);
+    if (!storedCodeVerifier) {
+      throw new Error("Invalid or expired OAuth session. Please try the authorization flow again.");
+    }
+    codeVerifier = storedCodeVerifier;
+    // Clean up the stored code verifier
+    globalThis.pkceStore.delete(state);
+  } else {
+    throw new Error("Missing state parameter. This is required for secure OAuth flow.");
+  }
 
+  // Exchange authorization code for access token
   const tokenResponse = await fetch(`${xApiUrl}/2/oauth2/token`, {
     method: "POST",
     headers: {
@@ -29,14 +42,26 @@ export async function consumeAuthorizationCode(code: string): Promise<Tokens> {
       grant_type: "authorization_code",
       code,
       redirect_uri,
-      code_verifier,
+      code_verifier: codeVerifier,
     }).toString(),
   });
 
   if (!tokenResponse.ok) {
-    const error = await tokenResponse.json().catch(() => null);
-    console.error("Failed to exchange authorization code:", error);
-    throw new Error("Failed to exchange authorization code");
+    const errorText = await tokenResponse.text();
+    let errorMessage = "Failed to exchange authorization code";
+    try {
+      const errorData = JSON.parse(errorText);
+      if (errorData.error_description) {
+        errorMessage = errorData.error_description;
+      } else if (errorData.error) {
+        errorMessage = errorData.error;
+      }
+    } catch (e) {
+      // If parsing fails, use the raw error text
+      errorMessage = errorText || errorMessage;
+    }
+    
+    throw new Error(errorMessage);
   }
 
   const tokenData = await tokenResponse.json();

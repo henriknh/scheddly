@@ -11,7 +11,7 @@ if (!apiUrl) {
 
 const redirect_uri = `${apiUrl}/oauth2-redirect/tumblr`;
 
-export async function consumeAuthorizationCode(code: string): Promise<Tokens> {
+export async function consumeAuthorizationCode(code: string, state?: string): Promise<Tokens> {
   const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_TUMBLR_CLIENT_ID;
 
   if (!client_id) {

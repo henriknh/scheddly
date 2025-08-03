@@ -7,7 +7,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) throw new Error("Missing API URL");
 const redirect_uri = `${apiUrl}/oauth2-redirect/pinterest`;
 
-export async function consumeAuthorizationCode(code: string): Promise<Tokens> {
+export async function consumeAuthorizationCode(code: string, state?: string): Promise<Tokens> {
   const client_id = process.env.SOCIAL_MEDIA_INTEGRATION_PINTEREST_CLIENT_ID;
   if (!client_id) throw new Error("Missing Pinterest client ID");
   const client_secret =
