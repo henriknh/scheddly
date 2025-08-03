@@ -18,10 +18,11 @@ export async function consumeAuthorizationCode(code: string, state?: string): Pr
   // Get the code verifier from the stored PKCE session
   let codeVerifier: string;
   if (state && globalThis.pkceStore) {
-    codeVerifier = globalThis.pkceStore.get(state);
-    if (!codeVerifier) {
+    const storedCodeVerifier = globalThis.pkceStore.get(state);
+    if (!storedCodeVerifier) {
       throw new Error("Invalid or expired OAuth session. Please try the authorization flow again.");
     }
+    codeVerifier = storedCodeVerifier;
     // Clean up the stored code verifier
     globalThis.pkceStore.delete(state);
   } else {
