@@ -7,12 +7,7 @@ import {
 import prisma from "@/lib/prisma";
 import { getValidAccessToken } from "../social-media-api-functions";
 import { xApiUrl } from "./index";
-import {
-  initializeMediaUpload,
-  finalizeMediaUpload,
-  checkMediaStatus,
-  uploadMediaInChunks,
-} from "./media-upload";
+import { uploadVideo } from "./media-upload-v2";
 
 export async function postVideo(
   post: PostWithRelations,
@@ -36,24 +31,10 @@ export async function postVideo(
   }
 
   const videoBuffer = await videoResponse.arrayBuffer();
-  const videoSize = videoBuffer.byteLength;
+  const buffer = Buffer.from(videoBuffer);
 
-  // Step 1: Initialize media upload
-  const mediaId = await initializeMediaUpload({
-    accessToken,
-    mediaCategory: "tweet_video",
-    mediaType: post.video.mimeType,
-    totalBytes: videoSize,
-  });
-
-  // Step 2: Upload video data in chunks
-  await uploadMediaInChunks(mediaId, accessToken, videoBuffer);
-
-  // Step 3: Finalize media upload
-  await finalizeMediaUpload(mediaId, accessToken);
-
-  // Step 4: Wait for video processing with proper status checking
-  await checkMediaStatus(mediaId, accessToken);
+  // Upload video using new implementation
+  const mediaId = await uploadVideo(buffer, post.video.mimeType, accessToken);
 
   // Create tweet with video
   const response = await fetch(`${xApiUrl}/2/tweets`, {

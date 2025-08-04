@@ -7,12 +7,7 @@ import {
 import prisma from "@/lib/prisma";
 import { getValidAccessToken } from "../social-media-api-functions";
 import { xApiUrl } from "./index";
-import {
-  initializeMediaUpload,
-  appendMediaData,
-  finalizeMediaUpload,
-  checkMediaStatus,
-} from "./media-upload";
+import { uploadImage } from "./media-upload-v2";
 
 export async function postImage(
   post: PostWithRelations,
@@ -27,7 +22,7 @@ export async function postImage(
     throw new Error("No images found in post");
   }
 
-  // Upload images to X using v2 API
+  // Upload images to X using v2 API with new implementation
   const mediaIds: string[] = [];
 
   for (const image of post.images) {
@@ -40,25 +35,10 @@ export async function postImage(
     }
 
     const imageBuffer = await imageResponse.arrayBuffer();
-    const base64Image = Buffer.from(imageBuffer).toString("base64");
+    const buffer = Buffer.from(imageBuffer);
 
-    // Step 1: Initialize media upload
-    const mediaId = await initializeMediaUpload({
-      accessToken,
-      mediaCategory: "tweet_image",
-      mediaType: image.mimeType,
-      totalBytes: imageBuffer.byteLength,
-    });
-
-    // Step 2: Upload media data
-    await appendMediaData(mediaId, accessToken, base64Image);
-
-    // Step 3: Finalize media upload
-    await finalizeMediaUpload(mediaId, accessToken);
-
-    // Step 4: Check media upload status
-    await checkMediaStatus(mediaId, accessToken);
-
+    // Upload image using new implementation
+    const mediaId = await uploadImage(buffer, image.mimeType, accessToken);
     mediaIds.push(mediaId);
   }
 
