@@ -50,7 +50,7 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
     name: "X",
     Icon: XIcon,
     socialMediaApiFunctions: x,
-    supportsPostTypes: [PostType.TEXT], // TODO Enable images and videos when paying for X
+    supportsPostTypes: [PostType.TEXT, PostType.IMAGE, PostType.VIDEO],
     supportsDeletePost: true,
   },
   //   {
