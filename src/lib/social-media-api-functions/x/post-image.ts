@@ -13,6 +13,7 @@ import {
   finalizeMediaUpload,
   checkMediaStatus,
 } from "./media-upload";
+import { getFileBuffer } from "@/lib/minio";
 
 export async function postImage(
   post: PostWithRelations,
@@ -23,6 +24,12 @@ export async function postImage(
     socialMediaPost.socialMediaIntegrationId
   );
 
+  console.log('Posting image to X:', {
+    postId: post.id,
+    imageCount: post.images?.length || 0,
+    description: post.description?.substring(0, 50) + '...',
+  });
+
   if (!post.images || post.images.length === 0) {
     throw new Error("No images found in post");
   }
@@ -31,23 +38,29 @@ export async function postImage(
   const mediaIds: string[] = [];
 
   for (const image of post.images) {
-    const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/file/${image.id}`;
+    console.log('Processing image:', {
+      imageId: image.id,
+      mimeType: image.mimeType,
+      size: image.size,
+      path: image.path,
+    });
 
-    // Download the image data
-    const imageResponse = await fetch(imageUrl);
-    if (!imageResponse.ok) {
-      throw new Error(`Failed to fetch image: ${image.id}`);
-    }
+    // Get the image buffer directly from MinIO
+    const imageBuffer = await getFileBuffer(image.path);
+    const base64Image = imageBuffer.toString("base64");
 
-    const imageBuffer = await imageResponse.arrayBuffer();
-    const base64Image = Buffer.from(imageBuffer).toString("base64");
+    console.log('Image downloaded from MinIO:', {
+      originalSize: image.size,
+      actualSize: imageBuffer.length,
+      base64Length: base64Image.length,
+    });
 
     // Step 1: Initialize media upload
     const mediaId = await initializeMediaUpload({
       accessToken,
       mediaCategory: "tweet_image",
       mediaType: image.mimeType,
-      totalBytes: imageBuffer.byteLength,
+      totalBytes: imageBuffer.length,
     });
 
     // Step 2: Upload media data

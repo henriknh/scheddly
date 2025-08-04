@@ -58,6 +58,15 @@ export async function getPresignedUrl(key: string): Promise<string> {
   }
 }
 
+export async function getFileBuffer(key: string): Promise<Buffer> {
+  try {
+    return await minioClient.getObject(BUCKET_NAME, key);
+  } catch (error) {
+    console.error("Error getting file buffer from MinIO:", error);
+    throw error;
+  }
+}
+
 export async function deleteFromMinio(file: PrismaFile): Promise<void> {
   await minioClient.removeObject(BUCKET_NAME, file.path);
 }

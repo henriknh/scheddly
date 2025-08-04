@@ -94,6 +94,8 @@ export const getValidAccessToken = async (
     },
   });
 
+
+
   if (!integration?.accessToken) {
     throw new Error(
       `No active ${socialMedia} integration found with id ${socialMediaIntegrationId}`

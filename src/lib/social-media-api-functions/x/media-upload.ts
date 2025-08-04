@@ -75,23 +75,56 @@ export async function initializeMediaUpload(options: MediaUploadOptions): Promis
 
   console.log(`Initializing media upload: ${mediaCategory}, type: ${mediaType}, size: ${totalBytes} bytes`);
 
+  // Validate MIME type for Twitter API
+  const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  const validVideoTypes = ['video/mp4', 'video/quicktime', 'video/mov'];
+  
+  if (mediaCategory === 'tweet_image' && !validImageTypes.includes(mediaType)) {
+    console.warn(`Unsupported image MIME type: ${mediaType}. Supported types: ${validImageTypes.join(', ')}`);
+  }
+  
+  if (mediaCategory === 'tweet_video' && !validVideoTypes.includes(mediaType)) {
+    console.warn(`Unsupported video MIME type: ${mediaType}. Supported types: ${validVideoTypes.join(', ')}`);
+  }
+
+  const requestBody = {
+    media_category: mediaCategory,
+    media_type: mediaType,
+    total_bytes: totalBytes,
+  };
+
+  console.log('Media upload request body:', JSON.stringify(requestBody, null, 2));
+
   const response = await fetch(`${xApiUrl}/2/media`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      media_category: mediaCategory,
-      media_type: mediaType,
-      total_bytes: totalBytes,
-    }),
+    body: JSON.stringify(requestBody),
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => null);
-    console.error("Failed to initialize media upload:", error);
-    throw new Error(`Failed to initialize media upload: ${response.status} ${response.statusText}`);
+    const errorText = await response.text();
+    console.error("Failed to initialize media upload:", {
+      status: response.status,
+      statusText: response.statusText,
+      error: errorText,
+      url: `${xApiUrl}/2/media`,
+    });
+    
+    let errorMessage = `Failed to initialize media upload: ${response.status} ${response.statusText}`;
+    try {
+      const errorData = JSON.parse(errorText);
+      if (errorData.errors && errorData.errors.length > 0) {
+        errorMessage += ` - ${errorData.errors[0].message}`;
+      }
+    } catch (e) {
+      // If parsing fails, use the raw error text
+      errorMessage += ` - ${errorText}`;
+    }
+    
+    throw new Error(errorMessage);
   }
 
   const data = await response.json();
