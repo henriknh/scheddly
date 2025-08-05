@@ -4,11 +4,13 @@ import { instagram } from "./social-media-api-functions/instagram";
 import { pinterest } from "./social-media-api-functions/pinterest";
 import { tumblr } from "./social-media-api-functions/tumblr";
 import { x } from "./social-media-api-functions/x";
+import { threads } from "./social-media-api-functions/threads";
 import {
   PinterestIcon,
   TumblrIcon,
   InstagramIcon,
   XIcon,
+  ThreadsIcon,
 } from "@/components/icons";
 
 export type SocialMediaPlatform = {
@@ -53,6 +55,14 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
     supportsPostTypes: [PostType.TEXT, PostType.IMAGE, PostType.VIDEO],
     supportsDeletePost: true,
   },
+  {
+    id: SocialMedia.THREADS,
+    name: "Threads",
+    Icon: ThreadsIcon,
+    socialMediaApiFunctions: threads,
+    supportsPostTypes: [PostType.TEXT, PostType.IMAGE, PostType.VIDEO],
+    supportsDeletePost: true,
+  },
   //   {
   //     id: SocialMedia.FACEBOOK,
   //     name: "Facebook",
@@ -67,11 +77,6 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
   //     id: SocialMedia.TIKTOK,
   //     name: "TikTok",
   //     Icon: TikTokIcon,
-  //   },
-  //   {
-  //     id: SocialMedia.THREADS,
-  //     name: "Threads",
-  //     Icon: ThreadsIcon,
   //   },
   //   {
   //     id: SocialMedia.LINKEDIN,
