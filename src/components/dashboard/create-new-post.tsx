@@ -7,6 +7,17 @@ import { useEffect, useState } from "react";
 import { WeeklyCalendar } from "@/components/posts/WeeklyCalendar";
 import { getPosts } from "@/app/api/post/get-posts";
 import { PostWithRelations } from "@/app/api/post/types";
+import { 
+  FacebookIcon, 
+  InstagramIcon, 
+  LinkedInIcon, 
+  PinterestIcon, 
+  ThreadsIcon, 
+  TikTokIcon, 
+  TumblrIcon, 
+  XIcon, 
+  YouTubeIcon 
+} from "@/components/icons";
 
 export type Platform = {
   name: string;
@@ -42,26 +53,59 @@ export function CreateNewPost() {
     fetchPostsData();
   }, []);
 
+  const socialMediaIcons = [
+    { Icon: FacebookIcon, name: 'Facebook' },
+    { Icon: InstagramIcon, name: 'Instagram' },
+    { Icon: XIcon, name: 'X' },
+    { Icon: LinkedInIcon, name: 'LinkedIn' },
+    { Icon: ThreadsIcon, name: 'Threads' },
+    { Icon: TikTokIcon, name: 'TikTok' },
+    { Icon: YouTubeIcon, name: 'YouTube' },
+    { Icon: PinterestIcon, name: 'Pinterest' },
+    { Icon: TumblrIcon, name: 'Tumblr' },
+  ];
+
   return (
     <div className="flex flex-col gap-4 sm:gap-6">
-      {/* Create Content Buttons - horizontal on desktop, vertical on mobile */}
-      <div className="flex flex-col md:flex-row gap-2 md:gap-4 w-full justify-center items-center mt-2 mb-4">
-        <Link href="/dashboard/create-new-post/text" className="w-full md:w-auto">
-          <Button variant="default" size="lg" className="w-full md:w-auto flex items-center gap-2">
-            <TextIcon className="h-5 w-5" />
-            Text Post
+      {/* Create Content Buttons - horizontally scrollable on mobile */}
+      <div className="flex gap-2 md:gap-4 w-full overflow-x-auto pb-2 md:pb-0 mt-2 mb-4 scrollbar-hide">
+        <Link href="/dashboard/create-new-post/text" className="flex-shrink-0">
+          <Button variant="default" size="lg" className="flex flex-col items-center gap-2 h-auto py-4 px-6 min-w-[140px]">
+            <div className="flex items-center gap-2">
+              <TextIcon className="h-5 w-5" />
+              <span>Text Post</span>
+            </div>
+            <div className="flex gap-1 mt-2">
+              {socialMediaIcons.slice(0, 4).map(({ Icon, name }) => (
+                <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
+              ))}
+            </div>
           </Button>
         </Link>
-        <Link href="/dashboard/create-new-post/image" className="w-full md:w-auto">
-          <Button variant="default" size="lg" className="w-full md:w-auto flex items-center gap-2">
-            <ImageIcon className="h-5 w-5" />
-            Image Post
+        <Link href="/dashboard/create-new-post/image" className="flex-shrink-0">
+          <Button variant="default" size="lg" className="flex flex-col items-center gap-2 h-auto py-4 px-6 min-w-[140px]">
+            <div className="flex items-center gap-2">
+              <ImageIcon className="h-5 w-5" />
+              <span>Image Post</span>
+            </div>
+            <div className="flex gap-1 mt-2">
+              {socialMediaIcons.slice(4, 8).map(({ Icon, name }) => (
+                <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
+              ))}
+            </div>
           </Button>
         </Link>
-        <Link href="/dashboard/create-new-post/video" className="w-full md:w-auto">
-          <Button variant="default" size="lg" className="w-full md:w-auto flex items-center gap-2">
-            <VideoIcon className="h-5 w-5" />
-            Video Post
+        <Link href="/dashboard/create-new-post/video" className="flex-shrink-0">
+          <Button variant="default" size="lg" className="flex flex-col items-center gap-2 h-auto py-4 px-6 min-w-[140px]">
+            <div className="flex items-center gap-2">
+              <VideoIcon className="h-5 w-5" />
+              <span>Video Post</span>
+            </div>
+            <div className="flex gap-1 mt-2">
+              {socialMediaIcons.slice(8, 9).map(({ Icon, name }) => (
+                <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
+              ))}
+            </div>
           </Button>
         </Link>
       </div>
