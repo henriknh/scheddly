@@ -23,10 +23,10 @@ export function CreateNewPost() {
   return (
     <div className="flex flex-col gap-4">
       {/* Create Content Buttons - horizontally scrollable on mobile */}
-      <div className="w-full max-w-screen overflow-x-auto pb-2 md:pb-0 mt-2 mb-4 scrollbar-hide">
-        <div className="flex gap-1 md:gap-2 min-w-max">
+      <div className="w-full max-w-[100vw] overflow-x-auto pb-2 md:pb-0 mt-2 mb-4 scrollbar-hide">
+        <div className="flex gap-4 md:gap-6 min-w-max">
           <Link href="/dashboard/create-new-post/text" className="flex-shrink-0">
-            <Button variant="default" size="lg" className="flex flex-col items-start gap-2 h-auto py-2 px-6 min-w-[140px]">
+            <Button variant="default" size="lg" className="flex flex-col items-start gap-1 h-auto py-2 px-6 min-w-[140px]">
               <div className="flex items-center gap-2">
                 <TextIcon className="h-5 w-5" />
                 <span>Text Post</span>
@@ -39,7 +39,7 @@ export function CreateNewPost() {
             </Button>
           </Link>
           <Link href="/dashboard/create-new-post/image" className="flex-shrink-0">
-            <Button variant="default" size="lg" className="flex flex-col items-start gap-2 h-auto py-2 px-6 min-w-[140px]">
+            <Button variant="default" size="lg" className="flex flex-col items-start gap-1 h-auto py-2 px-6 min-w-[140px]">
               <div className="flex items-center gap-2">
                 <ImageIcon className="h-5 w-5" />
                 <span>Image Post</span>
@@ -52,7 +52,7 @@ export function CreateNewPost() {
             </Button>
           </Link>
           <Link href="/dashboard/create-new-post/video" className="flex-shrink-0">
-            <Button variant="default" size="lg" className="flex flex-col items-start gap-2 h-auto py-2 px-6 min-w-[140px]">
+            <Button variant="default" size="lg" className="flex flex-col items-start gap-1 h-auto py-2 px-6 min-w-[140px]">
               <div className="flex items-center gap-2">
                 <VideoIcon className="h-5 w-5" />
                 <span>Video Post</span>
