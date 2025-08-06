@@ -75,7 +75,7 @@ export function CreateNewPost() {
               <TextIcon className="h-5 w-5" />
               <span>Text Post</span>
             </div>
-            <div className="flex gap-1 mt-2">
+            <div className="flex gap-1 mt-1 justify-start">
               {socialMediaIcons.slice(0, 4).map(({ Icon, name }) => (
                 <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
               ))}
@@ -88,7 +88,7 @@ export function CreateNewPost() {
               <ImageIcon className="h-5 w-5" />
               <span>Image Post</span>
             </div>
-            <div className="flex gap-1 mt-2">
+            <div className="flex gap-1 mt-1 justify-start">
               {socialMediaIcons.slice(4, 8).map(({ Icon, name }) => (
                 <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
               ))}
@@ -101,7 +101,7 @@ export function CreateNewPost() {
               <VideoIcon className="h-5 w-5" />
               <span>Video Post</span>
             </div>
-            <div className="flex gap-1 mt-2">
+            <div className="flex gap-1 mt-1 justify-start">
               {socialMediaIcons.slice(8, 9).map(({ Icon, name }) => (
                 <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
               ))}
