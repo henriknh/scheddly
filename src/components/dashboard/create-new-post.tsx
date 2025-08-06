@@ -68,46 +68,48 @@ export function CreateNewPost() {
   return (
     <div className="flex flex-col gap-4 sm:gap-6">
       {/* Create Content Buttons - horizontally scrollable on mobile */}
-      <div className="flex gap-2 md:gap-4 w-full overflow-x-auto pb-2 md:pb-0 mt-2 mb-4 scrollbar-hide">
-        <Link href="/dashboard/create-new-post/text" className="flex-shrink-0">
-          <Button variant="default" size="lg" className="flex flex-col items-start gap-2 h-auto py-4 px-6 min-w-[140px]">
-            <div className="flex items-center gap-2">
-              <TextIcon className="h-5 w-5" />
-              <span>Text Post</span>
-            </div>
-            <div className="flex gap-1 mt-1 justify-start">
-              {socialMediaIcons.slice(0, 4).map(({ Icon, name }) => (
-                <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
-              ))}
-            </div>
-          </Button>
-        </Link>
-        <Link href="/dashboard/create-new-post/image" className="flex-shrink-0">
-          <Button variant="default" size="lg" className="flex flex-col items-start gap-2 h-auto py-4 px-6 min-w-[140px]">
-            <div className="flex items-center gap-2">
-              <ImageIcon className="h-5 w-5" />
-              <span>Image Post</span>
-            </div>
-            <div className="flex gap-1 mt-1 justify-start">
-              {socialMediaIcons.slice(4, 8).map(({ Icon, name }) => (
-                <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
-              ))}
-            </div>
-          </Button>
-        </Link>
-        <Link href="/dashboard/create-new-post/video" className="flex-shrink-0">
-          <Button variant="default" size="lg" className="flex flex-col items-start gap-2 h-auto py-4 px-6 min-w-[140px]">
-            <div className="flex items-center gap-2">
-              <VideoIcon className="h-5 w-5" />
-              <span>Video Post</span>
-            </div>
-            <div className="flex gap-1 mt-1 justify-start">
-              {socialMediaIcons.slice(8, 9).map(({ Icon, name }) => (
-                <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
-              ))}
-            </div>
-          </Button>
-        </Link>
+      <div className="w-full max-w-screen overflow-x-auto pb-2 md:pb-0 mt-2 mb-4 scrollbar-hide">
+        <div className="flex gap-2 md:gap-4 min-w-max">
+          <Link href="/dashboard/create-new-post/text" className="flex-shrink-0">
+            <Button variant="default" size="lg" className="flex flex-col items-start gap-2 h-auto !py-1 px-6 min-w-[140px]">
+              <div className="flex items-center gap-2">
+                <TextIcon className="h-5 w-5" />
+                <span>Text Post</span>
+              </div>
+              <div className="flex gap-1 mt-1 justify-start">
+                {socialMediaIcons.slice(0, 4).map(({ Icon, name }) => (
+                  <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
+                ))}
+              </div>
+            </Button>
+          </Link>
+          <Link href="/dashboard/create-new-post/image" className="flex-shrink-0">
+            <Button variant="default" size="lg" className="flex flex-col items-start gap-2 h-auto !py-1 px-6 min-w-[140px]">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="h-5 w-5" />
+                <span>Image Post</span>
+              </div>
+              <div className="flex gap-1 mt-1 justify-start">
+                {socialMediaIcons.slice(4, 8).map(({ Icon, name }) => (
+                  <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
+                ))}
+              </div>
+            </Button>
+          </Link>
+          <Link href="/dashboard/create-new-post/video" className="flex-shrink-0">
+            <Button variant="default" size="lg" className="flex flex-col items-start gap-2 h-auto !py-1 px-6 min-w-[140px]">
+              <div className="flex items-center gap-2">
+                <VideoIcon className="h-5 w-5" />
+                <span>Video Post</span>
+              </div>
+              <div className="flex gap-1 mt-1 justify-start">
+                {socialMediaIcons.slice(8, 9).map(({ Icon, name }) => (
+                  <Icon key={name} className="h-4 w-4 opacity-70 hover:opacity-100 transition-opacity" />
+                ))}
+              </div>
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Posts Sections - vertical on mobile, horizontal on desktop */}
