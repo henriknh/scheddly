@@ -7,7 +7,7 @@ The dashboard has been completely redesigned to be more compact, mobile-friendly
 
 ### 1. **Posts Summary Section**
 - Added a beautiful gradient summary section showing today's and tomorrow's scheduled posts
-- Real-time data fetching from the new `/api/posts/summary` endpoint
+- Real-time data fetching from the new `getPostsSummary()` function
 - Loading states and error handling
 - Quick "New Post" button for easy access
 
@@ -40,7 +40,7 @@ The dashboard has been completely redesigned to be more compact, mobile-friendly
 
 ### Modified Files:
 - `src/components/dashboard/create-new-post.tsx` - Complete redesign
-- `src/app/api/posts/summary/route.ts` - New API endpoint
+- `src/app/api/post/get-posts-summary.ts` - New API function
 
 ### Key Features:
 - **Today/Tomorrow Posts Counter**: Shows actual scheduled posts count
@@ -58,14 +58,14 @@ The dashboard now provides:
 4. **Mobile-Friendly**: Optimized for touch interaction on mobile devices
 5. **Desktop Excellence**: Rich hover effects and detailed tooltips on desktop
 
-## API Endpoint
+## API Function
 
-The new `/api/posts/summary` endpoint returns:
-```json
-{
-  "today": 3,
-  "tomorrow": 2
+The new `getPostsSummary()` function returns:
+```typescript
+interface PostsSummary {
+  today: number;
+  tomorrow: number;
 }
 ```
 
-This provides real-time data about scheduled posts for the current user.
+This provides real-time data about scheduled posts for the current user, following the same pattern as other API functions in the codebase.

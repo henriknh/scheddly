@@ -14,6 +14,7 @@ import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { ImageIcon, TextIcon, VideoIcon, PlusIcon, CalendarIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { getPostsSummary } from "@/app/api/post/get-posts-summary";
 
 export type Platform = {
   name: string;
@@ -38,13 +39,8 @@ export function CreateNewPost() {
       try {
         setIsLoading(true);
         setError(null);
-        const response = await fetch('/api/posts/summary');
-        if (response.ok) {
-          const data = await response.json();
-          setPostsData(data);
-        } else {
-          setError('Failed to load posts summary');
-        }
+        const data = await getPostsSummary();
+        setPostsData(data);
       } catch (error) {
         console.error('Failed to fetch posts summary:', error);
         setError('Failed to load posts summary');

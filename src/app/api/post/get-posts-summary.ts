@@ -1,15 +1,19 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { prisma } from "@/lib/prisma";
+"use server";
+
+import prisma from "@/lib/prisma";
+import { getUserFromToken } from "@/lib/user";
 import { startOfDay, endOfDay, addDays } from "date-fns";
 
-export async function GET(request: NextRequest) {
+export interface PostsSummary {
+  today: number;
+  tomorrow: number;
+}
+
+export async function getPostsSummary(): Promise<PostsSummary> {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const user = await getUserFromToken();
+    if (!user || !user.id || !user.teamId) {
+      throw new Error("Unauthorized");
     }
 
     const today = new Date();
@@ -23,7 +27,7 @@ export async function GET(request: NextRequest) {
     // Get today's posts count
     const todayPosts = await prisma.post.count({
       where: {
-        userId: session.user.id,
+        teamId: user.teamId,
         scheduledAt: {
           gte: todayStart,
           lte: todayEnd,
@@ -35,7 +39,7 @@ export async function GET(request: NextRequest) {
     // Get tomorrow's posts count
     const tomorrowPosts = await prisma.post.count({
       where: {
-        userId: session.user.id,
+        teamId: user.teamId,
         scheduledAt: {
           gte: tomorrowStart,
           lte: tomorrowEnd,
@@ -44,15 +48,12 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({
+    return {
       today: todayPosts,
       tomorrow: tomorrowPosts,
-    });
+    };
   } catch (error) {
     console.error("Error fetching posts summary:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch posts summary" },
-      { status: 500 }
-    );
+    throw new Error("Internal Server Error");
   }
 }
