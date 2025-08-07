@@ -1,10 +1,20 @@
+"use client";
+
+import { useEffect } from "react";
+import { useBreadcrumbs } from "./breadcrumbs-context";
+
 interface BreadcrumbProps {
   label: string;
   href?: string;
 }
 
 export function Breadcrumb({ label, href }: BreadcrumbProps) {
-  return (
-    <span className="breadcrumb hidden" data-label={label} data-href={href} />
-  );
+  const { registerBreadcrumb, deregisterBreadcrumb } = useBreadcrumbs();
+
+  useEffect(() => {
+    registerBreadcrumb(label, href);
+    return () => deregisterBreadcrumb(label, href);
+  }, [label, href, registerBreadcrumb, deregisterBreadcrumb]);
+
+  return null;
 }
