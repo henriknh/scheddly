@@ -23,7 +23,7 @@ export function CreateNewPost() {
   return (
     <div className="flex flex-col gap-4">
       {/* Create Content Buttons - extended to full width with equal padding */}
-      <div className="overflow-x-auto scrollbar-hide -mx-8 px-8">
+      <div className="overflow-x-auto scrollbar-hide -mx-8 px-8 max-w-screen">
         <div className="flex gap-4 md:gap-6 min-w-max">
           <Link href="/dashboard/create-new-post/text" className="flex-shrink-0">
             <Button variant="default" size="lg" className="flex flex-col items-start gap-1 h-auto py-2 px-6 min-w-[140px]">
