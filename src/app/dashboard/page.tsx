@@ -4,6 +4,7 @@ import { getTodaysPosts } from "@/app/api/post/get-todays-posts";
 import { getTomorrowsPosts } from "@/app/api/post/get-tomorrows-posts";
 import { Header } from "@/components/common/Header";
 import { PlusButton } from "@/components/dashboard/plus-button";
+import { format } from "date-fns";
 
 export default async function DashboardPage() {
   // Fetch today's and tomorrow's posts
@@ -24,7 +25,7 @@ export default async function DashboardPage() {
         {/* Today's Posts */}
         <div className="flex-1 space-y-4">
           <div className="flex items-center justify-between">
-            <Header>Today</Header>
+            <Header>Today, {format(today, "d MMMM")}</Header>
             <PlusButton targetDate={today} />
           </div>
           {todaysPosts.length > 0 ? (
@@ -43,7 +44,7 @@ export default async function DashboardPage() {
         {/* Tomorrow's Posts */}
         <div className="flex-1 space-y-4">
           <div className="flex items-center justify-between">
-            <Header>Tomorrow</Header>
+            <Header>Tomorrow, {format(tomorrow, "d MMMM")}</Header>
             <PlusButton targetDate={tomorrow} />
           </div>
           {tomorrowsPosts.length > 0 ? (

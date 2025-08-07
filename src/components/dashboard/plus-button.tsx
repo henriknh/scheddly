@@ -21,7 +21,7 @@ export function PlusButton({ targetDate }: PlusButtonProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" className="h-8 w-8">
+        <Button variant="ghost" size="icon" className="h-8 w-8">
           <PlusIcon className="h-4 w-4" />
           <span className="sr-only">Create post for {format(targetDate, "MMM d")}</span>
         </Button>
