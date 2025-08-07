@@ -27,7 +27,7 @@ export default function DashboardLayout({
             <main className="flex-1 flex justify-center overflow-x-auto">
               <div className="container flex flex-col space-y-6 max-sm:py-4">
                 <Breadcrumbs />
-                {children}
+                <div id="breadcrumb-scope">{children}</div>
               </div>
             </main>
           </div>

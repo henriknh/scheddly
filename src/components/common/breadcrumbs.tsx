@@ -13,7 +13,26 @@ export function Breadcrumbs() {
   const [breadcrumbElements, setBreadcrumbElements] = useState<Element[]>([]);
 
   useEffect(() => {
-    setBreadcrumbElements(Array.from(document.querySelectorAll(".breadcrumb")));
+    const scope = document.getElementById("breadcrumb-scope");
+    const elements = scope
+      ? Array.from(scope.querySelectorAll(".breadcrumb"))
+      : [];
+
+    const seenKeys = new Set<string>();
+    const uniqueElements: Element[] = [];
+
+    for (const element of elements) {
+      const label = element.getAttribute("data-label") ?? "";
+      const href = element.getAttribute("data-href") ?? "";
+      const key = `${label}|${href}`;
+
+      if (!seenKeys.has(key)) {
+        seenKeys.add(key);
+        uniqueElements.push(element);
+      }
+    }
+
+    setBreadcrumbElements(uniqueElements);
   }, [pathname]);
 
   return (
