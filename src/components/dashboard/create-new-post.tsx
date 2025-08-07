@@ -23,7 +23,7 @@ export function CreateNewPost() {
   return (
     <div className="flex flex-col gap-4">
       {/* Create Content Buttons - horizontally scrollable on mobile */}
-      <div className="w-full max-w-[100vw] overflow-x-auto pb-2 md:pb-0 mt-2 mb-4 scrollbar-hide">
+      <div className="w-full max-w-[100vw] overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
         <div className="flex gap-4 md:gap-6 min-w-max">
           <Link href="/dashboard/create-new-post/text" className="flex-shrink-0">
             <Button variant="default" size="lg" className="flex flex-col items-start gap-1 h-auto py-2 px-6 min-w-[140px]">

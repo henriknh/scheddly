@@ -17,14 +17,17 @@ import { toast } from "sonner";
 interface TextPostFormProps {
   post?: PostWithRelations;
   integrations: SocialMediaIntegrationWithRelations[];
+  initialDate?: string;
 }
 
-export function TextPostForm({ post, integrations }: TextPostFormProps) {
+export function TextPostForm({ post, integrations, initialDate }: TextPostFormProps) {
   const router = useRouter();
   const [content, setContent] = useState(post?.description || "");
-  const [scheduledDate, setScheduledDate] = useState<Date | null>(
-    post?.scheduledAt || null
-  );
+  const [scheduledDate, setScheduledDate] = useState<Date | null>(() => {
+    if (post?.scheduledAt) return post.scheduledAt;
+    if (initialDate) return new Date(initialDate);
+    return null;
+  });
   const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
     string[]
   >(() => {
