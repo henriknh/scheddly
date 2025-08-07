@@ -23,7 +23,7 @@ export default function DashboardLayout({
           <MobileTopNav />
           <div className="flex flex-1">
             <DashboardSidebar />
-            <main className="flex-1 flex justify-center">
+            <main className="flex-1 flex justify-center overflow-x-auto">
               <div className="container flex flex-col space-y-6">
                 {children}
               </div>
