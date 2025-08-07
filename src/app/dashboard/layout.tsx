@@ -24,7 +24,7 @@ export default function DashboardLayout({
           <div className="flex flex-1">
             <DashboardSidebar />
             <main className="flex-1 flex justify-center">
-              <div className="container flex flex-col space-y-6 py-8 max-sm:pt-4 max-w-[100vw]">
+              <div className="container flex flex-col space-y-6">
                 {children}
               </div>
             </main>
