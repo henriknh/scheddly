@@ -19,15 +19,18 @@ import { ArchivePostButton } from "@/components/archive-post-button";
 interface ImagePostFormProps {
   post?: PostWithRelations;
   integrations: SocialMediaIntegrationWithRelations[];
+  initialDate?: string;
 }
 
-export function ImagePostForm({ post, integrations }: ImagePostFormProps) {
+export function ImagePostForm({ post, integrations, initialDate }: ImagePostFormProps) {
   const router = useRouter();
   const [caption, setCaption] = useState(post?.description || "");
   const [images, setImages] = useState<File[]>([]);
-  const [scheduledDate, setScheduledDate] = useState<Date | null>(
-    post?.scheduledAt || null
-  );
+  const [scheduledDate, setScheduledDate] = useState<Date | null>(() => {
+    if (post?.scheduledAt) return post.scheduledAt;
+    if (initialDate) return new Date(initialDate);
+    return null;
+  });
   const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
     string[]
   >(() => {

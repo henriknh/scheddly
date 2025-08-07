@@ -19,16 +19,19 @@ import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-inte
 interface VideoPostFormProps {
   post?: PostWithRelations;
   integrations: SocialMediaIntegrationWithRelations[];
+  initialDate?: string;
 }
 
-export function VideoPostForm({ post, integrations }: VideoPostFormProps) {
+export function VideoPostForm({ post, integrations, initialDate }: VideoPostFormProps) {
   const router = useRouter();
   const [description, setDescription] = useState(post?.description || "");
   const [video, setVideo] = useState<File | null>(null);
   const [videoCover, setVideoCover] = useState<File | null>(null);
-  const [scheduledDate, setScheduledDate] = useState<Date | null>(
-    post?.scheduledAt || null
-  );
+  const [scheduledDate, setScheduledDate] = useState<Date | null>(() => {
+    if (post?.scheduledAt) return post.scheduledAt;
+    if (initialDate) return new Date(initialDate);
+    return null;
+  });
   const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
     string[]
   >(() => {
