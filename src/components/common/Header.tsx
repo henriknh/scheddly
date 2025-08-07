@@ -8,7 +8,7 @@ interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 export function Header({ children, className, ...props }: HeaderProps) {
   return (
     <h2
-      className={cn("text-2xl font-semibold tracking-tight", className)}
+      className={cn("text-xl font-semibold tracking-tight", className)}
       {...props}
     >
       {children}
