@@ -2,38 +2,11 @@
 
 import { ChevronRight, Home } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useBreadcrumbs } from "./breadcrumbs-context";
 
 export function Breadcrumbs() {
-  const pathname = usePathname();
-
-  const [breadcrumbElements, setBreadcrumbElements] = useState<Element[]>([]);
-
-  useEffect(() => {
-    const scope = document.getElementById("breadcrumb-scope");
-    const elements = scope
-      ? Array.from(scope.querySelectorAll(".breadcrumb"))
-      : [];
-
-    const seenKeys = new Set<string>();
-    const uniqueElements: Element[] = [];
-
-    for (const element of elements) {
-      const label = element.getAttribute("data-label") ?? "";
-      const href = element.getAttribute("data-href") ?? "";
-      const key = `${label}|${href}`;
-
-      if (!seenKeys.has(key)) {
-        seenKeys.add(key);
-        uniqueElements.push(element);
-      }
-    }
-
-    setBreadcrumbElements(uniqueElements);
-  }, [pathname]);
+  const { items } = useBreadcrumbs();
 
   return (
     <nav className="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -49,25 +22,20 @@ export function Breadcrumbs() {
         </Link>
       </Button>
 
-      {breadcrumbElements.map((breadcrumb) => {
-        const label = breadcrumb.getAttribute("data-label");
-        const href = breadcrumb.getAttribute("data-href");
-
-        return (
-          <Button
-            key={label + (href ?? "")}
-            variant="ghost"
-            size="sm"
-            className="h-auto p-0 hover:bg-transparent"
-            asChild
-          >
-            <Link href={href ?? ""}>
-              <ChevronRight className="h-4 w-4" />
-              {label}
-            </Link>
-          </Button>
-        );
-      })}
+      {items.map(({ key, label, href }) => (
+        <Button
+          key={key}
+          variant="ghost"
+          size="sm"
+          className="h-auto p-0 hover:bg-transparent"
+          asChild
+        >
+          <Link href={href ?? ""}>
+            <ChevronRight className="h-4 w-4" />
+            {label}
+          </Link>
+        </Button>
+      ))}
     </nav>
   );
 }
