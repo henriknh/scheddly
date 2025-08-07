@@ -3,6 +3,7 @@
 import { getBrands } from "@/app/api/brand/get-brands";
 import { getPosts, GetPostsFilter } from "@/app/api/post/get-posts";
 import { WeeklyCalendar } from "@/components/posts/WeeklyCalendar";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 type PostsProps = {
   searchParams: Promise<{
@@ -26,5 +27,10 @@ export default async function PostsPage({ searchParams }: PostsProps) {
 
   const brands = await getBrands();
 
-  return <WeeklyCalendar posts={posts} brands={brands} />;
+  return (
+    <div>
+      <Breadcrumb label="Posts" href="/dashboard/posts" />
+      <WeeklyCalendar posts={posts} brands={brands} />
+    </div>
+  );
 }
