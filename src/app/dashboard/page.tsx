@@ -4,6 +4,7 @@ import { getTodaysPosts } from "@/app/api/post/get-todays-posts";
 import { getTomorrowsPosts } from "@/app/api/post/get-tomorrows-posts";
 import { Header } from "@/components/common/Header";
 import { PlusButton } from "@/components/dashboard/plus-button";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 import { format } from "date-fns";
 
 export default async function DashboardPage() {
@@ -19,6 +20,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumb label="Dashboard" href="/dashboard" />
       <CreateNewPost />
       
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">

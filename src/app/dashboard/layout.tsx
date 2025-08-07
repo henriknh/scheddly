@@ -2,6 +2,7 @@ import { AuthProviderWrapper } from "@/components/auth/auth-provider-wrapper";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileTopNav } from "@/components/MobileTopNav";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { Breadcrumbs } from "@/components/common/breadcrumbs";
 import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -25,6 +26,7 @@ export default function DashboardLayout({
             <DashboardSidebar />
             <main className="flex-1 flex justify-center overflow-x-auto">
               <div className="container flex flex-col space-y-6 max-sm:py-4">
+                <Breadcrumbs />
                 {children}
               </div>
             </main>

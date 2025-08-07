@@ -1,5 +1,6 @@
 import { getTeamWithMembers } from "@/app/api/team/get-team-with-members";
 import { TeamList } from "@/components/team/TeamList";
+import { Breadcrumb } from "@/components/common/breadcrumb";
 
 export const dynamic = "force-dynamic";
 
@@ -10,5 +11,10 @@ export default async function TeamPage() {
     throw new Error("Team not found");
   }
 
-  return <TeamList team={team} />;
+  return (
+    <div>
+      <Breadcrumb label="Team" href="/dashboard/team" />
+      <TeamList team={team} />
+    </div>
+  );
 }
