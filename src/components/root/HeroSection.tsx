@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden h-svh w-screen">
+    <section className="relative overflow-hidden h-svh w-screen flex items-center justify-center pt-sat">
       {/* Background SVG */}
       <div className="absolute inset-0 -z-10">
         <Image
@@ -24,10 +24,9 @@ export function HeroSection() {
             <span className="text-primary block">In One Place</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-[600px]">
-            Schedule posts, track performance, and grow your audience across all
-            platforms. Perfect for creators and businesses who want to scale
-            their social media presence with our comprehensive social media
-            management platform.
+            Schedule posts, track performance, and grow your audience on every
+            platform—your all-in-one social media growth engine for creators and
+            brands ready to scale.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Button size="lg" asChild>
