@@ -51,7 +51,7 @@ export function TopNav() {
     <nav
       className={`w-full overflow-hidden fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "backdrop-blur-md bg-white/80 dark:bg-gray-900/80 shadow-sm border-b border-gray-200/20 dark:border-gray-700/20"
+          ? "backdrop-blur-md bg-white/80 dark:bg-background/80 shadow-sm shadow-black/10 dark:shadow-white/10"
           : "bg-transparent"
       }`}
     >

@@ -38,7 +38,7 @@ export function MobileTopNav() {
     <div
       className={`sticky top-0 z-20 flex h-14 items-center gap-2 px-4 md:hidden transition-all duration-300 ${
         isScrolled
-          ? "backdrop-blur-md bg-white/80 dark:bg-gray-900/80 shadow-sm"
+          ? "backdrop-blur-md bg-white/80 dark:bg-background/80 shadow-sm shadow-black/10 dark:shadow-white/10"
           : "bg-background"
       }`}
     >
