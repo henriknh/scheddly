@@ -9,41 +9,72 @@ import {
 import { Check } from "lucide-react";
 
 export function PricingSection() {
-  const bottomPrice = 10;
-  const middlePrice = Math.round(bottomPrice * 2.2);
-  const topPrice = Math.round(middlePrice * 1.8);
+  // Helper to round counts to "nice" friendly numbers
+  function roundToNice(value: number): number {
+    if (value <= 20) return Math.round(value); // small numbers: integer
+    if (value <= 200) return Math.round(value / 10) * 10; // medium: nearest 10
+    if (value <= 500) return Math.round(value / 50) * 50; // larger: nearest 50
+    return Math.round(value / 100) * 100; // very large: nearest 100
+  }
 
+  // Base quotas for the bottom tier
+  const basePostsPerMonth = 50;
+  const baseAiCredits = 100;
+  const baseSocialProfiles = 3;
+
+  // Apply multipliers to FEATURES (not price)
+  const growthPostsPerMonth = roundToNice(basePostsPerMonth * 2.2);
+  const growthAiCredits = roundToNice(baseAiCredits * 2.2);
+  const growthSocialProfiles = roundToNice(baseSocialProfiles * 2.2);
+
+  const scalePostsPerMonth = roundToNice(growthPostsPerMonth * 1.8);
+  const scaleAiCredits = roundToNice(growthAiCredits * 1.8);
+  const scaleSocialProfiles = roundToNice(growthSocialProfiles * 1.8);
+
+  // Use "nice" fixed prices
   const plans = [
     {
       name: "Starter",
       description: "For individuals getting started",
-      price: bottomPrice,
+      price: 19,
       features: [
-        "1 brand",
+        `${basePostsPerMonth} scheduled posts / month`,
+        `${baseAiCredits} AI caption credits / month`,
+        `${baseSocialProfiles} connected social profiles`,
+        // Unique to this tier
+        "Email support",
         "Basic analytics",
-        "Content scheduling",
+        "1 brand",
       ],
       popular: false,
     },
     {
       name: "Growth",
       description: "Best for small teams",
-      price: middlePrice,
+      price: 49,
       features: [
-        "3 brands",
+        `${growthPostsPerMonth} scheduled posts / month`,
+        `${growthAiCredits} AI caption credits / month`,
+        `${growthSocialProfiles} connected social profiles`,
+        // Unique to this tier
+        "Priority support",
         "Advanced analytics",
-        "Team collaboration",
+        "3 brands",
       ],
       popular: true,
     },
     {
       name: "Scale",
       description: "For growing businesses that need more",
-      price: topPrice,
+      price: 89,
       features: [
-        "Unlimited brands",
-        "Priority support",
+        `${scalePostsPerMonth} scheduled posts / month`,
+        `${scaleAiCredits} AI caption credits / month`,
+        `${scaleSocialProfiles} connected social profiles`,
+        // Unique to this tier
+        "Dedicated success manager",
         "Custom integrations",
+        "Unlimited brands",
       ],
       popular: false,
     },
