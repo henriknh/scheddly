@@ -58,7 +58,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center">
-      <Card className="w-full max-w-md">
+      <Card className="w-[440px] max-w-[calc(100vw-2rem)]">
         <form onSubmit={onSubmit}>
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-center">

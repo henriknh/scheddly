@@ -90,7 +90,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: config.appName,
     startupImage: [
       {
@@ -144,7 +144,10 @@ export default function RootLayout({
         <StructuredData />
 
         {/* Safe area handling for mobile devices */}
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
         <meta name="apple-mobile-web-app-capable" content="yes" />
 
         <Script
