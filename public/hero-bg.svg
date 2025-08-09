@@ -1,5 +1,15 @@
 <svg width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
+    <style>
+      @media (prefers-color-scheme: dark) {
+        .grid-line { stroke: #cbd5e1; opacity: 0.3; stroke-width: 0.8; }
+        .dot { fill: #cbd5e1; opacity: 0.25; }
+      }
+      @media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
+        .grid-line { stroke: #64748b; opacity: 0.5; stroke-width: 0.8; }
+        .dot { fill: #94a3b8; opacity: 0.35; }
+      }
+    </style>
     <!-- Enhanced gradient backgrounds -->
     <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
@@ -32,12 +42,11 @@
     
     <!-- Subtle pattern -->
     <pattern id="subtlePattern" width="60" height="60" patternUnits="userSpaceOnUse">
-      <circle cx="30" cy="30" r="1" fill="#e2e8f0" opacity="0.3"/>
+      <circle cx="30" cy="30" r="1" class="dot" />
     </pattern>
   </defs>
   
-  <!-- Main background -->
-  <rect width="1200" height="600" fill="url(#heroGradient)"/>
+  <!-- Main background removed to allow transparent background for dark mode -->
   
   <!-- Subtle pattern overlay -->
   <rect width="1200" height="600" fill="url(#subtlePattern)"/>
@@ -65,7 +74,7 @@
   <!-- Subtle grid lines -->
   <defs>
     <pattern id="gridLines" width="80" height="80" patternUnits="userSpaceOnUse">
-      <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#e2e8f0" stroke-width="0.5" opacity="0.2"/>
+      <path d="M 80 0 L 0 0 0 80" class="grid-line" fill="none" shape-rendering="crispEdges" vector-effect="non-scaling-stroke"/>
     </pattern>
   </defs>
   <rect width="1200" height="600" fill="url(#gridLines)"/>
