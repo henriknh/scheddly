@@ -30,8 +30,8 @@ export function PlatformsSection() {
           Connect All Your Platforms
         </h2>
         <p className="text-muted-foreground">
-          Schedule, publish, and manage content across 9 social media platforms
-          from one powerful dashboard
+          Schedule, publish, and manage content across your social media
+          platforms from one powerful dashboard
         </p>
       </div>
       <div className="flex flex-wrap justify-center items-center gap-4">
