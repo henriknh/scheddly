@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden h-screen w-screen">
+    <section className="relative overflow-hidden h-svh w-screen">
       {/* Background SVG */}
       <div className="absolute inset-0 -z-10">
         <Image
