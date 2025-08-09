@@ -9,31 +9,43 @@ import {
 import { Check } from "lucide-react";
 
 export function PricingSection() {
+  const bottomPrice = 10;
+  const middlePrice = Math.round(bottomPrice * 2.2);
+  const topPrice = Math.round(middlePrice * 1.8);
+
   const plans = [
     {
       name: "Starter",
-      description: "Perfect for individual creators",
-      price: 10,
+      description: "For individuals getting started",
+      price: bottomPrice,
       features: [
-        "10 social media integrations",
+        "1 brand",
         "Basic analytics",
         "Content scheduling",
-        "1 brand",
       ],
       popular: false,
     },
     {
-      name: "Professional",
-      description: "For growing businesses and teams",
-      price: 20,
+      name: "Growth",
+      description: "Best for small teams",
+      price: middlePrice,
       features: [
-        "Unlimited social media integrations",
+        "3 brands",
         "Advanced analytics",
         "Team collaboration",
-        "Multiple brands",
-        "E-commerce integration",
       ],
       popular: true,
+    },
+    {
+      name: "Scale",
+      description: "For growing businesses that need more",
+      price: topPrice,
+      features: [
+        "Unlimited brands",
+        "Priority support",
+        "Custom integrations",
+      ],
+      popular: false,
     },
   ];
 
@@ -45,7 +57,7 @@ export function PricingSection() {
           Choose the plan that fits your needs
         </p>
       </div>
-      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         {plans.map((plan) => (
           <Card
             key={plan.name}
