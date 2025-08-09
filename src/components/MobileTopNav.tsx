@@ -35,28 +35,33 @@ export function MobileTopNav() {
   };
 
   return (
-    <div
-      className={`sticky top-sat z-20 flex h-14 items-center gap-2 px-4 md:hidden transition-all duration-300 ${
-        isScrolled
-          ? "backdrop-blur-md bg-white/80 dark:bg-background/80 shadow-sm shadow-black/10 dark:shadow-white/10"
-          : "bg-background"
-      }`}
-    >
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-7 w-7"
-        onClick={handleToggle}
+    <div className="md:hidden">
+      <div
+        className={`fixed top-0 left-0 right-0 z-20 transition-all duration-300 pt-sat ${
+          isScrolled
+            ? "backdrop-blur-md bg-white/80 dark:bg-background/80 shadow-sm shadow-black/10 dark:shadow-white/10"
+            : "bg-background"
+        }`}
       >
-        <Menu />
-        <span className="sr-only">Toggle Sidebar</span>
-      </Button>
-      <Button asChild variant="ghost" className="flex items-center gap-2">
-        <Link href="/dashboard">
-          <Image src="/logo.svg" alt="Logo" width={20} height={20} />
-          <span className="text-lg font-bold">{config.appName}</span>
-        </Link>
-      </Button>
+        <div className="flex items-center gap-2 h-14 px-8">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7"
+            onClick={handleToggle}
+          >
+            <Menu />
+            <span className="sr-only">Toggle Sidebar</span>
+          </Button>
+          <Button asChild variant="ghost" className="flex items-center gap-2">
+            <Link href="/dashboard">
+              <Image src="/logo.svg" alt="Logo" width={20} height={20} />
+              <span className="text-lg font-bold">{config.appName}</span>
+            </Link>
+          </Button>
+        </div>
+      </div>
+      <div className="h-14" />
     </div>
   );
 }
