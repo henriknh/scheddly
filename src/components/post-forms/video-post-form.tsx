@@ -4,7 +4,7 @@ import { createPost } from "@/app/api/post/create-post";
 import { PostWithRelations } from "@/app/api/post/types";
 import { ArchivePostButton } from "@/components/archive-post-button";
 import { PostScheduler } from "@/components/post-scheduler";
-import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
+import { SocialMediaSelector } from "@/components/social-media-selector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { PostType } from "@/generated/prisma";
@@ -22,7 +22,11 @@ interface VideoPostFormProps {
   initialDate?: string;
 }
 
-export function VideoPostForm({ post, integrations, initialDate }: VideoPostFormProps) {
+export function VideoPostForm({
+  post,
+  integrations,
+  initialDate,
+}: VideoPostFormProps) {
   const router = useRouter();
   const [description, setDescription] = useState(post?.description || "");
   const [video, setVideo] = useState<File | null>(null);
@@ -282,7 +286,7 @@ export function VideoPostForm({ post, integrations, initialDate }: VideoPostForm
         </div>
 
         <div className="space-y-2">
-          <SocialMediaIntegrationSelector
+          <SocialMediaSelector
             onSelectionChange={setSelectedIntegrationIds}
             selectedIntegrationIds={selectedIntegrationIds}
             postType="VIDEO"

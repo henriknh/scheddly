@@ -4,10 +4,10 @@ import { Brand, SocialMediaIntegration } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { UserAvatar } from "./common/UserAvatar";
 import { Button } from "./ui/button";
-import { Card, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Checkbox } from "./ui/checkbox";
 
-interface SocialMediaIntegrationSelectorProps {
+interface SocialMediaSelectorProps {
   onSelectionChange: (integrationIds: string[]) => void;
   selectedIntegrationIds?: string[];
   postType?: "TEXT" | "IMAGE" | "VIDEO";
@@ -16,12 +16,12 @@ interface SocialMediaIntegrationSelectorProps {
   })[];
 }
 
-export function SocialMediaIntegrationSelector({
+export function SocialMediaSelector({
   onSelectionChange,
   selectedIntegrationIds = [],
   postType,
   integrations,
-}: SocialMediaIntegrationSelectorProps) {
+}: SocialMediaSelectorProps) {
   const handleIntegrationChange = (integrationId: string, checked: boolean) => {
     const newSelection = checked
       ? [...selectedIntegrationIds, integrationId]

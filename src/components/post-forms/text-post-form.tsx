@@ -6,7 +6,7 @@ import { PostWithRelations } from "@/app/api/post/types";
 import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 import { ArchivePostButton } from "@/components/archive-post-button";
 import { PostScheduler } from "@/components/post-scheduler";
-import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
+import { SocialMediaSelector } from "@/components/social-media-selector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { PostType } from "@/generated/prisma";
@@ -20,7 +20,11 @@ interface TextPostFormProps {
   initialDate?: string;
 }
 
-export function TextPostForm({ post, integrations, initialDate }: TextPostFormProps) {
+export function TextPostForm({
+  post,
+  integrations,
+  initialDate,
+}: TextPostFormProps) {
   const router = useRouter();
   const [content, setContent] = useState(post?.description || "");
   const [scheduledDate, setScheduledDate] = useState<Date | null>(() => {
@@ -125,7 +129,7 @@ export function TextPostForm({ post, integrations, initialDate }: TextPostFormPr
         </div>
 
         <div className="space-y-2">
-          <SocialMediaIntegrationSelector
+          <SocialMediaSelector
             onSelectionChange={setSelectedIntegrationIds}
             selectedIntegrationIds={selectedIntegrationIds}
             postType="TEXT"

@@ -5,7 +5,7 @@ import { editPost } from "@/app/api/post/edit-post";
 import { PostWithRelations } from "@/app/api/post/types";
 import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 import { PostScheduler } from "@/components/post-scheduler";
-import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
+import { SocialMediaSelector } from "@/components/social-media-selector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { PostType } from "@/generated/prisma";
@@ -22,7 +22,11 @@ interface ImagePostFormProps {
   initialDate?: string;
 }
 
-export function ImagePostForm({ post, integrations, initialDate }: ImagePostFormProps) {
+export function ImagePostForm({
+  post,
+  integrations,
+  initialDate,
+}: ImagePostFormProps) {
   const router = useRouter();
   const [caption, setCaption] = useState(post?.description || "");
   const [images, setImages] = useState<File[]>([]);
@@ -186,7 +190,7 @@ export function ImagePostForm({ post, integrations, initialDate }: ImagePostForm
         </div>
 
         <div className="space-y-2">
-          <SocialMediaIntegrationSelector
+          <SocialMediaSelector
             onSelectionChange={setSelectedIntegrationIds}
             selectedIntegrationIds={selectedIntegrationIds}
             postType="IMAGE"
