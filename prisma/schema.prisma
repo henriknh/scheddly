@@ -9,19 +9,19 @@ datasource db {
 }
 
 model SocialMediaPost {
-  id                    String              @id @default(cuid())
-  post                  Post                @relation(fields: [postId], references: [id])
-  postId                String
-  socialMedia           SocialMedia
+  id                       String                 @id @default(cuid())
+  post                     Post                   @relation(fields: [postId], references: [id])
+  postId                   String
+  socialMedia              SocialMedia
   socialMediaIntegrationId String
-  socialMediaIntegration SocialMediaIntegration @relation(fields: [socialMediaIntegrationId], references: [id])
-  socialMediaPostId     String?
-  failedReason          String?
-  postedAt             DateTime?
-  failedAt             DateTime?
-  permalink            String?
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
+  socialMediaIntegration   SocialMediaIntegration @relation(fields: [socialMediaIntegrationId], references: [id])
+  socialMediaPostId        String?
+  failedReason             String?
+  postedAt                 DateTime?
+  failedAt                 DateTime?
+  permalink                String?
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
 }
 
 model Post {
@@ -39,68 +39,68 @@ model Post {
   teamId           String
   team             Team              @relation(fields: [teamId], references: [id])
   socialMediaPosts SocialMediaPost[]
-  archived         Boolean              @default(false)
+  archived         Boolean           @default(false)
   archivedAt       DateTime?
 }
 
 model User {
-  id                   String    @id @default(cuid())
-  name                 String?
-  email                String    @unique
-  emailVerified        DateTime?
-  password             String?
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
-  avatarId             String?   @unique
-  avatar               File?     @relation(fields: [avatarId], references: [id])
-  teamId               String?
-  team                 Team?     @relation("TeamMember", fields: [teamId], references: [id])
-  ownedTeam            Team?     @relation("TeamOwner")
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  avatarId      String?   @unique
+  avatar        File?     @relation(fields: [avatarId], references: [id])
+  teamId        String?
+  team          Team?     @relation("TeamMember", fields: [teamId], references: [id])
+  ownedTeam     Team?     @relation("TeamOwner")
 }
 
 model Team {
-  id                      String                  @id @default(cuid())
+  id                      String                   @id @default(cuid())
   name                    String
-  createdAt               DateTime                @default(now())
-  updatedAt               DateTime                @updatedAt
-  ownerId                 String                  @unique
-  owner                   User                    @relation("TeamOwner", fields: [ownerId], references: [id])
-  members                 User[]                  @relation("TeamMember")
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  ownerId                 String                   @unique
+  owner                   User                     @relation("TeamOwner", fields: [ownerId], references: [id])
+  members                 User[]                   @relation("TeamMember")
   posts                   Post[]
   brands                  Brand[]
   socialMediaIntegrations SocialMediaIntegration[]
 }
 
 model SocialMediaIntegration {
-  id                                String      @id @default(cuid())
-  socialMedia                       SocialMedia
-  accessToken                       String
-  accessTokenExpiresAt              DateTime
-  refreshToken                      String
-  refreshTokenExpiresAt             DateTime?
-  brandId                           String?
-  brand                             Brand?      @relation(fields: [brandId], references: [id])
-  createdAt                         DateTime    @default(now())
-  updatedAt                         DateTime    @updatedAt
-  teamId                            String
-  team                              Team        @relation(fields: [teamId], references: [id])
-  accountId                         String
-  accountName                       String
-  accountUsername                   String?
-  accountAvatarUrl                  String?
-  socialMediaPosts                  SocialMediaPost[]
+  id                    String            @id @default(cuid())
+  socialMedia           SocialMedia
+  accessToken           String
+  accessTokenExpiresAt  DateTime
+  refreshToken          String
+  refreshTokenExpiresAt DateTime?
+  brandId               String?
+  brand                 Brand?            @relation(fields: [brandId], references: [id])
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  teamId                String
+  team                  Team              @relation(fields: [teamId], references: [id])
+  accountId             String
+  accountName           String
+  accountUsername       String?
+  accountAvatarUrl      String?
+  socialMediaPosts      SocialMediaPost[]
 
   @@unique([socialMedia, accountId, teamId])
 }
 
 model Brand {
-  id                      String                  @id @default(cuid())
+  id                      String                   @id @default(cuid())
   name                    String
   socialMediaIntegrations SocialMediaIntegration[]
-  createdAt               DateTime                @default(now())
-  updatedAt               DateTime                @updatedAt
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
   teamId                  String
-  team                    Team                    @relation(fields: [teamId], references: [id])
+  team                    Team                     @relation(fields: [teamId], references: [id])
 }
 
 enum PostType {
@@ -122,14 +122,14 @@ enum SocialMedia {
 }
 
 model File {
-  id            String   @id @default(cuid())
-  mimeType      String
-  size          Int
-  path          String
-  createdAt     DateTime @default(now())
-  user          User?
-  postImages    Post?    @relation("PostImages", fields: [postId], references: [id])
-  postId        String?
-  postVideo     Post?    @relation("PostVideo")
-  postVideoCover Post?   @relation("PostVideoCover")
+  id             String   @id @default(cuid())
+  mimeType       String
+  size           Int
+  path           String
+  createdAt      DateTime @default(now())
+  user           User?
+  postImages     Post?    @relation("PostImages", fields: [postId], references: [id])
+  postId         String?
+  postVideo      Post?    @relation("PostVideo")
+  postVideoCover Post?    @relation("PostVideoCover")
 }
