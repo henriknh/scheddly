@@ -130,7 +130,7 @@ export async function getPosts(
         {
           scheduledAt: {
             sort: "asc",
-            nulls: "last",
+            nulls: "first",
           },
         },
         {
@@ -153,7 +153,14 @@ export async function getPosts(
       },
     });
 
-    return posts;
+    return posts.sort((a, b) => {
+      const timeA = a.scheduledAt ?? a.updatedAt;
+      const timeB = b.scheduledAt ?? b.updatedAt;
+      if (timeA && timeB) {
+        return timeA.getTime() - timeB.getTime();
+      }
+      return 0;
+    });
   } catch (error) {
     console.error("Error fetching posts:", error);
     throw new Error("Internal Server Error");
