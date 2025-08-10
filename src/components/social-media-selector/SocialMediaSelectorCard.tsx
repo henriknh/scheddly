@@ -92,7 +92,7 @@ export function SocialMediaSelectorCard({
                     xCommunityId: socialMediaPost?.xCommunityId,
                   });
                 }}
-                disabled={!socialMediaPost}
+                disabled={!socialMediaPost || !socialMediaPost?.xCommunityId}
               />
               <Label htmlFor={`share-with-followers-${integration.id}`}>
                 Share with followers
@@ -105,8 +105,11 @@ export function SocialMediaSelectorCard({
                 onValueChange={(value) => {
                   onChange({
                     socialMediaIntegration: integration,
-                    xShareWithFollowers: socialMediaPost?.xShareWithFollowers,
-                    xCommunityId: value,
+                    xShareWithFollowers:
+                      value === "no-community"
+                        ? true
+                        : socialMediaPost?.xShareWithFollowers,
+                    xCommunityId: value === "no-community" ? null : value,
                   });
                 }}
                 disabled={!socialMediaPost}
