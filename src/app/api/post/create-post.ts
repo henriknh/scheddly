@@ -11,6 +11,12 @@ import { getUserFromToken } from "@/lib/user";
 import { PostWithRelations } from "./types";
 import { postPost } from "./post-post";
 
+export interface SocialMediaPostParams {
+  socialMediaIntegration: SocialMediaIntegration;
+  xCommunityId?: string | null;
+  xShareWithFollowers?: boolean;
+}
+
 export interface CreatePostParams {
   description: string;
   postType: PostType;
@@ -18,7 +24,7 @@ export interface CreatePostParams {
   video?: File | null;
   videoCover?: File | null;
   scheduledAt?: Date | null;
-  socialMediaIntegrations: SocialMediaIntegration[];
+  socialMediaPosts?: SocialMediaPostParams[];
 }
 
 export async function createPost({
@@ -28,7 +34,7 @@ export async function createPost({
   video,
   videoCover,
   scheduledAt,
-  socialMediaIntegrations,
+  socialMediaPosts = [],
 }: CreatePostParams): Promise<PostWithRelations> {
   const user = await getUserFromToken();
 
@@ -52,10 +58,18 @@ export async function createPost({
     const newPost = await tx.post.create({
       data: {
         socialMediaPosts: {
-          create: socialMediaIntegrations.map((integration) => ({
-            socialMedia: integration.socialMedia,
-            socialMediaIntegrationId: integration.id,
-          })),
+          create: socialMediaPosts.map(
+            ({
+              socialMediaIntegration,
+              xCommunityId,
+              xShareWithFollowers,
+            }) => ({
+              socialMedia: socialMediaIntegration.socialMedia,
+              socialMediaIntegrationId: socialMediaIntegration.id,
+              xCommunityId,
+              xShareWithFollowers: xShareWithFollowers ?? true,
+            })
+          ),
         },
         teamId: user.teamId!,
         description,

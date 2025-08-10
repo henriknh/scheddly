@@ -54,7 +54,7 @@ export async function deleteSocialMediaIntegration(
       });
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error("Internal Server Error");
   }
 }

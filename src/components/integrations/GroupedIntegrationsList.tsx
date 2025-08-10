@@ -9,9 +9,10 @@ import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { Unlink } from "lucide-react";
 import { useState } from "react";
 import { ConnectToBrandModal } from "./ConnectToBrandModal";
-import { DeleteIntegrationDialog } from "./DeleteIntegrationDialog";
+import { DeleteIntegrationModal } from "./DeleteIntegrationModal";
 import { IntegrationAccountButton } from "./IntegrationAccountButton";
 import { RefreshIntegration } from "./RefreshIntegration";
+import { EditIntegrationModal } from "./EditIntegrationModal";
 
 interface GroupedIntegrationsListProps {
   integrations: SocialMediaIntegrationWithRelations[];
@@ -82,7 +83,9 @@ export function GroupedIntegrationsList({
                       />
                     )}
 
-                    <DeleteIntegrationDialog integrationId={integration.id} />
+                    <EditIntegrationModal integration={integration} />
+
+                    <DeleteIntegrationModal integrationId={integration.id} />
                   </>
                 )}
               </div>
@@ -109,7 +112,9 @@ export function GroupedIntegrationsList({
                   />
                 )}
 
-                <DeleteIntegrationDialog integrationId={integration.id} />
+                <EditIntegrationModal integration={integration} />
+
+                <DeleteIntegrationModal integrationId={integration.id} />
               </div>
             ) : null}
           </div>

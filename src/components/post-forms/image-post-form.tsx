@@ -1,9 +1,14 @@
 "use client";
 
-import { createPost } from "@/app/api/post/create-post";
+import {
+  createPost,
+  CreatePostParams,
+  SocialMediaPostParams,
+} from "@/app/api/post/create-post";
 import { editPost } from "@/app/api/post/edit-post";
 import { PostWithRelations } from "@/app/api/post/types";
 import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
+import { ArchivePostButton } from "@/components/archive-post-button";
 import { PostScheduler } from "@/components/post-scheduler";
 import { SocialMediaSelector } from "@/components/social-media-selector";
 import { Button } from "@/components/ui/button";
@@ -14,7 +19,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ArchivePostButton } from "@/components/archive-post-button";
 
 interface ImagePostFormProps {
   post?: PostWithRelations;
@@ -35,35 +39,28 @@ export function ImagePostForm({
     if (initialDate) return new Date(initialDate);
     return null;
   });
-  const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
-    string[]
-  >(() => {
-    if (!post) return [];
-    // Map from social media types and brand IDs to integration IDs
-    const selectedSocialMediaPosts = post?.socialMediaPosts || [];
-    return integrations
-      .filter((integration) =>
-        selectedSocialMediaPosts.some(
-          (post) => post.socialMediaIntegrationId === integration.id
-        )
-      )
-      .map((integration) => integration.id);
-  });
+
+  const [socialMediaPosts, setSocialMediaPosts] = useState<
+    SocialMediaPostParams[]
+  >(
+    post?.socialMediaPosts.map((post) => ({
+      socialMediaIntegration: post.socialMediaIntegration,
+      xShareWithFollowers: post.xShareWithFollowers ?? true,
+      xCommunityId: post.xCommunityId ?? null,
+    })) || []
+  );
 
   useEffect(() => {
     if (post) {
       setCaption(post.description);
       setScheduledDate(post.scheduledAt || null);
-      // Map from social media posts to integration IDs
-      const selectedSocialMediaPosts = post.socialMediaPosts;
-      const selectedIds = integrations
-        .filter((integration) =>
-          selectedSocialMediaPosts.some(
-            (post) => post.socialMediaIntegrationId === integration.id
-          )
-        )
-        .map((integration) => integration.id);
-      setSelectedIntegrationIds(selectedIds);
+      setSocialMediaPosts(
+        post.socialMediaPosts.map((post) => ({
+          socialMediaIntegration: post.socialMediaIntegration,
+          xShareWithFollowers: post.xShareWithFollowers ?? true,
+          xCommunityId: post.xCommunityId ?? null,
+        }))
+      );
 
       Promise.all(
         post.images.map(async (image) => {
@@ -87,16 +84,12 @@ export function ImagePostForm({
 
   const handleSubmit = async () => {
     try {
-      const selectedIntegrations = integrations.filter((integration) =>
-        selectedIntegrationIds.includes(integration.id)
-      );
-
-      const data = {
+      const data: CreatePostParams = {
         description: caption,
         postType: PostType.IMAGE,
         images,
         scheduledAt: scheduledDate,
-        socialMediaIntegrations: selectedIntegrations,
+        socialMediaPosts,
       };
 
       const submit = post ? editPost(post.id, data) : createPost(data);
@@ -191,8 +184,8 @@ export function ImagePostForm({
 
         <div className="space-y-2">
           <SocialMediaSelector
-            onSelectionChange={setSelectedIntegrationIds}
-            selectedIntegrationIds={selectedIntegrationIds}
+            socialMediaPosts={socialMediaPosts}
+            onChangeSocialMediaPosts={setSocialMediaPosts}
             postType="IMAGE"
             integrations={integrations}
           />
@@ -219,7 +212,7 @@ export function ImagePostForm({
           onClick={handleSubmit}
           disabled={
             images.length === 0 ||
-            selectedIntegrationIds.length === 0 ||
+            socialMediaPosts.length === 0 ||
             !!post?.archived
           }
         >

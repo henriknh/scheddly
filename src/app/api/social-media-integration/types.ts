@@ -1,5 +1,6 @@
-import { Brand, SocialMediaIntegration } from "@/generated/prisma";
+import { Brand, SocialMediaIntegration, XCommunity } from "@/generated/prisma";
 
 export type SocialMediaIntegrationWithRelations = SocialMediaIntegration & {
   brand?: Brand | null;
+  xCommunities?: XCommunity[] | null;
 };

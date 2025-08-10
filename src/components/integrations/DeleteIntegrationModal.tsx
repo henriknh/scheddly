@@ -15,13 +15,13 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { deleteSocialMediaIntegration } from "@/app/api/social-media-integration/delete-social-media-integration";
 
-interface DeleteIntegrationDialogProps {
+interface DeleteIntegrationModalProps {
   integrationId: string;
 }
 
-export function DeleteIntegrationDialog({
+export function DeleteIntegrationModal({
   integrationId,
-}: DeleteIntegrationDialogProps) {
+}: DeleteIntegrationModalProps) {
   const router = useRouter();
 
   const deleteIntegration = async (id: string) => {

@@ -17,6 +17,8 @@ export async function postText(
     socialMediaPost.socialMediaIntegrationId
   );
 
+  console.log("socialMediaPost", socialMediaPost);
+
   const response = await fetch(`${xApiUrl}/2/tweets`, {
     method: "POST",
     headers: {
@@ -24,6 +26,10 @@ export async function postText(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
+      community_id: socialMediaPost.xCommunityId,
+      share_with_followers: socialMediaPost.xCommunityId
+        ? socialMediaPost.xShareWithFollowers
+        : true,
       text: post.description,
     }),
   });

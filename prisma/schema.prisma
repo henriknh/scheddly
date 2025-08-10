@@ -22,6 +22,8 @@ model SocialMediaPost {
   permalink                String?
   createdAt                DateTime               @default(now())
   updatedAt                DateTime               @updatedAt
+  xCommunityId             String?
+  xShareWithFollowers      Boolean?               @default(true)
 }
 
 model Post {
@@ -89,8 +91,21 @@ model SocialMediaIntegration {
   accountUsername       String?
   accountAvatarUrl      String?
   socialMediaPosts      SocialMediaPost[]
+  xCommunities          XCommunity[]
 
   @@unique([socialMedia, accountId, teamId])
+}
+
+model XCommunity {
+  id                       String                 @id @default(cuid())
+  xId                      String
+  name                     String
+  socialMediaIntegrationId String
+  socialMediaIntegration   SocialMediaIntegration @relation(fields: [socialMediaIntegrationId], references: [id])
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+
+  @@unique([socialMediaIntegrationId, xId])
 }
 
 model Brand {

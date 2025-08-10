@@ -1,18 +1,22 @@
 "use client";
 
-import { createPost } from "@/app/api/post/create-post";
+import {
+  createPost,
+  CreatePostParams,
+  SocialMediaPostParams,
+} from "@/app/api/post/create-post";
 import { editPost } from "@/app/api/post/edit-post";
 import { PostWithRelations } from "@/app/api/post/types";
 import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 import { ArchivePostButton } from "@/components/archive-post-button";
 import { PostScheduler } from "@/components/post-scheduler";
-import { SocialMediaSelector } from "@/components/social-media-selector";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { PostType } from "@/generated/prisma";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { SocialMediaSelector } from "../social-media-selector";
 
 interface TextPostFormProps {
   post?: PostWithRelations;
@@ -32,49 +36,37 @@ export function TextPostForm({
     if (initialDate) return new Date(initialDate);
     return null;
   });
-  const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
-    string[]
-  >(() => {
-    if (!post) return [];
-    // Map from social media types and brand IDs to integration IDs
-    const selectedSocialMediaPosts = post.socialMediaPosts;
-    return integrations
-      .filter((integration) =>
-        selectedSocialMediaPosts.some(
-          (post) => post.socialMediaIntegrationId === integration.id
-        )
-      )
-      .map((integration) => integration.id);
-  });
+  const [socialMediaPosts, setSocialMediaPosts] = useState<
+    SocialMediaPostParams[]
+  >(
+    post?.socialMediaPosts.map((post) => ({
+      socialMediaIntegration: post.socialMediaIntegration,
+      xShareWithFollowers: post.xShareWithFollowers ?? true,
+      xCommunityId: post.xCommunityId ?? null,
+    })) || []
+  );
 
   useEffect(() => {
     if (post) {
       setContent(post.description);
       setScheduledDate(post.scheduledAt || null);
-      // Map from social media posts to integration IDs
-      const selectedSocialMediaPosts = post.socialMediaPosts;
-      const selectedIds = integrations
-        .filter((integration) =>
-          selectedSocialMediaPosts.some(
-            (post) => post.socialMediaIntegrationId === integration.id
-          )
-        )
-        .map((integration) => integration.id);
-      setSelectedIntegrationIds(selectedIds);
+      setSocialMediaPosts(
+        post.socialMediaPosts.map((post) => ({
+          socialMediaIntegration: post.socialMediaIntegration,
+          xShareWithFollowers: post.xShareWithFollowers ?? true,
+          xCommunityId: post.xCommunityId ?? null,
+        }))
+      );
     }
   }, [post, integrations]);
 
   const handleSubmit = async () => {
     try {
-      const selectedIntegrations = integrations.filter((integration) =>
-        selectedIntegrationIds.includes(integration.id)
-      );
-
-      const data = {
+      const data: CreatePostParams = {
         description: content,
         postType: PostType.TEXT,
         scheduledAt: scheduledDate,
-        socialMediaIntegrations: selectedIntegrations,
+        socialMediaPosts,
       };
 
       const submit = post ? editPost(post.id, data) : createPost(data);
@@ -130,8 +122,8 @@ export function TextPostForm({
 
         <div className="space-y-2">
           <SocialMediaSelector
-            onSelectionChange={setSelectedIntegrationIds}
-            selectedIntegrationIds={selectedIntegrationIds}
+            socialMediaPosts={socialMediaPosts}
+            onChangeSocialMediaPosts={setSocialMediaPosts}
             postType="TEXT"
             integrations={integrations}
           />
@@ -157,7 +149,7 @@ export function TextPostForm({
         <Button
           onClick={handleSubmit}
           disabled={
-            !content || selectedIntegrationIds.length === 0 || !!post?.archived
+            !content || socialMediaPosts.length === 0 || !!post?.archived
           }
         >
           {post

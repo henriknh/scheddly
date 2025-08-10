@@ -1,34 +1,24 @@
 "use client";
 
-import { Brand, SocialMediaIntegration } from "@/generated/prisma";
+import { SocialMediaPostParams } from "@/app/api/post/create-post";
+import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
+import { Brand } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
-import { UserAvatar } from "./common/UserAvatar";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Checkbox } from "./ui/checkbox";
+import { SocialMediaSelectorCard } from "./social-media-selector/SocialMediaSelectorCard";
 
 interface SocialMediaSelectorProps {
-  onSelectionChange: (integrationIds: string[]) => void;
-  selectedIntegrationIds?: string[];
+  socialMediaPosts?: SocialMediaPostParams[];
+  integrations: SocialMediaIntegrationWithRelations[];
+  onChangeSocialMediaPosts: (socialMediaData: SocialMediaPostParams[]) => void;
   postType?: "TEXT" | "IMAGE" | "VIDEO";
-  integrations: (SocialMediaIntegration & {
-    brand?: Brand | null;
-  })[];
 }
 
 export function SocialMediaSelector({
-  onSelectionChange,
-  selectedIntegrationIds = [],
-  postType,
+  socialMediaPosts,
+  onChangeSocialMediaPosts,
   integrations,
+  postType,
 }: SocialMediaSelectorProps) {
-  const handleIntegrationChange = (integrationId: string, checked: boolean) => {
-    const newSelection = checked
-      ? [...selectedIntegrationIds, integrationId]
-      : selectedIntegrationIds.filter((id) => id !== integrationId);
-    onSelectionChange(newSelection);
-  };
-
   // Group integrations by brand
   const integrationsByBrand = integrations.reduce((acc, integration) => {
     const brandId = integration.brand?.id || "no-brand";
@@ -71,15 +61,15 @@ export function SocialMediaSelector({
           (integration) => integration.brand?.id === data.brand?.id
         );
 
-        const allIntegrationsSelected = integrationsByBrand.every(
-          (integration) => selectedIntegrationIds.includes(integration.id)
-        );
+        // const allIntegrationsSelected = integrationsByBrand.every(
+        //   (integration) => selectedIntegrationIds.includes(integration.id)
+        // );
 
         return (
           <div key={brandId} className="space-y-4">
             <div className="flex gap-2 items-center">
               {data.brand?.name || "No Brand"}
-              <Button
+              {/* <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => {
@@ -103,69 +93,54 @@ export function SocialMediaSelector({
                 }}
               >
                 {allIntegrationsSelected ? "Deselect all" : "Select all"}
-              </Button>
+              </Button> */}
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
               {integrationsByBrand.map((integration) => {
-                const platform = socialMediaPlatforms.find(
-                  (p) => p.id === integration.socialMedia
-                );
-                if (!platform) return null;
-
                 return (
-                  <Card
+                  <SocialMediaSelectorCard
                     key={integration.id}
-                    onClick={() =>
-                      handleIntegrationChange(
-                        integration.id,
-                        !selectedIntegrationIds.includes(integration.id)
-                      )
-                    }
-                  >
-                    <CardHeader>
-                      <CardTitle>
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-2">
-                            <div className="flex flex-col">
-                              <div className="text-base font-medium flex items-center gap-2">
-                                <platform.Icon className="h-4 w-4" />
-                                <span>{platform.name}</span>
-                              </div>
-                              {integration.accountUsername && (
-                                <span className="text-xs opacity-70 flex items-center gap-2">
-                                  <UserAvatar
-                                    src={
-                                      integration.accountAvatarUrl || undefined
-                                    }
-                                  />
+                    integration={integration}
+                    socialMediaPost={socialMediaPosts?.find(
+                      (data) =>
+                        data.socialMediaIntegration.id === integration.id
+                    )}
+                    onChange={(socialMediaPost) => {
+                      if (!socialMediaPost) {
+                        const updatedSocialMediaPosts =
+                          socialMediaPosts?.filter(
+                            (data) =>
+                              data.socialMediaIntegration.id !== integration.id
+                          );
 
-                                  {integration.accountName}
-                                </span>
-                              )}
-                            </div>
-                          </div>
+                        onChangeSocialMediaPosts(updatedSocialMediaPosts || []);
+                      } else {
+                        const hasSocialMediaPost = socialMediaPosts?.find(
+                          (data) =>
+                            data.socialMediaIntegration.id === integration.id
+                        );
 
-                          <div>
-                            <Checkbox
-                              checked={selectedIntegrationIds.includes(
-                                integration.id
-                              )}
-                              onCheckedChange={() =>
-                                handleIntegrationChange(
-                                  integration.id,
-                                  !selectedIntegrationIds.includes(
-                                    integration.id
-                                  )
-                                )
-                              }
-                              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                            />
-                          </div>
-                        </div>
-                      </CardTitle>
-                    </CardHeader>
-                  </Card>
+                        if (!hasSocialMediaPost) {
+                          const updatedSocialMediaPosts = [
+                            ...(socialMediaPosts || []),
+                            socialMediaPost,
+                          ];
+                          onChangeSocialMediaPosts(updatedSocialMediaPosts);
+                        } else {
+                          const updatedSocialMediaPosts = socialMediaPosts?.map(
+                            (data) =>
+                              data.socialMediaIntegration.id === integration.id
+                                ? socialMediaPost
+                                : data
+                          );
+                          onChangeSocialMediaPosts(
+                            updatedSocialMediaPosts || []
+                          );
+                        }
+                      }
+                    }}
+                  />
                 );
               })}
             </div>

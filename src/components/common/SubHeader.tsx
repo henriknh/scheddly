@@ -8,7 +8,7 @@ interface SubHeaderProps extends React.HTMLAttributes<HTMLHeadingElement> {
 export function SubHeader({ children, className, ...props }: SubHeaderProps) {
   return (
     <h3
-      className={cn("text-xl font-medium tracking-tight", className)}
+      className={cn("text-sm font-medium tracking-tight", className)}
       {...props}
     >
       {children}

@@ -19,6 +19,7 @@ export async function getSocialMediaIntegrations(): Promise<
       },
       include: {
         brand: true,
+        xCommunities: true,
       },
       orderBy: {
         socialMedia: "asc",
