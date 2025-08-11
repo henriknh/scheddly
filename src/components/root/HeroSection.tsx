@@ -28,7 +28,7 @@ export function HeroSection() {
             platform—your all-in-one social media growth engine for creators and
             brands ready to scale.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-y-2 gap-x-4">
             <Button size="lg" asChild>
               <Link href="/auth/register">Start Free 7-Day Trial</Link>
             </Button>
