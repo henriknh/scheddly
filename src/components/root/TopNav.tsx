@@ -67,10 +67,7 @@ export function TopNav() {
         }`}
       >
         <div
-          className={cn(
-            "flex items-center justify-between w-full px-8 transition-all duration-300",
-            open ? "h-32" : "h-16"
-          )}
+          className={cn("flex items-center justify-between w-full px-8 h-16")}
         >
           <div className="flex items-center gap-8">
             <Link
@@ -172,12 +169,7 @@ export function TopNav() {
           open ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
       >
-        <div
-          className={cn(
-            "flex items-center justify-between px-8 transition-all duration-300",
-            open ? "h-32" : "h-16"
-          )}
-        >
+        <div className={cn("flex items-center justify-between px-8 h-16")}>
           <Link href="/" className="text-xl font-bold flex gap-2 items-center">
             <Image src="/logo.svg" alt="Logo" width={28} height={28} />
             {config.appName}
