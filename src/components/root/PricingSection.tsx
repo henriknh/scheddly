@@ -59,7 +59,7 @@ const featureAnalytics: Feature = {
 };
 
 const featureAITools: Feature = {
-  label: "AI tools",
+  label: "AI assistant",
   tooltip: "Use AI to generate content and schedule your posts.",
 };
 
