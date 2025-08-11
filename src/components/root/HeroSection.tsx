@@ -18,7 +18,7 @@ export function HeroSection() {
 
       {/* Content */}
       <div className="container relative z-10">
-        <div className="flex flex-col items-center text-center gap-8 py-16">
+        <div className="flex flex-col items-center text-center gap-8 py-16 pt-32">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">
             Manage All Your Social Media
             <span className="text-primary block">In One Place</span>
