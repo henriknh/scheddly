@@ -1,13 +1,6 @@
-import Link from "next/link";
-import { getAllPosts } from "@/content/blog/posts";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { getAllPosts } from "@/content/blog/posts";
+import Link from "next/link";
 
 export const metadata = {
   title: "Blog | Scheddly",
