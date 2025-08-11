@@ -35,7 +35,7 @@ export function FeaturesSection() {
   ];
 
   return (
-    <section id="features" className="container py-16">
+    <section id="features" className="container pt-32">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold mb-4">
           Everything You Need to Scale

@@ -33,9 +33,14 @@ export function TopNav() {
   ) => {
     e.preventDefault();
 
+    if (window.location.pathname !== "/") {
+      window.location.href = `/#${targetId}`;
+      return;
+    }
+
     // Update URL with target ID
     const url = new URL(window.location.href);
-    url.hash = targetId;
+    url.hash = `#${targetId}`;
     window.history.pushState({}, "", url.toString());
 
     const element = document.getElementById(targetId);
@@ -70,6 +75,9 @@ export function TopNav() {
               >
                 Pricing
               </Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/blog">Blog</Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
               <Link

@@ -1,10 +1,11 @@
 import { MetadataRoute } from "next";
 import config from "@/config";
+import { getAllPosts } from "@/content/blog/posts";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = config.appUrl;
 
-  return [
+  const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -36,4 +37,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
   ];
+
+  const posts = getAllPosts();
+  const blogPostRoutes: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+  ];
+
+  for (const post of posts) {
+    blogPostRoutes.push({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.publishedAt),
+      changeFrequency: "weekly",
+      priority: 0.6,
+    });
+  }
+
+  return [...staticRoutes, ...blogPostRoutes];
 }

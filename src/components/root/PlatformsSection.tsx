@@ -24,7 +24,7 @@ export function PlatformsSection() {
   ];
 
   return (
-    <section id="platforms" className="container py-16">
+    <section id="platforms" className="container pt-32">
       <div className="text-center mb-8">
         <h2 className="text-2xl font-semibold mb-4">
           Connect All Your Platforms
