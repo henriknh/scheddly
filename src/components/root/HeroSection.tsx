@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 
 export function HeroSection() {
   return (
@@ -23,11 +24,12 @@ export function HeroSection() {
             Manage All Your Social Media
             <span className="text-primary block">In One Place</span>
           </h1>
+
           <p className="text-xl text-muted-foreground max-w-[600px]">
-            Schedule posts, track performance, and grow your audience on every
-            platform—your all-in-one social media growth engine for creators and
-            brands ready to scale.
+            Schedule posts, gain insights and grow your audience — Get started
+            in minutes
           </p>
+
           <div className="flex flex-col sm:flex-row gap-y-2 gap-x-4">
             <Button size="lg" asChild>
               <Link href="/auth/register">Start Free 7-Day Trial</Link>
@@ -36,6 +38,15 @@ export function HeroSection() {
               <Link href="#how-it-works">See How It Works</Link>
             </Button>
           </div>
+
+          <p className="flex gap-4">
+            {socialMediaPlatforms.map((platform) => (
+              <div key={platform.id}>
+                <platform.Icon className="h-4 w-4" />
+              </div>
+            ))}
+          </p>
+
           <p className="text-sm text-muted-foreground">
             No credit card required • Cancel anytime
           </p>
