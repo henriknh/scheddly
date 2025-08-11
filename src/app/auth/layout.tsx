@@ -20,7 +20,7 @@ export default async function AuthLayout({
       <div className="fixed top-0 left-0 right-0 w-full z-50 pt-sat">
         <div className="flex items-center gap-2 h-16 px-8">
           <Link href="/" className="text-xl font-bold flex gap-2 items-center">
-            <Image src="/logo.svg" alt="Logo" width={20} height={20} />
+            <Image src="/logo.svg" alt="Logo" width={28} height={28} />
             {config.appName}
           </Link>
         </div>

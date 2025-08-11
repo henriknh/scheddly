@@ -69,7 +69,7 @@ export function DashboardSidebar() {
               className="py-6"
             >
               <Link href="/dashboard" onClick={handleLinkClick}>
-                <Image src="/logo.svg" alt="Logo" width={20} height={20} />
+                <Image src="/logo.svg" alt="Logo" width={28} height={28} />
 
                 <span className={cn("text-lg font-bold")}>
                   {config.appName}

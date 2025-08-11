@@ -77,7 +77,7 @@ export function TopNav() {
               href="/"
               className="text-xl font-bold flex gap-2 items-center"
             >
-              <Image src="/logo.svg" alt="Logo" width={20} height={20} />
+              <Image src="/logo.svg" alt="Logo" width={28} height={28} />
               {config.appName}
             </Link>
 
@@ -179,7 +179,7 @@ export function TopNav() {
           )}
         >
           <Link href="/" className="text-xl font-bold flex gap-2 items-center">
-            <Image src="/logo.svg" alt="Logo" width={20} height={20} />
+            <Image src="/logo.svg" alt="Logo" width={28} height={28} />
             {config.appName}
           </Link>
 
