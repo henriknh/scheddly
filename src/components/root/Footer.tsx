@@ -3,7 +3,7 @@ import config from "@/config";
 
 export function Footer() {
   return (
-    <footer className="border-t bg-background">
+    <footer className="border-t bg-background mt-16">
       <div className="px-4 py-12">
         <div className="grid gap-8 md:grid-cols-4">
           <div className="space-y-4">
