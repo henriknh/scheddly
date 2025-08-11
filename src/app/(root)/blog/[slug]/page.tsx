@@ -1,9 +1,8 @@
-import { notFound } from "next/navigation";
-import { getPostBySlug } from "@/content/blog/posts";
 import { Badge } from "@/components/ui/badge";
+import { getPostBySlug } from "@/content/blog/posts";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
+import { notFound } from "next/navigation";
 
 type Params = { slug: string };
 
