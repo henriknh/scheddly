@@ -52,15 +52,18 @@ const featureUnlimitedBrands: Feature = {
 const featureEcommerceIntegration: Feature = {
   label: "E-commerce integration",
   tooltip: "Integrate your e-commerce platform with your social media.",
+  comingSoon: true,
 };
 
 const featureAnalytics: Feature = {
   label: "Analytics",
+  comingSoon: true,
 };
 
 const featureAITools: Feature = {
   label: "AI assistant",
   tooltip: "Use AI to generate content and schedule your posts.",
+  comingSoon: true,
 };
 
 export function PricingSection() {
