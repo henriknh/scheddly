@@ -62,14 +62,14 @@ export function TopNav() {
       <nav
         className={`w-full overflow-hidden fixed top-0 left-0 right-0 z-50 transition-all duration-300 pt-sat ${
           isScrolled
-            ? "backdrop-blur-md bg-white/80 dark:bg-background/80 border-b border-black/10 dark:border-white/10"
+            ? "backdrop-blur-md bg-white/80 dark:bg-background/80 shadow-sm dark:shadow-white/10"
             : "bg-transparent"
         }`}
       >
         <div
           className={cn(
             "flex items-center justify-between w-full px-8 transition-all duration-300",
-            open ? "h-32" : "h-14"
+            open ? "h-32" : "h-16"
           )}
         >
           <div className="flex items-center gap-8">
@@ -175,7 +175,7 @@ export function TopNav() {
         <div
           className={cn(
             "flex items-center justify-between px-8 transition-all duration-300",
-            open ? "h-32" : "h-14"
+            open ? "h-32" : "h-16"
           )}
         >
           <Link href="/" className="text-xl font-bold flex gap-2 items-center">

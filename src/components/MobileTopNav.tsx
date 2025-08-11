@@ -43,7 +43,7 @@ export function MobileTopNav() {
             : "bg-background"
         }`}
       >
-        <div className="flex items-center gap-2 h-14 px-8">
+        <div className="flex items-center gap-2 h-16 px-8">
           <Button
             variant="ghost"
             size="icon"
@@ -61,7 +61,7 @@ export function MobileTopNav() {
           </Button>
         </div>
       </div>
-      <div className="h-14" />
+      <div className="h-16" />
     </div>
   );
 }
