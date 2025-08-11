@@ -235,12 +235,20 @@ export function TopNav() {
           <div className="flex-1" />
 
           <div className="flex flex-col gap-4">
-            <Button asChild variant="outline">
-              <Link href="/auth/login">Login</Link>
-            </Button>
-            <Button asChild variant="default">
-              <Link href="/auth/register">Register</Link>
-            </Button>
+            {user ? (
+              <Button asChild>
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
+            ) : (
+              <>
+                <Button asChild variant="outline">
+                  <Link href="/auth/login">Login</Link>
+                </Button>
+                <Button asChild variant="default">
+                  <Link href="/auth/register">Register</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
