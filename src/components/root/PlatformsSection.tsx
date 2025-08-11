@@ -1,28 +1,6 @@
-import {
-  FacebookIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  PinterestIcon,
-  ThreadsIcon,
-  TikTokIcon,
-  TumblrIcon,
-  XIcon,
-  YouTubeIcon,
-} from "@/components/icons";
+import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 
 export function PlatformsSection() {
-  const platforms = [
-    { name: "Instagram", icon: InstagramIcon },
-    { name: "Facebook", icon: FacebookIcon },
-    { name: "Threads", icon: ThreadsIcon },
-    { name: "X (Twitter)", icon: XIcon },
-    { name: "LinkedIn", icon: LinkedInIcon },
-    { name: "TikTok", icon: TikTokIcon },
-    { name: "Pinterest", icon: PinterestIcon },
-    { name: "Tumblr", icon: TumblrIcon },
-    { name: "YouTube", icon: YouTubeIcon },
-  ];
-
   return (
     <section id="platforms" className="container pt-32">
       <div className="text-center mb-8">
@@ -35,8 +13,8 @@ export function PlatformsSection() {
         </p>
       </div>
       <div className="flex flex-wrap justify-center items-center gap-4">
-        {platforms.map((platform) => {
-          const IconComponent = platform.icon;
+        {socialMediaPlatforms.map((platform) => {
+          const IconComponent = platform.Icon;
           return (
             <div
               key={platform.name}
