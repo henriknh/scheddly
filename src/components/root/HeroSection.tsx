@@ -41,9 +41,7 @@ export function HeroSection() {
 
           <p className="flex gap-4">
             {socialMediaPlatforms.map((platform) => (
-              <div key={platform.id}>
-                <platform.Icon className="h-4 w-4" />
-              </div>
+              <platform.Icon key={platform.id} className="h-4 w-4" />
             ))}
           </p>
 
