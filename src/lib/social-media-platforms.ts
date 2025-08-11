@@ -83,7 +83,7 @@ export const socialMediaPlatforms: SocialMediaPlatform[] = [
   //     name: "LinkedIn",
   //     Icon: LinkedInIcon,
   //   },
-].sort((a, b) => (a.id < b.id ? 1 : -1));
+].sort((a, b) => a.name.localeCompare(b.name, "en"));
 
 export function getSocialMediaPlatform(socialMedia: SocialMedia) {
   return socialMediaPlatforms.find((platform) => platform.id === socialMedia);
