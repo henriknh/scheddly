@@ -26,7 +26,7 @@ export async function postText(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      community_id: socialMediaPost.xCommunityId,
+      community_id: socialMediaPost.xCommunityId || undefined,
       share_with_followers: socialMediaPost.xCommunityId
         ? socialMediaPost.xShareWithFollowers
         : true,
