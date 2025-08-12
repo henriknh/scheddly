@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -30,8 +29,10 @@ export default function LoginPage() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
+    const trimmedEmail = email.trim().toLowerCase();
+
     try {
-      await login(email, password);
+      await login(trimmedEmail, password);
       toast.success("Login successful");
       router.push("/dashboard");
     } catch (error) {
@@ -51,9 +52,6 @@ export default function LoginPage() {
       <form onSubmit={onSubmit}>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-center">Login</CardTitle>
-          <CardDescription className="text-center">
-            Enter your email and password to login to your account
-          </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <div className="grid gap-2">

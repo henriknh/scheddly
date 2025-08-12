@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -27,10 +26,10 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const name = formData.get("name") as string;
-    const password = formData.get("password") as string;
-    const confirmPassword = formData.get("confirm-password") as string;
+    const email = (formData.get("email") as string).trim().toLowerCase();
+    const name = (formData.get("name") as string).trim();
+    const password = (formData.get("password") as string) ?? "";
+    const confirmPassword = (formData.get("confirm-password") as string) ?? "";
 
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
@@ -64,9 +63,6 @@ export default function RegisterPage() {
             <CardTitle className="text-2xl text-center">
               Create an account
             </CardTitle>
-            <CardDescription className="text-center">
-              Enter your information to create a new account
-            </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid gap-2">

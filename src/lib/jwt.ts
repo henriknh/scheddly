@@ -5,9 +5,17 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "default_secret_please_change"
-);
+const rawSecret = process.env.JWT_SECRET;
+if (!rawSecret) {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("JWT_SECRET must be set in production environment");
+  } else {
+    console.warn(
+      "JWT_SECRET is not set. Using a weak development secret. Do NOT use this in production."
+    );
+  }
+}
+const JWT_SECRET = new TextEncoder().encode(rawSecret || "insecure_dev_secret");
 
 export async function createToken(user: CleanedUser) {
   const tokenPayload = {
@@ -51,8 +59,8 @@ export async function setTokenCookie(token: string) {
   const cookieStore = await cookies();
   cookieStore.set("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production", // strict in prod; allow local dev over http
+    sameSite: "strict",
     maxAge: 24 * 60 * 60, // 24 hours
     path: "/",
   });

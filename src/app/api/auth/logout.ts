@@ -7,6 +7,6 @@ export async function logout() {
     await removeTokenCookie();
   } catch (error) {
     console.error("Logout error:", error);
-    throw new Error("Error during logout");
+    throw new Error("Could not log you out. Please try again.");
   }
 }
