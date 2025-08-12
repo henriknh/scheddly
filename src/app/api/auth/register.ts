@@ -7,12 +7,27 @@ import bcrypt from "bcryptjs";
 export async function register(email: string, name: string, password: string) {
   try {
     if (!email || !name || !password) {
-      throw new Error("Missing required fields");
+      throw new Error("Please provide name, email, and password.");
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const trimmedName = name.trim();
+
+    // Basic client-like validations on the server for better messages
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(normalizedEmail)) {
+      throw new Error("Please enter a valid email address.");
+    }
+    if (trimmedName.length < 2) {
+      throw new Error("Name must be at least 2 characters long.");
+    }
+    if (password.length < 8) {
+      throw new Error("Password must be at least 8 characters long.");
     }
 
     const existingUser = await prisma.user.findUnique({
       where: {
-        email,
+        email: normalizedEmail,
       },
     });
 
@@ -26,8 +41,8 @@ export async function register(email: string, name: string, password: string) {
     const result = await prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
         data: {
-          email,
-          name,
+          email: normalizedEmail,
+          name: trimmedName,
           password: hashedPassword,
         },
         include: {
@@ -58,6 +73,9 @@ export async function register(email: string, name: string, password: string) {
     return updateUserTokenWithCleanedUser(result);
   } catch (error) {
     console.error("REGISTRATION_ERROR", error);
-    throw new Error("Internal Error");
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Something went wrong while creating your account.");
   }
 }

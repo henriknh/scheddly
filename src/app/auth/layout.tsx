@@ -26,17 +26,17 @@ export default async function AuthLayout({
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden">
-        <div className="relative w-full h-full flex items-center justify-center">
-          <div className="absolute inset-0 -z-10">
-            <Image
-              src="/hero-bg.svg"
-              alt=""
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
+      <div className="flex-1 overflow-hidden relative">
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src="/hero-bg.svg"
+            alt=""
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+        <div className="relative w-full h-full flex items-center justify-center pt-16">
           {children}
         </div>
       </div>

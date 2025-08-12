@@ -5,33 +5,37 @@ import { updateUserTokenWithCleanedUser } from "@/lib/user";
 import bcrypt from "bcryptjs";
 
 export async function login(email: string, password: string) {
-  try {
-    if (!email || !password) {
-      throw new Error("Missing required fields");
-    }
+  // Pre-computed once per cold start to mitigate timing attacks
+  const DUMMY_PASSWORD_HASH = bcrypt.hashSync("invalid_password", 10);
 
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-      include: {
-        avatar: true,
-      },
-    });
-
-    if (!user || !user.password) {
-      throw new Error("Invalid credentials");
-    }
-
-    const isValid = await bcrypt.compare(password, user.password);
-
-    if (!isValid) {
-      throw new Error("Invalid credentials");
-    }
-
-    return updateUserTokenWithCleanedUser(user);
-  } catch (error) {
-    console.error("LOGIN_ERROR", error);
-    throw new Error("Internal Error");
+  if (!email || !password) {
+    // Constant-time-ish response between unknown and known users
+    await bcrypt.compare(password, DUMMY_PASSWORD_HASH);
+    throw new Error("Invalid email or password.");
   }
+
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email: normalizedEmail,
+    },
+    include: {
+      avatar: true,
+    },
+  });
+
+  if (!user || !user.password) {
+    // Constant-time-ish response between unknown and known users
+    await bcrypt.compare(password, DUMMY_PASSWORD_HASH);
+    throw new Error("Invalid email or password.");
+  }
+
+  const isValid = await bcrypt.compare(password, user.password);
+
+  if (!isValid) {
+    throw new Error("Invalid email or password.");
+  }
+
+  return updateUserTokenWithCleanedUser(user);
 }
