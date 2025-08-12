@@ -12,17 +12,17 @@ import {
 } from "../ui/alert-dialog";
 import { useRouter } from "next/navigation";
 
-interface DeleteBrandDialogProps {
+interface DeleteBrandModalProps {
   brandId: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function DeleteBrandDialog({
+export function DeleteBrandModal({
   brandId,
   isOpen,
   onClose,
-}: DeleteBrandDialogProps) {
+}: DeleteBrandModalProps) {
   const router = useRouter();
 
   const handleDelete = async () => {
@@ -41,15 +41,17 @@ export function DeleteBrandDialog({
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Do you want to delete this brand?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete this
-            brand and disconnect all associated integrations from this brand.
+            Connected social media integrations won&apos;t be deleted but will
+            instead be disconnected.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={handleDelete} variant="destructive">
+            Delete
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

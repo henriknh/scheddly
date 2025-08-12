@@ -22,6 +22,7 @@ const config = {
       aspectRatio: {
         video: "9/16",
         post: "9/8",
+        "blog-cover": "16/9",
       },
       lineClamp: {
         "7": "7",

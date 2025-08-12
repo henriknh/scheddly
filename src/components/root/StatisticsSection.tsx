@@ -37,7 +37,7 @@ export async function StatisticsSection() {
   ];
 
   return (
-    <section className="container py-16">
+    <section className="container pt-32">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold mb-4">
           Trusted by Creators Worldwide

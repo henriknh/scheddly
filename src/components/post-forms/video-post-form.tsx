@@ -1,20 +1,24 @@
 "use client";
 
-import { createPost } from "@/app/api/post/create-post";
+import {
+  createPost,
+  CreatePostParams,
+  SocialMediaPostParams,
+} from "@/app/api/post/create-post";
+import { editPost } from "@/app/api/post/edit-post";
 import { PostWithRelations } from "@/app/api/post/types";
+import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 import { ArchivePostButton } from "@/components/archive-post-button";
 import { PostScheduler } from "@/components/post-scheduler";
-import { SocialMediaIntegrationSelector } from "@/components/social-media-integration-selector";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { PostType } from "@/generated/prisma";
 import { Video, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Slider } from "@/components/ui/slider";
-import { editPost } from "@/app/api/post/edit-post";
-import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
+import { SocialMediaSelector } from "../social-media-selector";
 
 interface VideoPostFormProps {
   post?: PostWithRelations;
@@ -22,7 +26,11 @@ interface VideoPostFormProps {
   initialDate?: string;
 }
 
-export function VideoPostForm({ post, integrations, initialDate }: VideoPostFormProps) {
+export function VideoPostForm({
+  post,
+  integrations,
+  initialDate,
+}: VideoPostFormProps) {
   const router = useRouter();
   const [description, setDescription] = useState(post?.description || "");
   const [video, setVideo] = useState<File | null>(null);
@@ -32,35 +40,27 @@ export function VideoPostForm({ post, integrations, initialDate }: VideoPostForm
     if (initialDate) return new Date(initialDate);
     return null;
   });
-  const [selectedIntegrationIds, setSelectedIntegrationIds] = useState<
-    string[]
-  >(() => {
-    if (!post) return [];
-    // Map from social media types and brand IDs to integration IDs
-    const selectedSocialMediaPosts = post.socialMediaPosts || [];
-    return integrations
-      .filter((integration) =>
-        selectedSocialMediaPosts.some(
-          (post) => post.socialMediaIntegrationId === integration.id
-        )
-      )
-      .map((integration) => integration.id);
-  });
+  const [socialMediaPosts, setSocialMediaPosts] = useState<
+    SocialMediaPostParams[]
+  >(
+    post?.socialMediaPosts.map((post) => ({
+      socialMediaIntegration: post.socialMediaIntegration,
+      xShareWithFollowers: post.xShareWithFollowers ?? true,
+      xCommunityId: post.xCommunityId ?? null,
+    })) || []
+  );
 
   useEffect(() => {
     if (post) {
       setDescription(post.description);
       setScheduledDate(post.scheduledAt || null);
-      // Map from social media posts to integration IDs
-      const selectedSocialMediaPosts = post.socialMediaPosts || [];
-      const selectedIds = integrations
-        .filter((integration) =>
-          selectedSocialMediaPosts.some(
-            (post) => post.socialMediaIntegrationId === integration.id
-          )
-        )
-        .map((integration) => integration.id);
-      setSelectedIntegrationIds(selectedIds);
+      setSocialMediaPosts(
+        post.socialMediaPosts.map((post) => ({
+          socialMediaIntegration: post.socialMediaIntegration,
+          xShareWithFollowers: post.xShareWithFollowers ?? true,
+          xCommunityId: post.xCommunityId ?? null,
+        }))
+      );
 
       Promise.all([
         post.video &&
@@ -142,17 +142,13 @@ export function VideoPostForm({ post, integrations, initialDate }: VideoPostForm
     try {
       if (!video) return;
 
-      const selectedIntegrations = integrations.filter((integration) =>
-        selectedIntegrationIds.includes(integration.id)
-      );
-
-      const data = {
+      const data: CreatePostParams = {
         description,
         postType: PostType.VIDEO,
         video,
         videoCover,
         scheduledAt: scheduledDate,
-        socialMediaIntegrations: selectedIntegrations,
+        socialMediaPosts,
       };
 
       const submit = post ? editPost(post.id, data) : createPost(data);
@@ -282,9 +278,9 @@ export function VideoPostForm({ post, integrations, initialDate }: VideoPostForm
         </div>
 
         <div className="space-y-2">
-          <SocialMediaIntegrationSelector
-            onSelectionChange={setSelectedIntegrationIds}
-            selectedIntegrationIds={selectedIntegrationIds}
+          <SocialMediaSelector
+            socialMediaPosts={socialMediaPosts}
+            onChangeSocialMediaPosts={setSocialMediaPosts}
             postType="VIDEO"
             integrations={integrations}
           />
@@ -309,9 +305,7 @@ export function VideoPostForm({ post, integrations, initialDate }: VideoPostForm
         {post && <ArchivePostButton post={post} />}
         <Button
           onClick={handleSubmit}
-          disabled={
-            !video || selectedIntegrationIds.length === 0 || !!post?.archived
-          }
+          disabled={!video || socialMediaPosts.length === 0 || !!post?.archived}
         >
           {post
             ? scheduledDate

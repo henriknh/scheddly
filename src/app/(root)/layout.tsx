@@ -9,8 +9,12 @@ export default function RootLayout({
   return (
     <div className="w-full min-h-screen flex flex-col">
       <TopNav />
-      <main className="flex-1">{children}</main>
-      <Footer />
+      <main className="flex-1">
+        <div className="container px-4">{children}</div>
+      </main>
+      <div className="container px-4">
+        <Footer />
+      </div>
     </div>
   );
 }

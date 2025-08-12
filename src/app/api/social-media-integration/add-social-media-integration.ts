@@ -121,7 +121,7 @@ export async function addSocialMediaIntegration(
       return integration;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error("Internal Server Error");
   }
 }

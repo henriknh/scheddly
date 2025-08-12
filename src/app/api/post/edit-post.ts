@@ -21,7 +21,7 @@ export async function editPost(
     video,
     videoCover,
     scheduledAt,
-    socialMediaIntegrations,
+    socialMediaPosts = [],
   }: CreatePostParams
 ): Promise<void> {
   const user = await getUserFromToken();
@@ -56,10 +56,18 @@ export async function editPost(
         scheduledAt,
         socialMediaPosts: {
           deleteMany: {},
-          create: socialMediaIntegrations.map((integration) => ({
-            socialMedia: integration.socialMedia,
-            socialMediaIntegrationId: integration.id,
-          })),
+          create: socialMediaPosts.map(
+            ({
+              socialMediaIntegration,
+              xCommunityId,
+              xShareWithFollowers,
+            }) => ({
+              socialMedia: socialMediaIntegration.socialMedia,
+              socialMediaIntegrationId: socialMediaIntegration.id,
+              xCommunityId,
+              xShareWithFollowers: xShareWithFollowers ?? true,
+            })
+          ),
         },
       },
       include: {

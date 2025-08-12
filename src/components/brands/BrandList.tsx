@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Edit, Trash2, Settings } from "lucide-react";
 import { AddBrandModal } from "./AddBrandModal";
 import { EditBrandModal } from "./EditBrandModal";
-import { DeleteBrandDialog } from "./DeleteBrandDialog";
+import { DeleteBrandModal } from "./DeleteBrandModal";
 import {
   Table,
   TableBody,
@@ -153,7 +153,7 @@ export function BrandList({ brands }: BrandListProps) {
       )}
 
       {deletingBrand && (
-        <DeleteBrandDialog
+        <DeleteBrandModal
           brandId={deletingBrand.id}
           isOpen={!!deletingBrand}
           onClose={() => setDeletingBrand(null)}

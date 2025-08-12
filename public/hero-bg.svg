@@ -44,6 +44,12 @@
     <pattern id="subtlePattern" width="60" height="60" patternUnits="userSpaceOnUse">
       <circle cx="30" cy="30" r="1" class="dot" />
     </pattern>
+
+    <!-- Primary color vertical fade (transparent top to subtle tint bottom) -->
+    <linearGradient id="primaryVerticalFade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.06" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0" />
+    </linearGradient>
   </defs>
   
   <!-- Main background removed to allow transparent background for dark mode -->
@@ -71,11 +77,7 @@
   <polygon points="1150,500 1200,500 1175,550" fill="url(#secondaryAccent)" opacity="0.6"/>
   <polygon points="400,100 450,100 425,150" fill="url(#tertiaryAccent)" opacity="0.6"/>
   
-  <!-- Subtle grid lines -->
-  <defs>
-    <pattern id="gridLines" width="80" height="80" patternUnits="userSpaceOnUse">
-      <path d="M 80 0 L 0 0 0 80" class="grid-line" fill="none" shape-rendering="crispEdges" vector-effect="non-scaling-stroke"/>
-    </pattern>
-  </defs>
-  <rect width="1200" height="600" fill="url(#gridLines)"/>
+  <!-- Subtle primary-color vertical gradient overlay -->
+  <rect width="1200" height="600" fill="url(#primaryVerticalFade)"/>
+  
 </svg> 

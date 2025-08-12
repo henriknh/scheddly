@@ -34,8 +34,15 @@
      inkscape:window-x="0"
      inkscape:window-y="25"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" /><defs
-     id="defs1" /><g
+      inkscape:current-layer="layer1" /><defs
+      id="defs1"><style type="text/css"><![CDATA[
+        :root { color-scheme: light dark; }
+        /* Default (light) mode keeps black strokes; override in dark */
+        @media (prefers-color-scheme: dark) {
+          /* Use !important to override inline stroke attributes */
+          path { stroke: #ffffff !important; }
+        }
+      ]]></style></defs><g
      id="g7"
      style="display:none"><path
        style="fill:none;stroke:#000000;stroke-width:0.529183;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"

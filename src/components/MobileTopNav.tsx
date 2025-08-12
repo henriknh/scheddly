@@ -43,7 +43,7 @@ export function MobileTopNav() {
             : "bg-background"
         }`}
       >
-        <div className="flex items-center gap-2 h-14 px-8">
+        <div className="flex items-center h-16 px-8">
           <Button
             variant="ghost"
             size="icon"
@@ -55,13 +55,13 @@ export function MobileTopNav() {
           </Button>
           <Button asChild variant="ghost" className="flex items-center gap-2">
             <Link href="/dashboard">
-              <Image src="/logo.svg" alt="Logo" width={20} height={20} />
+              <Image src="/logo.svg" alt="Logo" width={28} height={28} />
               <span className="text-lg font-bold">{config.appName}</span>
             </Link>
           </Button>
         </div>
       </div>
-      <div className="h-14" />
+      <div className="h-16" />
     </div>
   );
 }
