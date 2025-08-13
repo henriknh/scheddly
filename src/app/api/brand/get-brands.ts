@@ -16,16 +16,14 @@ export async function getBrands(): Promise<BrandWithRelations[]> {
         teamId: user.teamId,
       },
       include: {
-        socialMediaIntegrations: {
-          select: {
-            socialMedia: true,
-          },
-        },
+        socialMediaIntegrations: true,
       },
       orderBy: {
         name: "asc",
       },
     });
+
+    console.log("brands", brands);
 
     return brands;
   } catch (error) {
