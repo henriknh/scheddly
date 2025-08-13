@@ -5,7 +5,7 @@ import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden h-svh w-screen flex items-center justify-center pt-sat">
+    <section className="relative overflow-hidden h-svh w-[calc(100vw-16px)] flex items-center justify-center pt-sat">
       {/* Background SVG */}
       <div className="absolute inset-0 -z-10">
         <Image
