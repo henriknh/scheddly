@@ -10,14 +10,17 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col items-center">
       <HeroSection />
-      <PlatformsSection />
-      <FeaturesSection />
-      {/* <StatisticsSection /> */}
-      {/* <TestimonialsSection /> */}
-      <HowItWorksSection />
-      <PricingSection />
-      <FAQSection />
-      <FinalCTASection />
+
+      <div className="container px-4">
+        <PlatformsSection />
+        <FeaturesSection />
+        {/* <StatisticsSection /> */}
+        {/* <TestimonialsSection /> */}
+        <HowItWorksSection />
+        <PricingSection />
+        <FAQSection />
+        <FinalCTASection />
+      </div>
     </div>
   );
 }
