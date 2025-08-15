@@ -81,13 +81,9 @@ export async function createPost({
     if (images?.length) {
       const uploadResults = await uploadPostImages(images, newPost.id);
 
-      console.log("uploadResults", uploadResults);
-
       await Promise.all(
         uploadResults?.map(async (uploadResult) => {
           const { path, mimeType, size } = uploadResult;
-
-          console.log("uploadResult", uploadResult);
 
           return tx.file.create({
             data: {
@@ -99,8 +95,6 @@ export async function createPost({
           });
         })
       );
-
-      console.log("newPost", newPost);
     }
 
     if (videoCover && video) {

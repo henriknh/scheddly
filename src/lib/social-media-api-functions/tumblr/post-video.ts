@@ -90,8 +90,6 @@ export async function postVideo(
   try {
     const data = await response.json();
 
-    console.log("data", data);
-
     await prisma.socialMediaPost.update({
       where: {
         id: socialMediaPost.id,
