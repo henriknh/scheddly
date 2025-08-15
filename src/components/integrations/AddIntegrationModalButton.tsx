@@ -18,25 +18,30 @@ export function AddIntegrationModalButton({
 
   const handlePlatformSelect = async () => {
     setIsLoading(true);
-    
+
     try {
       const oauthPageUrl =
         await socialMediaPlatform.socialMediaApiFunctions.oauthPageUrl(brandId);
 
       if (oauthPageUrl) {
-        // Store the platform info in sessionStorage for when we return
-        sessionStorage.setItem('oauth_platform', socialMediaPlatform.id);
-        sessionStorage.setItem('oauth_brand_id', brandId || '');
-        sessionStorage.setItem('oauth_return_url', window.location.href);
-        
-        // Show a toast to inform the user
-        toast.info(`Redirecting to ${socialMediaPlatform.name}...`);
-        
-        // Close the modal before redirecting
-        setIsAddModalOpen(false);
-        
-        // Redirect to OAuth URL in the same window (works for all devices)
-        window.location.href = oauthPageUrl;
+        if (
+          typeof window !== "undefined" &&
+          typeof sessionStorage !== "undefined"
+        ) {
+          // Store the platform info in sessionStorage for when we return
+          sessionStorage.setItem("oauth_platform", socialMediaPlatform.id);
+          sessionStorage.setItem("oauth_brand_id", brandId || "");
+          sessionStorage.setItem("oauth_return_url", window.location.href);
+
+          // Show a toast to inform the user
+          toast.info(`Redirecting to ${socialMediaPlatform.name}...`);
+
+          // Close the modal before redirecting
+          setIsAddModalOpen(false);
+
+          // Redirect to OAuth URL in the same window (works for all devices)
+          window.location.href = oauthPageUrl;
+        }
       }
     } catch (error) {
       console.error("Failed to initiate OAuth flow:", error);

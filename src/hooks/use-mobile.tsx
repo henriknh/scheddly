@@ -4,6 +4,11 @@ const MOBILE_BREAKPOINT = 768;
 
 export function useIsMobile(): boolean {
   const checkIsMobile = () => {
+    if (typeof window === "undefined" || typeof navigator === "undefined") {
+      // Default to false during SSR
+      return false;
+    }
+
     // Check screen width
     const isSmallScreen = window.innerWidth < MOBILE_BREAKPOINT;
 
@@ -22,16 +27,20 @@ export function useIsMobile(): boolean {
     return isSmallScreen || (hasTouchScreen && isMobileUserAgent);
   };
 
-  const [isMobile, setIsMobile] = React.useState<boolean>(checkIsMobile());
+  const [isMobile, setIsMobile] = React.useState<boolean>(false);
 
   React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Set initial value
+    setIsMobile(checkIsMobile());
+
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
     const onChange = () => {
       setIsMobile(checkIsMobile());
     };
 
     mql.addEventListener("change", onChange);
-    setIsMobile(checkIsMobile());
 
     return () => mql.removeEventListener("change", onChange);
   }, []);

@@ -33,7 +33,9 @@ export function GroupedIntegrationsList({
       setIsConnecting(integrationId);
       await disconnectIntegrationFromBrand(integrationId);
       // Refresh the page to show updated data
-      window.location.reload();
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Failed to disconnect integration from brand:", error);
     } finally {

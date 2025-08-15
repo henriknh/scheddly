@@ -19,6 +19,8 @@ export function TopNav() {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
@@ -35,6 +37,8 @@ export function TopNav() {
     targetId: string
   ) => {
     e.preventDefault();
+
+    if (typeof window === "undefined") return;
 
     if (window.location.pathname !== "/") {
       window.location.href = `/#${targetId}`;
