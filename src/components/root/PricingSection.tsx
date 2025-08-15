@@ -8,9 +8,10 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Check, Info } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { ReactNode } from "react";
 import Link from "next/link";
+import { ReactNode } from "react";
+import { Divider } from "../ui/divider";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface Plan {
   name: string;
@@ -70,22 +71,36 @@ export function PricingSection() {
   const plans: Plan[] = [
     {
       name: "Starter",
-      description: "Perfect for individual creators",
-      price: 10,
+      description: "Perfect for beginners",
+      price: 5,
       features: [
-        { label: "10 social media integrations", isBold: true },
+        { label: "5 social media integrations", isBold: true },
+        featureContentScheduling,
+        featureUnlimitedBrands,
+        featureEcommerceIntegration,
+        featureAnalytics,
+      ],
+      popular: false,
+      bestValue: false,
+    },
+    {
+      name: "Creator",
+      description: "Ideal for content creators",
+      price: 15,
+      features: [
+        { label: "15 social media integrations", isBold: true },
         featureContentScheduling,
         featureUnlimitedBrands,
         featureEcommerceIntegration,
         featureAnalytics,
         featureAITools,
       ],
-      popular: false,
+      popular: true,
       bestValue: false,
     },
     {
-      name: "Professional",
-      description: "For growing businesses and teams",
+      name: "Pro",
+      description: "For teams and agencies",
       price: 20,
       features: [
         { label: "Unlimited social media integrations", isBold: true },
@@ -95,6 +110,7 @@ export function PricingSection() {
         featureAnalytics,
         featureAITools,
         { label: "Team collaboration" },
+        { label: "Priority support" },
       ],
       popular: false,
       bestValue: true,
@@ -109,11 +125,14 @@ export function PricingSection() {
           Choose the plan that fits your needs
         </p>
       </div>
-      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {plans.map((plan) => (
           <Card
             key={plan.name}
-            className={plan.popular ? "border-primary" : ""}
+            className={cn(
+              "flex flex-col",
+              plan.popular ? "border-primary" : ""
+            )}
           >
             <CardHeader>
               <CardTitle className="flex items-center gap-2 h-6">
@@ -127,44 +146,83 @@ export function PricingSection() {
                 <span className="text-lg text-muted-foreground">/month</span>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
-              {plan.features.map((feature, idx) => (
-                <div
-                  key={
-                    typeof feature.label === "string"
-                      ? feature.label
-                      : `feature-${idx}`
-                  }
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-2">
-                    <Check className="h-4 w-4 text-green-500" />
+            <CardContent className="flex-1 flex flex-col space-y-3">
+              {plan.features
+                .filter((feature) => !feature.comingSoon)
+                .map((feature, idx) => (
+                  <div
+                    key={
+                      typeof feature.label === "string"
+                        ? feature.label
+                        : `feature-${idx}`
+                    }
+                    className="flex items-center justify-between"
+                  >
+                    <div className="inline-flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-green-500" />
 
-                    <span className={cn(feature.isBold && "font-bold")}>
-                      {feature.label}
-                    </span>
+                      <div className={cn(feature.isBold && "font-bold")}>
+                        {feature.label}
+                      </div>
+                    </div>
 
-                    {feature.comingSoon && (
-                      <Badge variant="secondary" className="text-sm">
-                        Coming Soon
-                      </Badge>
+                    {feature.tooltip && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="max-w-[calc(100vw-1.5rem)] text-wrap">
+                            {feature.tooltip}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
                     )}
                   </div>
+                ))}
 
-                  {feature.tooltip && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="h-4 w-4 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <div className="max-w-[calc(100vw-1.5rem)] text-wrap">
-                          {feature.tooltip}
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                </div>
-              ))}
+              {plan.features.filter((feature) => feature.comingSoon).length >
+                0 && (
+                <>
+                  <div className="flex-1" />
+                  <div className="flex flex-col py-4">
+                    <Divider text="Coming Soon" />
+                  </div>
+                </>
+              )}
+              {plan.features
+                .filter((feature) => feature.comingSoon)
+                .map((feature, idx) => (
+                  <div
+                    key={
+                      typeof feature.label === "string"
+                        ? feature.label
+                        : `feature-${idx}`
+                    }
+                    className="flex items-center justify-between"
+                  >
+                    <div className="inline-flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-green-500" />
+
+                      <div className={cn(feature.isBold && "font-bold")}>
+                        {feature.label}
+                      </div>
+                    </div>
+
+                    {feature.tooltip && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="max-w-[calc(100vw-1.5rem)] text-wrap">
+                            {feature.tooltip}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </div>
+                ))}
             </CardContent>
           </Card>
         ))}
