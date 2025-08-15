@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
-import { TRIAL_PERIOD_DAYS } from "@/lib/pricing-tier";
+import { TRIAL_PERIOD_DAYS } from "@/lib/subscription";
 
 export function HeroSection() {
   return (

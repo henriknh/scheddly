@@ -40,8 +40,8 @@ import { MobileAwareSidebar } from "@/components/MobileAwareSidebar";
 import config from "../../app.config";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { PricingTier } from "@/generated/prisma";
-import { pricingTierLabel } from "@/lib/pricing-tier";
+import { Subscription } from "@/generated/prisma";
+import { subscriptionLabel } from "@/lib/subscription";
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -170,7 +170,7 @@ export function DashboardSidebar() {
 
       <SidebarFooter>
         <SidebarMenu>
-          {user?.pricingTier === PricingTier.PRO && (
+          {user?.team?.subscription === Subscription.PRO && (
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
@@ -250,7 +250,7 @@ export function DashboardSidebar() {
                   <span className="truncate">{user?.name || "User"}</span>
 
                   <span className="text-xs text-muted-foreground">
-                    {pricingTierLabel(user?.pricingTier)}
+                    {subscriptionLabel(user?.team?.subscription)}
                   </span>
                 </div>
               </Link>

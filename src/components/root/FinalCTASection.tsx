@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { TRIAL_PERIOD_DAYS } from "@/lib/pricing-tier";
+import { TRIAL_PERIOD_DAYS } from "@/lib/subscription";
 
 export function FinalCTASection() {
   return (

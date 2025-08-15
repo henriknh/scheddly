@@ -1,6 +1,6 @@
 "use server";
 
-import { File, User } from "@/generated/prisma";
+import { File, User, Team } from "@/generated/prisma";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { createToken, setTokenCookie, verifyToken } from "./jwt";
@@ -8,6 +8,7 @@ import prisma from "./prisma";
 
 export interface UserWithRelations extends User {
   avatar?: File | null;
+  team?: Team | null;
 }
 
 export type CleanedUser = Omit<UserWithRelations, "password"> & {
@@ -54,6 +55,7 @@ export const getUserFromToken = async () => {
     where: { id: payload.id as string },
     include: {
       avatar: true,
+      team: true,
     },
   });
 
@@ -76,6 +78,7 @@ export async function getUser(): Promise<CleanedUser | null> {
     },
     include: {
       avatar: true,
+      team: true,
     },
   });
 

@@ -3,13 +3,13 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
-import { isTrialExpired } from "@/lib/pricing-tier";
+import { isTrialExpired } from "@/lib/subscription";
 import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 export function SubscriptionWarningBanner() {
   const { user } = useAuth();
-  const showTrialExpiredBanner = user && isTrialExpired(user);
+  const showTrialExpiredBanner = user?.team && isTrialExpired(user.team);
 
   if (!showTrialExpiredBanner) {
     return null;
