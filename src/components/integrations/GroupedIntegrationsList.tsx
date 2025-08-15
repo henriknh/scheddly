@@ -23,7 +23,6 @@ export function GroupedIntegrationsList({
   integrations,
   brands,
 }: GroupedIntegrationsListProps) {
-  console.log("integrations", integrations);
   const [isConnecting, setIsConnecting] = useState<string | null>(null);
   const isMobile = useIsMobile();
   if (integrations.length === 0) return null;

@@ -102,7 +102,7 @@ async function main() {
   });
 
   // eslint-disable-next-line no-console
-  console.log("Generated:", ogOut, "and", twOut);
+  console.info("Generated:", ogOut, "and", twOut);
 }
 
 main().catch((err) => {

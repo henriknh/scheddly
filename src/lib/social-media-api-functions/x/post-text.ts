@@ -17,8 +17,6 @@ export async function postText(
     socialMediaPost.socialMediaIntegrationId
   );
 
-  console.log("socialMediaPost", socialMediaPost);
-
   const response = await fetch(`${xApiUrl}/2/tweets`, {
     method: "POST",
     headers: {

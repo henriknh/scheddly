@@ -23,8 +23,6 @@ export async function getBrands(): Promise<BrandWithRelations[]> {
       },
     });
 
-    console.log("brands", brands);
-
     return brands;
   } catch (error) {
     console.error("Error getting team brands:", error);

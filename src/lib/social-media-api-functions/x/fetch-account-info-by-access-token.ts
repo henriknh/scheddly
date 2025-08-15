@@ -25,8 +25,6 @@ export async function fetchAccountInfoByAccessToken(
   const data = await response.json();
   const user = data.data;
 
-  console.log("user", user);
-
   if (!user) {
     throw new Error("No user data received from X");
   }
