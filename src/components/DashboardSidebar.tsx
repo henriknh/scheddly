@@ -58,6 +58,8 @@ export function DashboardSidebar() {
     }
   };
 
+  console.log(open);
+
   return (
     <MobileAwareSidebar>
       <SidebarHeader>
@@ -240,7 +242,7 @@ export function DashboardSidebar() {
                 href="/dashboard/profile"
                 className={cn(
                   "flex items-center gap-2 w-full",
-                  open ? "h-14" : "h-8"
+                  open ? "!h-14" : "!h-8"
                 )}
                 onClick={handleLinkClick}
               >
