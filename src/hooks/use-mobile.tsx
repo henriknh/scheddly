@@ -2,7 +2,7 @@ import * as React from "react";
 
 const MOBILE_BREAKPOINT = 768;
 
-export function useIsMobile() {
+export function useIsMobile(): boolean {
   const checkIsMobile = () => {
     // Check screen width
     const isSmallScreen = window.innerWidth < MOBILE_BREAKPOINT;
@@ -22,9 +22,7 @@ export function useIsMobile() {
     return isSmallScreen || (hasTouchScreen && isMobileUserAgent);
   };
 
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
-    checkIsMobile()
-  );
+  const [isMobile, setIsMobile] = React.useState<boolean>(checkIsMobile());
 
   React.useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
