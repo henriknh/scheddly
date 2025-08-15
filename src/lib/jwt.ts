@@ -18,14 +18,7 @@ if (!rawSecret) {
 const JWT_SECRET = new TextEncoder().encode(rawSecret || "insecure_dev_secret");
 
 export async function createToken(user: CleanedUser) {
-  const tokenPayload = {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    avatarPath: user.avatar?.path,
-  };
-
-  return await new SignJWT(tokenPayload)
+  return await new SignJWT(user)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("24h")
@@ -61,7 +54,7 @@ export async function setTokenCookie(token: string) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // strict in prod; allow local dev over http
     sameSite: "strict",
-    maxAge: 24 * 60 * 60, // 24 hours
+    maxAge: 24 * 60 * 60 * 30, // 30 days
     path: "/",
   });
 }
