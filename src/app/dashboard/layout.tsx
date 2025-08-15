@@ -3,6 +3,7 @@ import { Breadcrumbs } from "@/components/common/breadcrumbs";
 import { BreadcrumbsProvider } from "@/components/common/breadcrumbs-context";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileTopNav } from "@/components/MobileTopNav";
+import { SubscriptionWarningBanner } from "@/components/subscription-warning-banner";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { getUserFromToken } from "@/lib/user";
 import { Metadata } from "next";
@@ -32,6 +33,8 @@ export default async function DashboardLayout({
             <DashboardSidebar />
             <main className="flex-1 flex justify-center overflow-x-auto">
               <div className="container flex flex-col space-y-6 py-4">
+                <SubscriptionWarningBanner />
+
                 <BreadcrumbsProvider>
                   <Breadcrumbs />
                   {children}

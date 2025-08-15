@@ -1,6 +1,5 @@
 import { StructuredData } from "@/components/root/StructuredData";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import config from "@/config";
 import { ensureBucketExists } from "@/lib/minio";
 import type { Metadata, Viewport } from "next";
@@ -163,10 +162,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider>
-            {children}
-            <Toaster />
-          </SidebarProvider>
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

@@ -1,4 +1,5 @@
 import config from "@/config";
+import { TRIAL_PERIOD_DAYS } from "@/lib/pricing-tier";
 
 export function StructuredData() {
   const structuredData = {
@@ -13,7 +14,7 @@ export function StructuredData() {
       "@type": "Offer",
       price: "0",
       priceCurrency: "USD",
-      description: "Free 7-day trial",
+      description: `Free ${TRIAL_PERIOD_DAYS}-day trial`,
     },
     aggregateRating: {
       "@type": "AggregateRating",

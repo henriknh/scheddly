@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { TRIAL_PERIOD_DAYS } from "@/lib/pricing-tier";
 
 export function FinalCTASection() {
   return (
@@ -14,7 +15,9 @@ export function FinalCTASection() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Button size="lg" asChild>
-            <Link href="/auth/register">Start Free 7-Day Trial</Link>
+            <Link href="/auth/register">
+              Start Free {TRIAL_PERIOD_DAYS}-Day Trial
+            </Link>
           </Button>
           <Button size="lg" variant="outline" asChild>
             <Link href="/auth/login">Sign In</Link>

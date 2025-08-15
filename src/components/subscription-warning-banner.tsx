@@ -1,0 +1,33 @@
+"use client";
+
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth-context";
+import { isTrialExpired } from "@/lib/pricing-tier";
+import { AlertTriangle } from "lucide-react";
+import Link from "next/link";
+
+export function SubscriptionWarningBanner() {
+  const { user } = useAuth();
+  const showTrialExpiredBanner = user && isTrialExpired(user);
+
+  if (!showTrialExpiredBanner) {
+    return null;
+  }
+
+  return (
+    <Alert className="border-destructive bg-destructive/10 text-destructive mt-4 flex items-center gap-2">
+      <span className="flex items-center justify-center">
+        <AlertTriangle className="h-4 w-4" />
+      </span>
+      <AlertDescription className="flex items-center justify-between w-full">
+        <span>
+          Your free trial has expired. Upgrade to continue using Scheddly.
+        </span>
+        <Button size="sm" variant="outline" asChild>
+          <Link href="/dashboard/profile">Upgrade Now</Link>
+        </Button>
+      </AlertDescription>
+    </Alert>
+  );
+}
