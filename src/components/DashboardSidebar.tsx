@@ -40,6 +40,8 @@ import { MobileAwareSidebar } from "@/components/MobileAwareSidebar";
 import config from "../../app.config";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { PricingTier } from "@/generated/prisma";
+import { pricingTierLabel } from "@/lib/pricing-tier";
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -168,38 +170,24 @@ export function DashboardSidebar() {
 
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              tooltip={"Profile"}
-              isActive={pathname === "/dashboard/profile"}
-            >
-              <Link
-                href="/dashboard/profile"
-                className="flex items-center gap-2"
-                onClick={handleLinkClick}
+          {user?.pricingTier === PricingTier.PRO && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                tooltip={"Team"}
+                isActive={pathname === "/dashboard/team"}
               >
-                <UserAvatar src={user?.avatar?.id} />
-                <span className="truncate">{user?.name || "User"}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              tooltip={"Team"}
-              isActive={pathname === "/dashboard/team"}
-            >
-              <Link
-                href="/dashboard/team"
-                className="flex items-center gap-2"
-                onClick={handleLinkClick}
-              >
-                <Users className="h-4 w-4" />
-                <span>Team</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+                <Link
+                  href="/dashboard/team"
+                  className="flex items-center gap-2"
+                  onClick={handleLinkClick}
+                >
+                  <Users className="h-4 w-4" />
+                  <span>Team</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
 
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -241,6 +229,33 @@ export function DashboardSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           )}
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              tooltip={"Profile"}
+              isActive={pathname === "/dashboard/profile"}
+            >
+              <Link
+                href="/dashboard/profile"
+                className={cn(
+                  "flex items-center gap-2 w-full",
+                  open ? "h-14" : "h-8"
+                )}
+                onClick={handleLinkClick}
+              >
+                <UserAvatar src={user?.avatar?.id} size={open ? "md" : "sm"} />
+
+                <div className="flex flex-col overflow-hidden">
+                  <span className="truncate">{user?.name || "User"}</span>
+
+                  <span className="text-xs text-muted-foreground">
+                    {pricingTierLabel(user?.pricingTier)}
+                  </span>
+                </div>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
 
           {!isMobileDevice && (
             <SidebarMenuItem>
