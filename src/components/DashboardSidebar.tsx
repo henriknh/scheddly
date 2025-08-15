@@ -58,8 +58,6 @@ export function DashboardSidebar() {
     }
   };
 
-  console.log(open);
-
   return (
     <MobileAwareSidebar>
       <SidebarHeader>
