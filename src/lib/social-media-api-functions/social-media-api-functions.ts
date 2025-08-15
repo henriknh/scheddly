@@ -8,7 +8,6 @@ import { pinterest } from "./pinterest/index";
 import { tumblr } from "./tumblr/index";
 import { x } from "./x/index";
 import { tiktok } from "./tiktok/index";
-import { threads } from "./threads/index";
 import prisma from "@/lib/prisma";
 
 export const SocialMediaApiErrors = {
@@ -80,8 +79,6 @@ export const getSocialMediaApiFunctions = (
       return x;
     case SocialMedia.TIKTOK:
       return tiktok;
-    case SocialMedia.THREADS:
-      return threads;
   }
 
   throw new Error(`Social media ${socialMedia} not supported`);
