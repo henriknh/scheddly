@@ -132,12 +132,6 @@ export const getValidAccessToken = async (
             integration.id
           )
         ).accessToken;
-      case SocialMedia.THREADS:
-        return (
-          await threads.refreshAccessTokenAndUpdateSocialMediaIntegration(
-            integration.id
-          )
-        ).accessToken;
       default:
         throw new Error(
           `Social media ${integration.socialMedia} not supported`

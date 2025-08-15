@@ -1,17 +1,9 @@
+import { InstagramIcon, TumblrIcon, XIcon } from "@/components/icons";
 import { PostType, SocialMedia } from "@/generated/prisma";
-import { SocialMediaApiFunctions } from "./social-media-api-functions/social-media-api-functions";
 import { instagram } from "./social-media-api-functions/instagram";
-import { pinterest } from "./social-media-api-functions/pinterest";
+import { SocialMediaApiFunctions } from "./social-media-api-functions/social-media-api-functions";
 import { tumblr } from "./social-media-api-functions/tumblr";
 import { x } from "./social-media-api-functions/x";
-import { threads } from "./social-media-api-functions/threads";
-import {
-  PinterestIcon,
-  TumblrIcon,
-  InstagramIcon,
-  XIcon,
-  ThreadsIcon,
-} from "@/components/icons";
 
 export type SocialMediaPlatform = {
   id: SocialMedia;
