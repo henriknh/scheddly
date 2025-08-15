@@ -25,8 +25,21 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
-const SIDEBAR_COOKIE_NAME = "sidebar_state";
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
+// Function to update sidebar state via API
+async function updateSidebarOpen(sidebarOpen: boolean): Promise<void> {
+  const response = await fetch("/api/user/update-sidebar-open", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ sidebarOpen }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update sidebar state");
+  }
+}
+
 const SIDEBAR_WIDTH = "16rem";
 // const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "4rem";
@@ -89,15 +102,15 @@ const SidebarProvider = React.forwardRef<
           _setOpen(openState);
         }
 
-        // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+        updateSidebarOpen(openState).catch((error: unknown) => {
+          console.error("Failed to update sidebar state:", error);
+        });
       },
       [setOpenProp, open]
     );
 
     // Helper to toggle the sidebar.
     const toggleSidebar = React.useCallback(() => {
-      return setOpen((open) => !open);
       return isMobile
         ? setOpenMobile((open) => !open)
         : setOpen((open) => !open);
