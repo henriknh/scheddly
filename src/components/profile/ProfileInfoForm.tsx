@@ -108,7 +108,7 @@ export function ProfileInfoForm() {
             aria-label="Change profile image"
           >
             <div className="relative">
-              <UserAvatar src={formData.avatar || user?.avatar?.id} isBig />
+              <UserAvatar src={formData.avatar || user?.avatar?.id} size="lg" />
               <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-medium rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-center text-xs">
                 Update avatar
               </div>

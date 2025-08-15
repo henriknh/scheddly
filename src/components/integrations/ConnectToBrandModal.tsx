@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 import { Link } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -71,16 +72,21 @@ export function ConnectToBrandModal({
               <p className="text-sm text-muted-foreground">
                 Select a brand to connect this integration to:
               </p>
-              <div className="grid gap-2">
+              <div
+                className={cn(
+                  "grid gap-2",
+                  brands.length >= 2 ? "grid-cols-2" : "grid-cols-1"
+                )}
+              >
                 {brands.map((brand) => (
                   <Button
                     key={brand.id}
                     variant="outline"
-                    className="justify-start"
+                    className="py-8 text-center"
                     onClick={() => onConnect(brand.id)}
                     disabled={isConnecting}
                   >
-                    {brand.name}
+                    <div className="truncate">{brand.name}</div>
                   </Button>
                 ))}
               </div>

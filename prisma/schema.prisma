@@ -46,18 +46,20 @@ model Post {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String       @unique
   emailVerified DateTime?
   password      String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  avatarId      String?   @unique
-  avatar        File?     @relation(fields: [avatarId], references: [id])
+  pricingTier   PricingTier?
+  sidebarOpen   Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  avatarId      String?      @unique
+  avatar        File?        @relation(fields: [avatarId], references: [id])
   teamId        String?
-  team          Team?     @relation("TeamMember", fields: [teamId], references: [id])
-  ownedTeam     Team?     @relation("TeamOwner")
+  team          Team?        @relation("TeamMember", fields: [teamId], references: [id])
+  ownedTeam     Team?        @relation("TeamOwner")
 }
 
 model Team {
@@ -134,6 +136,12 @@ enum SocialMedia {
   X
   FACEBOOK
   LINKEDIN
+}
+
+enum PricingTier {
+  STARTER
+  CREATOR
+  PRO
 }
 
 model File {

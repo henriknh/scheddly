@@ -50,7 +50,6 @@ export function EditIntegrationModal({
           <Button variant="ghost" onClick={() => setOpen(false)}>
             Close
           </Button>
-          <Button disabled>Save changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

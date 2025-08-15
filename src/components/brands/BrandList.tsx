@@ -1,12 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Brand } from "@/generated/prisma";
+import { BrandWithRelations } from "@/app/api/brand/types";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit, Trash2, Settings } from "lucide-react";
-import { AddBrandModal } from "./AddBrandModal";
-import { EditBrandModal } from "./EditBrandModal";
-import { DeleteBrandModal } from "./DeleteBrandModal";
 import {
   Table,
   TableBody,
@@ -15,36 +10,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  FacebookIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  PinterestIcon,
-  ThreadsIcon,
-  TikTokIcon,
-  TumblrIcon,
-  XIcon,
-  YouTubeIcon,
-} from "@/components/icons";
+import { Brand } from "@/generated/prisma";
+import { Edit, Plus, Settings, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { AddBrandModal } from "./AddBrandModal";
+import { DeleteBrandModal } from "./DeleteBrandModal";
+import { EditBrandModal } from "./EditBrandModal";
 
 interface BrandListProps {
-  brands: (Brand & {
-    socialMediaIntegrations: { socialMedia: string }[];
-  })[];
+  brands: BrandWithRelations[];
 }
-
-const socialMediaIconMap = {
-  FACEBOOK: FacebookIcon,
-  INSTAGRAM: InstagramIcon,
-  LINKEDIN: LinkedInIcon,
-  PINTEREST: PinterestIcon,
-  THREADS: ThreadsIcon,
-  TIKTOK: TikTokIcon,
-  TUMBLR: TumblrIcon,
-  X: XIcon,
-  YOUTUBE: YouTubeIcon,
-};
 
 export function BrandList({ brands }: BrandListProps) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -89,7 +65,6 @@ export function BrandList({ brands }: BrandListProps) {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Integrations</TableHead>
               <TableHead className="text-right"></TableHead>
             </TableRow>
           </TableHeader>
@@ -97,24 +72,7 @@ export function BrandList({ brands }: BrandListProps) {
             {brands.map((brand) => (
               <TableRow key={brand.id}>
                 <TableCell className="font-medium">{brand.name}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    {brand.socialMediaIntegrations.map((integration, index) => {
-                      const IconComponent =
-                        socialMediaIconMap[
-                          integration.socialMedia as keyof typeof socialMediaIconMap
-                        ];
-                      return IconComponent ? (
-                        <IconComponent key={index} className="h-4 w-4" />
-                      ) : null;
-                    })}
-                    {brand.socialMediaIntegrations.length === 0 && (
-                      <span className="text-muted-foreground text-sm">
-                        No integrations
-                      </span>
-                    )}
-                  </div>
-                </TableCell>
+
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-2">
                     <Button

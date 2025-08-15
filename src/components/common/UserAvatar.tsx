@@ -9,10 +9,10 @@ import { useMemo } from "react";
 
 interface UserAvatarProps {
   src?: string | null;
-  isBig?: boolean;
+  size?: "sm" | "md" | "lg";
 }
 
-export function UserAvatar({ src, isBig = false }: UserAvatarProps) {
+export function UserAvatar({ src, size = "sm" }: UserAvatarProps) {
   const url = useMemo(() => {
     if (!src) return null;
     if (src.startsWith("data:image")) return src;
@@ -21,10 +21,18 @@ export function UserAvatar({ src, isBig = false }: UserAvatarProps) {
   }, [src]);
 
   return (
-    <ShadcnAvatar className={cn(isBig ? "h-16 w-16" : "h-4 w-4")}>
+    <ShadcnAvatar
+      className={cn(
+        size === "sm" ? "h-4 w-4" : size === "md" ? "h-8 w-8" : "h-16 w-16"
+      )}
+    >
       <AvatarImage src={url!} alt="user avatar" />
       <AvatarFallback>
-        <User className={cn(isBig ? "h-8 w-8" : "h-4 w-4")} />
+        <User
+          className={cn(
+            size === "sm" ? "h-4 w-4" : size === "md" ? "h-8 w-8" : "h-16 w-16"
+          )}
+        />
       </AvatarFallback>
     </ShadcnAvatar>
   );

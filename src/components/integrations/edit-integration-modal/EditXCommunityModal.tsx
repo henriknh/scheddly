@@ -10,18 +10,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { XCommunity } from "@/generated/prisma";
-import { Trash } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-interface DeleteXCommunityModalProps {
+interface EditXCommunityModalProps {
   community: XCommunity;
 }
 
-export function DeleteXCommunityModal({
-  community,
-}: DeleteXCommunityModalProps) {
+export function EditXCommunityModal({ community }: EditXCommunityModalProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
@@ -40,12 +38,8 @@ export function DeleteXCommunityModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="rounded-l-none border-l-0"
-        >
-          <Trash className="h-4 w-4" />
+        <Button variant="outline" size="sm" className="rounded-none border-l-0">
+          <Pencil className="h-4 w-4" />
         </Button>
       </DialogTrigger>
 

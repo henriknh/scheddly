@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { AlertCircleIcon, Plus } from "lucide-react";
+import { AlertCircleIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -56,8 +56,8 @@ export function AddXCommunityModal({ integration }: AddXCommunityModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm">
-          <Plus className="h-4 w-4" />
+        <Button variant="outline" size="sm">
+          <PlusIcon className="h-4 w-4" />
           Add community
         </Button>
       </DialogTrigger>

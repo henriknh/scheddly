@@ -1,9 +1,10 @@
 import { AuthProviderWrapper } from "@/components/auth/auth-provider-wrapper";
+import { Breadcrumbs } from "@/components/common/breadcrumbs";
+import { BreadcrumbsProvider } from "@/components/common/breadcrumbs-context";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileTopNav } from "@/components/MobileTopNav";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { Breadcrumbs } from "@/components/common/breadcrumbs";
-import { BreadcrumbsProvider } from "@/components/common/breadcrumbs-context";
+import { getUserFromToken } from "@/lib/user";
 import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -13,14 +14,18 @@ export const metadata: Metadata = {
   description: "Example dashboard app built using the components.",
 };
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Get user's sidebar preference from database
+  const user = await getUserFromToken();
+  const sidebarOpen = user?.sidebarOpen ?? true;
+
   return (
     <AuthProviderWrapper>
-      <SidebarProvider defaultOpen={false}>
+      <SidebarProvider defaultOpen={sidebarOpen}>
         <div className="flex w-full min-h-screen flex-col">
           <MobileTopNav />
           <div className="flex flex-1">
