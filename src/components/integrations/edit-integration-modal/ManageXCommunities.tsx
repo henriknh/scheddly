@@ -1,14 +1,8 @@
 import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
-import { Caption } from "@/components/common/Caption";
 import { SubHeader } from "@/components/common/SubHeader";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { ExternalLinkIcon } from "lucide-react";
+import Link from "next/link";
 import { AddXCommunityModal } from "./AddXCommunityModal";
 import { DeleteXCommunityModal } from "./DeleteXCommunityModal";
 
@@ -23,38 +17,32 @@ export function ManageXCommunities({ integration }: ManageXCommunitiesProps) {
         <SubHeader>Communities</SubHeader>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name and ID</TableHead>
-            <TableHead className="text-right">
-              <AddXCommunityModal integration={integration} />
-            </TableHead>
-          </TableRow>
-        </TableHeader>
+      <div className="flex flex-wrap gap-2">
+        {integration.xCommunities?.map((community) => (
+          <div key={community.id}>
+            <Button
+              variant="outline"
+              className="rounded-r-none"
+              size="sm"
+              asChild
+            >
+              <Link
+                href={`https://x.com/i/communities/${community.xId}`}
+                target="_blank"
+              >
+                <ExternalLinkIcon className="h-4 w-4" />
+                {community.name}
+              </Link>
+            </Button>
 
-        <TableBody>
-          {integration.xCommunities && integration.xCommunities.length > 0 ? (
-            integration.xCommunities?.map((community) => (
-              <TableRow key={community.id}>
-                <TableCell className="flex flex-col gap-0">
-                  {community.name}
-                  <Caption>{community.xId}</Caption>
-                </TableCell>
-                <TableCell className="text-right">
-                  <DeleteXCommunityModal community={community} />
-                </TableCell>
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={2} className="text-center">
-                <Caption>No communities found</Caption>
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            {/* <EditXCommunityModal community={community} /> */}
+
+            <DeleteXCommunityModal community={community} />
+          </div>
+        ))}
+
+        <AddXCommunityModal integration={integration} />
+      </div>
     </div>
   );
 }
