@@ -2,7 +2,7 @@ import { BlogPost } from "./posts";
 
 const post: BlogPost = {
   slug: "time-matters-save-time-with-scheddly",
-  title: "Time matters &ndash; How to use Scheddly to save time",
+  title: "Time matters — How to use Scheddly to save time",
   description:
     "A practical system to plan, batch, and schedule social content so you reclaim hours every week.",
   publishedAt: "2025-08-11T09:00:00.000Z",
@@ -24,8 +24,8 @@ const post: BlogPost = {
           pillars and define your core call to action.
         </li>
         <li>
-          <span className="font-medium">Draft (45 min):</span> Write 6&ndash;10
-          posts using saved caption formats and assets.
+          <span className="font-medium">Draft (45 min):</span> Write 6—10 posts
+          using saved caption formats and assets.
         </li>
         <li>
           <span className="font-medium">Schedule (30 min):</span> Queue posts
@@ -36,17 +36,15 @@ const post: BlogPost = {
       <h2 className="text-xl font-semibold">Small habits that save big time</h2>
       <ul className="list-disc pl-6 space-y-2">
         <li>Keep a running swipe file of hooks and CTAs inside your brand.</li>
-        <li>
-          Reuse formats &ndash; don&apos;t re-invent the wheel for every post.
-        </li>
+        <li>Reuse formats — don&apos;t re-invent the wheel for every post.</li>
         <li>Batch similar tasks: write, then design, then schedule.</li>
       </ul>
 
       <h2 className="text-xl font-semibold">How Scheddly helps</h2>
       <p>
         Scheddly centralizes your integrations, assets, and posting defaults by
-        brand so you can plan once and distribute everywhere &ndash; without
-        context switching.
+        brand so you can plan once and distribute everywhere — without context
+        switching.
       </p>
 
       <div className="pt-2">

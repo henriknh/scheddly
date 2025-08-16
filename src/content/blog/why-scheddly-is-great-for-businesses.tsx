@@ -14,7 +14,7 @@ const post: BlogPost = {
       <p>
         Growing teams need clarity more than features. Scheddly organizes social
         around brands so your integrations, assets, and defaults live where they
-        belong &ndash; making consistency the default, not a chore.
+        belong — making consistency the default, not a chore.
       </p>
 
       <h2 className="text-xl font-semibold">Brand-first structure</h2>

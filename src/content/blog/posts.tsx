@@ -4,6 +4,7 @@ import WhyScheddlyIsBestForIndividuals from "./why-scheddly-is-great-for-individ
 import WhyScheddlyIsBestForBusinesses from "./why-scheddly-is-great-for-businesses";
 import TimeMattersSaveTime from "./time-matters-save-time-with-scheddly";
 import TimingMattersWhenToPost from "./timing-matters-when-to-post-for-most-engagement";
+import ShortVsLongTextOnSocialMedia from "./short-vs-long-text-on-social-media";
 
 type Tag =
   | "Branding"
@@ -51,6 +52,7 @@ export const posts: BlogPost[] = [
   WhyScheddlyIsBestForBusinesses,
   TimeMattersSaveTime,
   TimingMattersWhenToPost,
+  ShortVsLongTextOnSocialMedia,
 ];
 
 export function getAllPosts() {
