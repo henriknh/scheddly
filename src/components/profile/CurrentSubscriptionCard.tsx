@@ -162,8 +162,6 @@ export function CurrentSubscriptionCard() {
       </CardHeader>
 
       <CardContent>
-        <Separator className="mb-4" />
-
         <div className="flex flex-col md:flex-row justify-between gap-2">
           <div className="flex flex-col ">
             {hasActiveSubscription && (
