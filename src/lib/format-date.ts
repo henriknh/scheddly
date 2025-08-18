@@ -29,7 +29,7 @@ export function formatDateAgo(date: Date) {
 }
 
 export function formatDate(date: Date) {
-  return format(date, "MMM d, yyyy");
+  return format(date, "MMMM d, yyyy");
 }
 
 export function formatDateTime(date: Date) {

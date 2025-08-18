@@ -1,4 +1,8 @@
-import { Subscription } from "@/generated/prisma";
+import {
+  Subscription,
+  SubscriptionStatus,
+  SubscriptionTier,
+} from "@/generated/prisma";
 
 // Trial period duration in days
 export const TRIAL_PERIOD_DAYS = 7;
@@ -6,15 +10,26 @@ export const TRIAL_PERIOD_DAYS = 7;
 export const subscriptionLabel = (
   subscription?: Subscription | null
 ): string => {
-  switch (subscription) {
-    case Subscription.STARTER:
+  if (!subscription) {
+    return "Trial";
+  }
+
+  if (
+    subscription?.status === SubscriptionStatus.canceled ||
+    subscription?.status === SubscriptionStatus.incomplete_expired
+  ) {
+    return "Expired";
+  }
+
+  switch (subscription?.subscriptionTier) {
+    case SubscriptionTier.STARTER:
       return "Starter";
-    case Subscription.CREATOR:
+    case SubscriptionTier.CREATOR:
       return "Creator";
-    case Subscription.PRO:
+    case SubscriptionTier.PRO:
       return "Pro";
     default:
-      return "Trial";
+      return "";
   }
 };
 

@@ -40,7 +40,7 @@ import { MobileAwareSidebar } from "@/components/MobileAwareSidebar";
 import config from "../../app.config";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { Subscription } from "@/generated/prisma";
+import { SubscriptionTier } from "@/generated/prisma";
 import { subscriptionLabel } from "@/lib/subscription";
 
 export function DashboardSidebar() {
@@ -170,7 +170,8 @@ export function DashboardSidebar() {
 
       <SidebarFooter>
         <SidebarMenu>
-          {user?.team?.subscription === Subscription.PRO && (
+          {user?.team?.subscription?.subscriptionTier ===
+            SubscriptionTier.PRO && (
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild

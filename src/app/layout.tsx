@@ -7,6 +7,7 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "sonner";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -155,7 +156,7 @@ export default function RootLayout({
           oh-so-saasy-project="hf8chxmq6m505q3"
         />
       </head>
-      <body className={inter.className}>
+      <body className={cn(inter.className, "flex flex-col")}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

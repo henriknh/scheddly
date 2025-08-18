@@ -7,6 +7,7 @@ import { SubscriptionWarningBanner } from "@/components/subscription-warning-ban
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { getUserFromToken } from "@/lib/user";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,10 @@ export default async function DashboardLayout({
   // Get user's sidebar preference from database
   const user = await getUserFromToken();
   const sidebarOpen = user?.sidebarOpen ?? true;
+
+  if (!user) {
+    redirect("/auth/login");
+  }
 
   return (
     <AuthProviderWrapper>

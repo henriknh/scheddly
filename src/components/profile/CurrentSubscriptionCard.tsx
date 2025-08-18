@@ -12,13 +12,22 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/lib/auth-context";
 import {
-  subscriptionLabel,
   isTrialExpired,
+  subscriptionLabel,
   TRIAL_PERIOD_DAYS,
 } from "@/lib/subscription";
 
-import Link from "next/link";
+import {
+  SubscriptionBillingInterval,
+  SubscriptionStatus,
+} from "@/generated/prisma";
+import { formatPrice as formatCurrency } from "@/lib/currency";
+import { formatDate } from "@/lib/format-date";
+import { FREE_MONTHS_WHEN_YEARLY, PLANS } from "@/lib/pricing";
 import { Header } from "../common/Header";
+import { SubHeader } from "../common/SubHeader";
+import { UpgradePlanModal } from "../subscription/UpgradePlanModal";
+import { Badge } from "../ui/badge";
 
 export function CurrentSubscriptionCard() {
   const { user } = useAuth();
@@ -28,12 +37,12 @@ export function CurrentSubscriptionCard() {
   }
 
   const team = user.team;
-  const subscription = team.subscription;
-  const label = subscriptionLabel(subscription);
+  const stripeSub = team.subscription ?? null;
+  const label = subscriptionLabel(stripeSub);
   const trialExpired = isTrialExpired(team);
-  const isOnTrial = !subscription;
+  const isOnTrial = !team.subscription;
+  const hasActiveSubscription = stripeSub?.status === SubscriptionStatus.active;
 
-  // Calculate trial end date
   const trialEndDate = new Date(team.createdAt);
   trialEndDate.setDate(trialEndDate.getDate() + TRIAL_PERIOD_DAYS);
   const daysRemaining = Math.max(
@@ -43,31 +52,144 @@ export function CurrentSubscriptionCard() {
     )
   );
 
+  const currentBillingInterval: SubscriptionBillingInterval | null =
+    stripeSub?.billingInterval ?? null;
+  const periodEndDate: Date | null = stripeSub?.currentPeriodEnd
+    ? new Date(stripeSub.currentPeriodEnd)
+    : null;
+
+  const computeDisplayPrice = () => {
+    if (!stripeSub?.subscriptionTier || !stripeSub?.billingInterval) {
+      return null;
+    }
+    const plan = PLANS.find(
+      (p) => p.subscriptionTier === stripeSub.subscriptionTier
+    );
+    if (!plan) return null;
+    const monthlyPrice = plan.pricePerMonth;
+    if (stripeSub.billingInterval === "monthly") {
+      return `${formatCurrency(monthlyPrice)} / month`;
+    }
+    const yearlyTotal = monthlyPrice * (12 - FREE_MONTHS_WHEN_YEARLY);
+    return `${formatCurrency(yearlyTotal)} / year`;
+  };
+
+  const openStripePortal = async () => {
+    try {
+      const response = await fetch("/api/stripe/portal", {
+        method: "POST",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        window.open(data.url, "_blank");
+      }
+    } catch (error) {
+      console.error("Error opening customer portal:", error);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          <Header>{label}</Header>
+          <div className="flex justify-between">
+            <div>
+              <SubHeader>Current subscription</SubHeader>
+              <Header>{label}</Header>
+            </div>
+            <div>
+              <Badge
+                variant={
+                  stripeSub?.status === SubscriptionStatus.active
+                    ? stripeSub.cancelAtPeriodEnd
+                      ? "outline"
+                      : "success"
+                    : "destructive"
+                }
+              >
+                {stripeSub?.status === SubscriptionStatus.active
+                  ? stripeSub.cancelAtPeriodEnd
+                    ? "Cancelled"
+                    : "Active"
+                  : "Cancelled"}
+              </Badge>
+            </div>
+          </div>
         </CardTitle>
         <CardDescription>
-          {trialExpired && "Your trial has expired. Upgrade to continue."}
-          {isOnTrial &&
-            !trialExpired &&
-            `Expires in ${daysRemaining} day${daysRemaining !== 1 ? "s" : ""}`}
-          {subscription && "Renews in 30 days"}
+          <div className="flex flex-col gap-1">
+            {isOnTrial ? (
+              <>
+                {trialExpired &&
+                  "Your trial has expired. Upgrade to continue using Scheddly."}
+                {!trialExpired &&
+                  `Trial expires in ${daysRemaining} day${
+                    daysRemaining !== 1 ? "s" : ""
+                  } (${trialEndDate.toLocaleDateString()})`}
+              </>
+            ) : (
+              <>
+                {stripeSub?.status === SubscriptionStatus.active ? (
+                  <>
+                    {computeDisplayPrice()}
+                    {periodEndDate && (
+                      <div className="text-muted-foreground">
+                        {stripeSub.cancelAtPeriodEnd
+                          ? `Expires ${formatDate(periodEndDate)}`
+                          : `Renews ${formatDate(periodEndDate)}`}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {periodEndDate ? (
+                      <>
+                        Subscription expired on {formatDate(periodEndDate)}.
+                        Upgrade to continue using Scheddly.
+                      </>
+                    ) : (
+                      <>
+                        Subscription expired. Upgrade to continue using
+                        Scheddly.
+                      </>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </div>
         </CardDescription>
       </CardHeader>
 
-      {(isOnTrial || trialExpired) && (
-        <CardContent>
-          <Separator className="mb-4" />
-          <Button asChild className="w-full">
-            <Link href="/dashboard/profile">
-              {trialExpired ? "Upgrade Now" : "Upgrade Plan"}
-            </Link>
-          </Button>
-        </CardContent>
-      )}
+      <CardContent>
+        <Separator className="mb-4" />
+
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex gap-2">
+            {hasActiveSubscription && (
+              <>
+                <Button variant="outline" onClick={openStripePortal}>
+                  Manage Subscription
+                </Button>
+              </>
+            )}
+          </div>
+
+          <UpgradePlanModal
+            subscriptionTier={stripeSub?.subscriptionTier ?? null}
+            currentBillingInterval={currentBillingInterval}
+            hasActiveSubscription={hasActiveSubscription}
+          >
+            <Button>
+              {trialExpired
+                ? "Upgrade Now"
+                : hasActiveSubscription
+                ? "Change Plan"
+                : "Upgrade Plan"}
+            </Button>
+          </UpgradePlanModal>
+        </div>
+      </CardContent>
     </Card>
   );
 }

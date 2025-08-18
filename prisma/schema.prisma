@@ -64,7 +64,6 @@ model User {
 model Team {
   id                      String                   @id @default(cuid())
   name                    String
-  subscription            Subscription?
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
   ownerId                 String                   @unique
@@ -73,6 +72,7 @@ model Team {
   posts                   Post[]
   brands                  Brand[]
   socialMediaIntegrations SocialMediaIntegration[]
+  subscription            Subscription?
 }
 
 model SocialMediaIntegration {
@@ -138,10 +138,26 @@ enum SocialMedia {
   LINKEDIN
 }
 
-enum Subscription {
+enum SubscriptionTier {
   STARTER
   CREATOR
   PRO
+}
+
+enum SubscriptionBillingInterval {
+  monthly
+  yearly
+}
+
+enum SubscriptionStatus {
+  incomplete
+  incomplete_expired
+  trialing
+  active
+  past_due
+  canceled
+  unpaid
+  paused
 }
 
 model File {
@@ -155,4 +171,20 @@ model File {
   postId         String?
   postVideo      Post?    @relation("PostVideo")
   postVideoCover Post?    @relation("PostVideoCover")
+}
+
+model Subscription {
+  id                   String                       @id @default(cuid())
+  teamId               String                       @unique
+  team                 Team                         @relation(fields: [teamId], references: [id])
+  stripeCustomerId     String?                      @unique
+  stripeSubscriptionId String?                      @unique
+  status               SubscriptionStatus?
+  subscriptionTier     SubscriptionTier?
+  billingInterval      SubscriptionBillingInterval?
+  cancelAtPeriodEnd    Boolean                      @default(false)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime                     @default(now())
+  updatedAt            DateTime                     @updatedAt
 }
