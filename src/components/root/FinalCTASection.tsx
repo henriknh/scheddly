@@ -4,7 +4,7 @@ import { TRIAL_PERIOD_DAYS } from "@/lib/subscription";
 
 export function FinalCTASection() {
   return (
-    <section className="container pt-32">
+    <section className="pt-32">
       <div className="flex flex-col items-center text-center gap-8 py-16 bg-secondary rounded-lg">
         <h2 className="text-3xl font-bold">
           Ready to Transform Your Social Media?

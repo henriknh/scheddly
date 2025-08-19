@@ -169,7 +169,7 @@ export function TopNav() {
 
       <div
         className={cn(
-          "fixed flex flex-col gap-4 inset-0 z-[60] transition-all duration-300 bg-background",
+          "fixed flex flex-col gap-4 inset-0 z-[60] transition-all duration-300 bg-background pb-sab pt-sat",
           open ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
       >

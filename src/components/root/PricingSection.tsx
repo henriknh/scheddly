@@ -10,7 +10,7 @@ export function PricingSection() {
   const [isYearly, setIsYearly] = useState(false);
 
   return (
-    <section id="pricing" className="container pt-32">
+    <section id="pricing" className="pt-32">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold mb-4">Simple, Transparent Pricing</h2>
         <p className="text-lg text-muted-foreground">

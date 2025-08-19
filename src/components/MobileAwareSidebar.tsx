@@ -34,7 +34,7 @@ export function MobileAwareSidebar({
         {/* Sidebar */}
         <div
           className={cn(
-            "fixed inset-y-0 z-50 h-svh w-[--sidebar-width] transition-all duration-300 ease-out",
+            "fixed inset-y-0 z-50 h-dvh w-[--sidebar-width] transition-all duration-300 ease-out",
             "left-0 border-r border-sidebar-border",
             openMobile ? "translate-x-0" : "-translate-x-full",
             className
@@ -47,7 +47,7 @@ export function MobileAwareSidebar({
         >
           <div
             data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-sidebar p-4"
+            className="flex h-full w-full flex-col bg-sidebar p-4 pt-sat pb-sab"
           >
             {children}
           </div>

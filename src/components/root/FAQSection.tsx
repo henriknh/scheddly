@@ -67,7 +67,7 @@ export function FAQSection() {
   ];
 
   return (
-    <section id="faq" className="container pt-32">
+    <section id="faq" className="pt-32">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
         <p className="text-lg text-muted-foreground">

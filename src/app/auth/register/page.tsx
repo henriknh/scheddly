@@ -55,76 +55,83 @@ export default function RegisterPage() {
     }
   }
 
+  const registerForm = (
+    <form onSubmit={onSubmit} className="w-full">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl text-center">
+          Create an account
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="name">Name</Label>
+          <Input
+            id="name"
+            name="name"
+            type="text"
+            placeholder="John Doe"
+            disabled={isLoading}
+            autoComplete="name"
+            required
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="m@example.com"
+            disabled={isLoading}
+            autoComplete="email"
+            required
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            disabled={isLoading}
+            autoComplete="new-password"
+            required
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="confirm-password">Confirm Password</Label>
+          <Input
+            id="confirm-password"
+            name="confirm-password"
+            type="password"
+            disabled={isLoading}
+            autoComplete="new-password"
+            required
+          />
+        </div>
+      </CardContent>
+      <CardFooter className="flex flex-col gap-4">
+        <Button className="w-full" type="submit" disabled={isLoading}>
+          {isLoading ? "Loading..." : "Register"}
+        </Button>
+        <div className="text-center text-sm">
+          Already have an account?{" "}
+          <Link href="/auth/login" className="text-primary hover:underline">
+            Login
+          </Link>
+        </div>
+      </CardFooter>
+    </form>
+  );
+
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center">
-      <Card className="w-[440px] max-w-[calc(100vw-2rem)]">
-        <form onSubmit={onSubmit}>
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">
-              Create an account
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="John Doe"
-                disabled={isLoading}
-                autoComplete="name"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="m@example.com"
-                disabled={isLoading}
-                autoComplete="email"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                disabled={isLoading}
-                autoComplete="new-password"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
-              <Input
-                id="confirm-password"
-                name="confirm-password"
-                type="password"
-                disabled={isLoading}
-                autoComplete="new-password"
-                required
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button className="w-full" type="submit" disabled={isLoading}>
-              {isLoading ? "Loading..." : "Register"}
-            </Button>
-            <div className="text-center text-sm">
-              Already have an account?{" "}
-              <Link href="/auth/login" className="text-primary hover:underline">
-                Login
-              </Link>
-            </div>
-          </CardFooter>
-        </form>
+    <>
+      <div className="flex md:hidden flex-col items-center justify-center h-full w-full">
+        {registerForm}
+      </div>
+      <Card className="hidden md:block w-[440px] max-w-[calc(100vw-2rem)]">
+        {registerForm}
       </Card>
-    </div>
+    </>
   );
 }

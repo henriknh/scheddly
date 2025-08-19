@@ -26,8 +26,8 @@ export default async function AuthLayout({
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden relative">
-        <div className="absolute inset-0 -z-10">
+      <div className="flex-1 flex flex-col overflow-hidden relative">
+        <div className="absolute inset-0 -z-10 hidden md:block">
           <Image
             src="/hero-bg.svg"
             alt=""
@@ -36,7 +36,7 @@ export default async function AuthLayout({
             priority
           />
         </div>
-        <div className="relative w-full h-full flex items-center justify-center pt-16">
+        <div className="flex-1 relative w-full h-full flex items-center justify-center pt-16">
           {children}
         </div>
       </div>

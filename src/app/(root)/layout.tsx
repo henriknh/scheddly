@@ -11,11 +11,9 @@ export default function RootLayout({
     <div className="w-full min-h-screen flex flex-col">
       <TopNav />
       <main className="flex-1">
-        <TooltipProvider delayDuration={0}>
-          {children}
-        </TooltipProvider>
+        <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
       </main>
-      <div className="container px-4">
+      <div className="container">
         <Footer />
       </div>
     </div>
