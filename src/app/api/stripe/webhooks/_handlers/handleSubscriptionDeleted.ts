@@ -9,15 +9,15 @@ export async function handleSubscriptionDeleted(
 ) {
   console.info("[WEBHOOK] Subscription deleted:", subscription.id);
 
-  const { teamId } = subscription.metadata || {};
+  const { userId } = subscription.metadata || {};
 
-  if (!teamId) {
-    console.error("[WEBHOOK] Missing teamId in subscription metadata");
+  if (!userId) {
+    console.error("[WEBHOOK] Missing userId in subscription metadata");
     return;
   }
 
   await prisma.subscription.update({
-    where: { teamId },
+    where: { userId },
     data: {
       subscriptionTier: null,
       stripeSubscriptionId: null,
@@ -25,5 +25,5 @@ export async function handleSubscriptionDeleted(
     },
   });
 
-  console.info(`[WEBHOOK] Team ${teamId} subscription removed`);
+  console.info(`[WEBHOOK] User ${userId} subscription removed`);
 }

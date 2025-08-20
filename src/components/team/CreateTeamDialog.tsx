@@ -2,7 +2,9 @@
 
 import { createTeam } from "@/app/api/team/create-team";
 import { UserPlus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -18,10 +20,19 @@ import { Input } from "../ui/input";
 export function CreateTeamDialog() {
   const [open, setOpen] = useState(false);
   const [teamName, setTeamName] = useState("");
+  const router = useRouter();
 
   const onSubmit = async () => {
-    await createTeam(teamName);
-    setOpen(false);
+    try {
+      await createTeam(teamName);
+      setOpen(false);
+      setTeamName("");
+      toast.success("Team created");
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to create team");
+    }
   };
 
   return (

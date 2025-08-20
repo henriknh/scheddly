@@ -33,7 +33,9 @@ export function UpgradePlanModal({
 }: UpgradePlanModalProps) {
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [billingInterval, setBillingInterval] =
-    useState<SubscriptionBillingInterval | null>(currentBillingInterval);
+    useState<SubscriptionBillingInterval>(
+      (currentBillingInterval as SubscriptionBillingInterval) || "monthly"
+    );
 
   const handlePlanChange = async (subscriptionTier: string) => {
     try {
@@ -48,7 +50,7 @@ export function UpgradePlanModal({
           },
           body: JSON.stringify({
             subscriptionTier,
-            billingInterval,
+            billingInterval: billingInterval || "monthly",
           }),
         });
 
@@ -83,7 +85,7 @@ export function UpgradePlanModal({
           },
           body: JSON.stringify({
             subscriptionTier,
-            billingInterval,
+            billingInterval: billingInterval || "monthly",
           }),
         });
 

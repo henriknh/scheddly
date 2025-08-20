@@ -23,6 +23,7 @@ export async function PATCH(request: NextRequest) {
       data: { sidebarOpen },
       include: {
         avatar: true,
+        subscription: true,
       },
     });
 

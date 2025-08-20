@@ -24,7 +24,7 @@ export async function getPendingInvitationsForCurrentUser(): Promise<
         invitedUser: {
           include: {
             avatar: true,
-            team: { include: { subscription: true } },
+            team: true,
           },
         },
       },

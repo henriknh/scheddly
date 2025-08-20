@@ -44,7 +44,7 @@ export function DeleteTeamDialog({ teamId }: DeleteTeamDialogProps) {
             <Trash className="h-4 w-4" />
           </Button>
         ) : (
-          <Button variant="outline" size="sm">
+          <Button variant="outline">
             <Trash className="h-4 w-4" />
             Delete Team
           </Button>

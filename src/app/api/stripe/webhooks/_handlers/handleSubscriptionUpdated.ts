@@ -13,13 +13,13 @@ export async function handleSubscriptionUpdated(
 ) {
   console.info("[WEBHOOK] Subscription updated:", subscription.id);
 
-  const { teamId, subscriptionTier } = subscription.metadata as {
-    teamId: string;
+  const { userId, subscriptionTier } = subscription.metadata as {
+    userId: string;
     subscriptionTier: SubscriptionTier;
   };
 
-  if (!teamId) {
-    console.error("[WEBHOOK] Missing teamId in subscription metadata");
+  if (!userId) {
+    console.error("[WEBHOOK] Missing userId in subscription metadata");
     return;
   }
 
@@ -37,7 +37,7 @@ export async function handleSubscriptionUpdated(
     const cpEnd = subscription?.items?.data?.[0]?.current_period_end;
 
     await prisma.subscription.upsert({
-      where: { teamId },
+      where: { userId },
       update: {
         stripeCustomerId: subscription.customer as string,
         stripeSubscriptionId: subscription.id,
@@ -49,7 +49,7 @@ export async function handleSubscriptionUpdated(
         currentPeriodEnd: cpEnd ? new Date(cpEnd * 1000) : null,
       },
       create: {
-        teamId,
+        userId,
         stripeCustomerId: subscription.customer as string,
         stripeSubscriptionId: subscription.id,
         status: subscription.status,
@@ -61,7 +61,7 @@ export async function handleSubscriptionUpdated(
       },
     });
     console.info(
-      `[WEBHOOK] Team ${teamId} subscription updated to ${subscriptionTier} with ID ${subscription.id}`
+      `[WEBHOOK] User ${userId} subscription updated to ${subscriptionTier} with ID ${subscription.id}`
     );
   } else if (
     subscription.status === SubscriptionStatus.canceled ||
@@ -69,7 +69,7 @@ export async function handleSubscriptionUpdated(
   ) {
     const cancelCanceled = subscription.cancel_at_period_end ?? false;
     await prisma.subscription.update({
-      where: { teamId },
+      where: { userId },
       data: {
         subscriptionTier: null,
         stripeSubscriptionId: null,
@@ -77,6 +77,6 @@ export async function handleSubscriptionUpdated(
         cancelAtPeriodEnd: cancelCanceled,
       },
     });
-    console.info(`[WEBHOOK] Team ${teamId} subscription removed`);
+    console.info(`[WEBHOOK] User ${userId} subscription removed`);
   }
 }

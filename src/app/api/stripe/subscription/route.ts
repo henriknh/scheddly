@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
   try {
     const user = await getUserFromToken();
 
-    if (!user || !user.team) {
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -46,21 +46,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const team = user.team;
-
-    // Load Stripe subscription record for this team
+    // Load Stripe subscription record for this user
     const stripeSub = await prisma.subscription.findUnique({
-      where: { teamId: team.id },
+      where: { userId: user.id },
     });
 
     if (!stripeSub || !stripeSub.stripeCustomerId) {
       return NextResponse.json(
-        { error: "No Stripe customer found for team" },
+        { error: "No Stripe customer found for user" },
         { status: 400 }
       );
     }
 
-    // Check if team has an active subscription
+    // Check if user has an active subscription
     if (!stripeSub.stripeSubscriptionId) {
       return NextResponse.json(
         {
@@ -126,7 +124,6 @@ export async function POST(request: NextRequest) {
       ],
       metadata: {
         userId: user.id,
-        teamId: team.id,
         subscriptionTier,
         billingInterval,
       },
@@ -149,9 +146,9 @@ export async function POST(request: NextRequest) {
       updateParams
     )) as Stripe.Subscription;
 
-    // Update Subscription + Team tier immediately
+    // Update Subscription tier immediately
     await prisma.subscription.upsert({
-      where: { teamId: team.id },
+      where: { userId: user.id },
       update: {
         stripeSubscriptionId: updatedSubscription.id,
         status: updatedSubscription.status,
@@ -160,7 +157,7 @@ export async function POST(request: NextRequest) {
         cancelAtPeriodEnd: updatedSubscription.cancel_at_period_end ?? false,
       },
       create: {
-        teamId: team.id,
+        userId: user.id,
         stripeCustomerId: stripeSub.stripeCustomerId!,
         stripeSubscriptionId: updatedSubscription.id,
         status: updatedSubscription.status,
@@ -198,14 +195,12 @@ export async function GET() {
   try {
     const user = await getUserFromToken();
 
-    if (!user || !user.team) {
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const team = user.team;
-
     const stripeSubForGet = await prisma.subscription.findUnique({
-      where: { teamId: team.id },
+      where: { userId: user.id },
     });
 
     if (!stripeSubForGet || !stripeSubForGet.stripeCustomerId) {
@@ -254,7 +249,7 @@ export async function GET() {
         } else {
           // Subscription is no longer active - sync database
           await prisma.subscription.update({
-            where: { teamId: team.id },
+            where: { userId: user.id },
             data: {
               stripeSubscriptionId: null,
               status: subscription.status,
@@ -269,7 +264,7 @@ export async function GET() {
         );
         // Subscription doesn't exist in Stripe - clear database
         await prisma.subscription.update({
-          where: { teamId: team.id },
+          where: { userId: user.id },
           data: {
             stripeSubscriptionId: null,
             status: SubscriptionStatus.canceled,
@@ -299,7 +294,7 @@ export async function GET() {
           : null;
         // Found active subscription - update database
         await prisma.subscription.upsert({
-          where: { teamId: team.id },
+          where: { userId: user.id },
           update: {
             stripeSubscriptionId: subscription.id,
             status: subscription.status,
@@ -310,7 +305,7 @@ export async function GET() {
             cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
           },
           create: {
-            teamId: team.id,
+            userId: user.id,
             stripeCustomerId: stripeSubForGet.stripeCustomerId!,
             stripeSubscriptionId: subscription.id,
             status: subscription.status,
@@ -352,12 +347,12 @@ export async function DELETE() {
   try {
     const user = await getUserFromToken();
 
-    if (!user || !user.team) {
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const stripeSubForDelete = await prisma.subscription.findUnique({
-      where: { teamId: user.team.id },
+      where: { userId: user.id },
     });
 
     if (!stripeSubForDelete?.stripeSubscriptionId) {

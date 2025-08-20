@@ -45,16 +45,19 @@ import Image from "next/image";
 import config from "../../app.config";
 import { TeamSelect } from "./team/TeamSelect";
 import { Badge } from "./ui/badge";
+import { CleanedUser } from "@/app/api/user/types";
 
 interface DashboardSidebarProps {
+  user: CleanedUser;
   pendingInvitations: InvitationWithRelations[];
 }
 
 export function DashboardSidebar({
+  user,
   pendingInvitations,
 }: DashboardSidebarProps) {
   const pathname = usePathname();
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const { open, toggleSidebar, setOpenMobile } = useSidebar();
   const isMobile = useIsMobile();
 
@@ -178,16 +181,15 @@ export function DashboardSidebar({
 
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <TeamSelect />
-          </SidebarMenuItem>
-
-          {(user?.team?.subscription?.subscriptionTier ===
-            SubscriptionTier.PRO ||
-            pendingInvitations.length > 0 ||
-            true) && (
+          {user?.teams && user.teams.length > 1 && (
             <SidebarMenuItem>
-              {false && console.log("TODO")}
+              <TeamSelect user={user} />
+            </SidebarMenuItem>
+          )}
+
+          {(user?.subscription?.subscriptionTier === SubscriptionTier.PRO ||
+            pendingInvitations.length > 0) && (
+            <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
                 tooltip={"Team"}
@@ -274,7 +276,7 @@ export function DashboardSidebar({
                   <span className="truncate">{user?.name || "User"}</span>
 
                   <span className="text-xs text-muted-foreground">
-                    {subscriptionLabel(user?.team?.subscription)}
+                    {subscriptionLabel(user?.subscription)}
                   </span>
                 </div>
               </Link>

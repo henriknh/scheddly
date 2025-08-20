@@ -2,6 +2,7 @@
 
 import { getUserFromToken } from "../user/get-user-from-token";
 import prisma from "@/lib/prisma";
+import { updateUserTokenWithCleanedUser } from "../user/helpers";
 
 export async function selectTeam(teamId: string) {
   const user = await getUserFromToken();
@@ -18,8 +19,14 @@ export async function selectTeam(teamId: string) {
     throw new Error("Team not found");
   }
 
-  await prisma.user.update({
+  const updatedUser = await prisma.user.update({
     where: { id: user.id },
     data: { teamId },
+    include: {
+      avatar: true,
+      subscription: true,
+    },
   });
+
+  return updateUserTokenWithCleanedUser(updatedUser);
 }

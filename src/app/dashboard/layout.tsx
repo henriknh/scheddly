@@ -9,6 +9,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getPendingInvitationsForCurrentUser } from "../api/team/get-pending-invitations-for-current-user";
+import { TeamInvitations } from "@/components/team/TeamInvitations";
 
 export const dynamic = "force-dynamic";
 
@@ -38,10 +39,15 @@ export default async function DashboardLayout({
         <div className="flex w-full min-h-screen flex-col">
           <MobileTopNav />
           <div className="flex flex-1">
-            <DashboardSidebar pendingInvitations={pendingInvitations} />
+            <DashboardSidebar
+              user={user}
+              pendingInvitations={pendingInvitations}
+            />
             <main className="flex-1 flex justify-center overflow-x-auto">
               <div className="container flex flex-col space-y-6 py-4">
                 <SubscriptionWarningBanner />
+
+                <TeamInvitations pendingInvitations={pendingInvitations} />
 
                 <BreadcrumbsProvider>
                   <Breadcrumbs />

@@ -31,18 +31,17 @@ import { Badge } from "../ui/badge";
 export function CurrentSubscriptionCard() {
   const { user } = useAuth();
 
-  if (!user?.team) {
+  if (!user) {
     return null;
   }
 
-  const team = user.team;
-  const stripeSub = team.subscription ?? null;
+  const stripeSub = user.subscription ?? null;
   const label = subscriptionLabel(stripeSub);
-  const trialExpired = isTrialExpired(team);
-  const isOnTrial = !team.subscription;
+  const trialExpired = isTrialExpired(user);
+  const isOnTrial = !user.subscription;
   const hasActiveSubscription = stripeSub?.status === SubscriptionStatus.active;
 
-  const trialEndDate = new Date(team.createdAt);
+  const trialEndDate = new Date(user.createdAt);
   trialEndDate.setDate(trialEndDate.getDate() + TRIAL_PERIOD_DAYS);
   const daysRemaining = Math.max(
     0,

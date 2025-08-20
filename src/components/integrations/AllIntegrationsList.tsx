@@ -34,6 +34,12 @@ export function AllIntegrationsList({
 
       <IntegrationsHeader />
 
+      {integrations.length === 0 && (
+        <div className="text-center py-8 text-muted-foreground">
+          No integrations. Connect your first integration to get started.
+        </div>
+      )}
+
       {/* Connected integrations grouped by brand */}
       {brands.map((brand) => {
         const brandIntegrations = integrationsByBrand[brand.id] || [];

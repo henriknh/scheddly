@@ -19,6 +19,7 @@ export async function getUser(): Promise<CleanedUser | null> {
       avatar: true,
       team: true,
       teams: true,
+      subscription: true,
     },
   });
 

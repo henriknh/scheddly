@@ -12,13 +12,12 @@ export async function handleSubscriptionCreated(
 ) {
   console.info("[WEBHOOK] Subscription created:", subscription.id);
 
-  const { userId, teamId, subscriptionTier } = subscription.metadata as {
+  const { userId, subscriptionTier } = subscription.metadata as {
     userId: string;
-    teamId: string;
     subscriptionTier: SubscriptionTier;
   };
 
-  if (!userId || !teamId || !subscriptionTier) {
+  if (!userId || !subscriptionTier) {
     console.error("[WEBHOOK] Missing metadata in subscription");
     return;
   }
@@ -37,7 +36,7 @@ export async function handleSubscriptionCreated(
   const cpEnd = subscription?.items?.data?.[0]?.current_period_end;
 
   await prisma.subscription.upsert({
-    where: { teamId },
+    where: { userId },
     update: {
       stripeCustomerId: subscription.customer as string,
       stripeSubscriptionId: subscription.id,
@@ -49,7 +48,7 @@ export async function handleSubscriptionCreated(
       currentPeriodEnd: cpEnd ? new Date(cpEnd * 1000) : null,
     },
     create: {
-      teamId,
+      userId,
       stripeCustomerId: subscription.customer as string,
       stripeSubscriptionId: subscription.id,
       status: subscription.status,
@@ -62,6 +61,6 @@ export async function handleSubscriptionCreated(
   });
 
   console.info(
-    `[WEBHOOK] Team ${teamId} subscription updated to ${subscriptionTier} with ID ${subscription.id}`
+    `[WEBHOOK] User ${userId} subscription updated to ${subscriptionTier} with ID ${subscription.id}`
   );
 }

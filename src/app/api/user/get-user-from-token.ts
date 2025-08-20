@@ -21,6 +21,7 @@ export const getUserFromToken = async (): Promise<CleanedUser | null> => {
       avatar: true,
       team: true,
       teams: true,
+      subscription: true,
     },
   });
 

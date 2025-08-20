@@ -64,7 +64,7 @@ export function KickTeamMemberDialog({
                 <UserMinus />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Uninvite user</TooltipContent>
+            <TooltipContent>Uninvite member</TooltipContent>
           </Tooltip>
         ) : (
           <Button
@@ -74,7 +74,7 @@ export function KickTeamMemberDialog({
             disabled={member.id === team.ownerId}
           >
             <UserMinus />
-            Uninvite user
+            Uninvite member
           </Button>
         )}
       </DialogTrigger>

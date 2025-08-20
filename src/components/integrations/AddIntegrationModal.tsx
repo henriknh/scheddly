@@ -24,7 +24,7 @@ export function AddIntegrationModal({ brandId }: AddIntegrationModalProps) {
       <DialogTrigger asChild>
         <Button size="sm" className="max-md:flex-1">
           <PlusIcon className="w-4 h-4" />
-          Add integration
+          Connect integration
         </Button>
       </DialogTrigger>
       <DialogContent>

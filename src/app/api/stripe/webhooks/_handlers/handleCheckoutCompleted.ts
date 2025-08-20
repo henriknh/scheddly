@@ -8,14 +8,14 @@ export async function handleCheckoutCompleted(
 ) {
   console.info("[WEBHOOK] Checkout session completed:", session.id);
 
-  const { userId, teamId, subscriptionTier } = session.metadata || {};
+  const { userId, subscriptionTier } = session.metadata || {};
 
-  if (!userId || !teamId || !subscriptionTier) {
+  if (!userId || !subscriptionTier) {
     console.error("[WEBHOOK] Missing metadata in checkout session");
     return NextResponse.json({ error: "Missing metadata" }, { status: 400 });
   }
 
   console.info(
-    `[WEBHOOK] Checkout completed for user ${userId}, team ${teamId}, tier ${subscriptionTier}`
+    `[WEBHOOK] Checkout completed for user ${userId}, tier ${subscriptionTier}`
   );
 }

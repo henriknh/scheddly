@@ -9,28 +9,28 @@ export async function POST(request: NextRequest) {
   try {
     const user = await getUserFromToken();
 
-    if (!user || !user.team) {
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get Stripe customer ID from Subscription by teamId
+    // Get Stripe customer ID from Subscription by userId
     const sub = await prisma.subscription.findUnique({
-      where: { teamId: user.team.id },
+      where: { userId: user.id },
       select: { stripeCustomerId: true },
     });
 
-    const teamStripeCustomerId = sub?.stripeCustomerId || undefined;
+    const stripeCustomerId = sub?.stripeCustomerId || undefined;
 
-    if (!teamStripeCustomerId) {
+    if (!stripeCustomerId) {
       return NextResponse.json(
-        { error: "No Stripe customer found for team" },
+        { error: "No Stripe customer found for user" },
         { status: 400 }
       );
     }
 
     // Create a customer portal session
     const session = await stripe.billingPortal.sessions.create({
-      customer: teamStripeCustomerId,
+      customer: stripeCustomerId,
       return_url: `${request.nextUrl.origin}/dashboard/profile`,
     });
 

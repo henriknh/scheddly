@@ -34,36 +34,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Resolve team-level Stripe customer ID using Subscription model
+    // Resolve user-level Stripe customer ID using Subscription model
     let customerId: string | undefined = undefined;
-    if (user.teamId) {
-      const existingSub = await prisma.subscription.findUnique({
-        where: { teamId: user.teamId },
-      });
-      customerId = existingSub?.stripeCustomerId ?? undefined;
-    }
+    const existingSub = await prisma.subscription.findUnique({
+      where: { userId: user.id },
+    });
+    customerId = existingSub?.stripeCustomerId ?? undefined;
 
     if (!customerId) {
-      // Create a new Stripe customer tied to the team
+      // Create a new Stripe customer tied to the user
       const customer = await stripe.customers.create({
         email: user.email,
         name: user.name || undefined,
         metadata: {
           userId: user.id,
-          ...(user.teamId ? { teamId: user.teamId } : {}),
         },
       });
 
       customerId = customer.id;
 
-      if (user.teamId) {
-        // Upsert Subscription to store the customer id
-        await prisma.subscription.upsert({
-          where: { teamId: user.teamId },
-          update: { stripeCustomerId: customerId },
-          create: { teamId: user.teamId, stripeCustomerId: customerId },
-        });
-      }
+      // Upsert Subscription to store the customer id for the user
+      await prisma.subscription.upsert({
+        where: { userId: user.id },
+        update: { stripeCustomerId: customerId },
+        create: { userId: user.id, stripeCustomerId: customerId },
+      });
     }
 
     // Get price details to check if it's metered
@@ -90,14 +85,12 @@ export async function POST(request: NextRequest) {
       cancel_url: `${request.nextUrl.origin}/dashboard/profile`,
       metadata: {
         userId: user.id,
-        teamId: user.teamId,
         subscriptionTier,
         billingInterval,
       },
       subscription_data: {
         metadata: {
           userId: user.id,
-          teamId: user.teamId,
           subscriptionTier,
         },
       },

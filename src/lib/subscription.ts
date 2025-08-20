@@ -33,17 +33,17 @@ export const subscriptionLabel = (
   }
 };
 
-export const isTrialExpired = (team: {
+export const isTrialExpired = (user: {
   subscription?: Subscription | null;
   createdAt: Date;
 }): boolean => {
-  // If team has a subscription, they're not on trial
-  if (team.subscription) {
+  // If user has a subscription, they're not on trial
+  if (user.subscription) {
     return false;
   }
 
-  // Calculate if trial period has expired
-  const trialEndDate = new Date(team.createdAt);
+  // Calculate if trial period has expired (based on user account age)
+  const trialEndDate = new Date(user.createdAt);
   trialEndDate.setDate(trialEndDate.getDate() + TRIAL_PERIOD_DAYS);
 
   return new Date() > trialEndDate;

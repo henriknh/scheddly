@@ -64,7 +64,7 @@ export function InviteMemberDialog({ teamId }: InviteMemberDialogProps) {
             <TooltipContent>Invite member</TooltipContent>
           </Tooltip>
         ) : (
-          <Button variant="outline" size="sm">
+          <Button variant="outline">
             <UserPlus />
             Invite member
           </Button>

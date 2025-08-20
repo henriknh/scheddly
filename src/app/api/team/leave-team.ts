@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/app/api/user/get-user-from-token";
+import { updateUserTokenWithCleanedUser } from "../user/helpers";
 
 export async function leaveTeam(teamId: string) {
   try {
@@ -49,7 +50,7 @@ export async function leaveTeam(teamId: string) {
       });
     });
 
-    return { success: true };
+    return updateUserTokenWithCleanedUser(user);
   } catch (error) {
     console.error("LEAVE_TEAM_ERROR", error);
     throw error instanceof Error ? error : new Error("Failed to leave team");

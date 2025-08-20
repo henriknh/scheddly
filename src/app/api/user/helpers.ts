@@ -5,13 +5,13 @@ import { createToken, setTokenCookie } from "@/lib/jwt";
 import { CleanedUser, UserWithRelations } from "./types";
 
 export const cleanUserData = async (
-  user: UserWithRelations
+  user: UserWithRelations | CleanedUser
 ): Promise<CleanedUser> => {
   return { ...user, password: undefined };
 };
 
 export const updateUserTokenWithCleanedUser = async (
-  user: UserWithRelations
+  user: UserWithRelations | CleanedUser
 ): Promise<CleanedUser> => {
   const cleanedUser = await cleanUserData(user);
 
@@ -22,7 +22,7 @@ export const updateUserTokenWithCleanedUser = async (
 };
 
 export const updateUserTokenAndReturnNextResponse = async (
-  user: UserWithRelations
+  user: UserWithRelations | CleanedUser
 ): Promise<NextResponse<{ user: CleanedUser }>> => {
   const cleanedUser = await updateUserTokenWithCleanedUser(user);
 

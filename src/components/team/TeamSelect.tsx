@@ -1,25 +1,26 @@
-import { useAuth } from "@/lib/auth-context";
+import { selectTeam } from "@/app/api/team/select-team";
+import { CleanedUser } from "@/app/api/user/types";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { selectTeam } from "@/app/api/team/select-team";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
-export function TeamSelect() {
-  const { user } = useAuth();
+interface TeamSelectProps {
+  user: CleanedUser;
+}
+
+export function TeamSelect({ user }: TeamSelectProps) {
   const router = useRouter();
 
   const onChange = async (value: string) => {
     try {
       await selectTeam(value);
-      toast.success("Team selected");
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -30,13 +31,12 @@ export function TeamSelect() {
   if (!user?.teams?.length) return null;
 
   return (
-    <Select onValueChange={onChange} defaultValue={user.team?.id}>
+    <Select onValueChange={onChange} value={user.team?.id}>
       <SelectTrigger>
         <SelectValue placeholder="Select team" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Teams</SelectLabel>
           {user.teams.map((team) => (
             <SelectItem key={team.id} value={team.id}>
               {team.name}

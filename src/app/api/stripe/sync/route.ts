@@ -19,15 +19,13 @@ export async function POST() {
   try {
     const user = await getUserFromToken();
 
-    if (!user || !user.team) {
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const team = user.team;
-
-    // Load Stripe subscription record for this team (holds customerId)
+    // Load Stripe subscription record for this user (holds customerId)
     const stripeSub = await prisma.subscription.findUnique({
-      where: { teamId: team.id },
+      where: { userId: user.id },
     });
 
     if (!stripeSub || !stripeSub.stripeCustomerId) {
@@ -116,7 +114,7 @@ export async function POST() {
 
         // Update Subscription row
         await prisma.subscription.upsert({
-          where: { teamId: team.id },
+          where: { userId: user.id },
           update: {
             stripeSubscriptionId: activeSubscription.id,
             status: activeSubscription.status,
@@ -127,7 +125,7 @@ export async function POST() {
             currentPeriodEnd: cpEnd ? new Date(cpEnd * 1000) : null,
           },
           create: {
-            teamId: team.id,
+            userId: user.id,
             stripeCustomerId: stripeSub.stripeCustomerId,
             stripeSubscriptionId: activeSubscription.id,
             status: activeSubscription.status,
@@ -145,7 +143,7 @@ export async function POST() {
     } else {
       // No active subscription - clear database
       await prisma.subscription.update({
-        where: { teamId: team.id },
+        where: { userId: user.id },
         data: {
           subscriptionTier: null,
           stripeSubscriptionId: null,

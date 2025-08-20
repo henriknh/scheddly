@@ -77,7 +77,7 @@ export function EditTeamNameDialog({
             <TooltipContent>Edit team</TooltipContent>
           </Tooltip>
         ) : (
-          <Button variant="outline" size="sm">
+          <Button variant="outline">
             <Pencil />
             Edit team
           </Button>

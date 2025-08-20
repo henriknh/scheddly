@@ -9,7 +9,7 @@ import Link from "next/link";
 
 export function SubscriptionWarningBanner() {
   const { user } = useAuth();
-  const showTrialExpiredBanner = user?.team && isTrialExpired(user.team);
+  const showTrialExpiredBanner = user && isTrialExpired(user);
 
   if (!showTrialExpiredBanner) {
     return null;

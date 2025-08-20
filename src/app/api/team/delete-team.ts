@@ -2,6 +2,7 @@
 
 import { getUserFromToken } from "../user/get-user-from-token";
 import prisma from "@/lib/prisma";
+import { updateUserTokenWithCleanedUser } from "../user/helpers";
 
 export async function deleteTeam(teamId: string) {
   const user = await getUserFromToken();
@@ -33,12 +34,10 @@ export async function deleteTeam(teamId: string) {
     throw new Error("Team is not empty. Please remove all members first.");
   }
 
-  if (team.id === user.team?.id) {
+  if (team.id === user.team?.id || !user.team?.id) {
     const fallbackTeam = await prisma.team.findFirst({
       where: {
-        ownerId: {
-          not: user.id,
-        },
+        ownerId: user.id,
       },
     });
 
@@ -61,4 +60,6 @@ export async function deleteTeam(teamId: string) {
       where: { id: teamId },
     });
   }
+
+  return updateUserTokenWithCleanedUser(user);
 }

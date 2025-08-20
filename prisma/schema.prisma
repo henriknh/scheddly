@@ -46,22 +46,23 @@ model Post {
 }
 
 model User {
-  id                   String       @id @default(cuid())
+  id                   String        @id @default(cuid())
   name                 String?
-  email                String       @unique
+  email                String        @unique
   emailVerified        DateTime?
   password             String?
-  sidebarOpen          Boolean      @default(true)
-  createdAt            DateTime     @default(now())
-  updatedAt            DateTime     @updatedAt
-  avatarId             String?      @unique
-  avatar               File?        @relation(fields: [avatarId], references: [id])
+  sidebarOpen          Boolean       @default(true)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  avatarId             String?       @unique
+  avatar               File?         @relation(fields: [avatarId], references: [id])
   teamId               String?
-  team                 Team?        @relation("SelectedTeam", fields: [teamId], references: [id])
-  ownedTeams           Team[]       @relation("TeamOwner")
-  teams                Team[]       @relation("TeamMembers")
-  invitationsInvitedBy Invitation[] @relation("InvitationInvitedBy")
-  invitationsReceived  Invitation[] @relation("InvitationInvitedUser")
+  team                 Team?         @relation("SelectedTeam", fields: [teamId], references: [id])
+  ownedTeams           Team[]        @relation("TeamOwner")
+  teams                Team[]        @relation("TeamMembers")
+  invitationsInvitedBy Invitation[]  @relation("InvitationInvitedBy")
+  invitationsReceived  Invitation[]  @relation("InvitationInvitedUser")
+  subscription         Subscription?
 }
 
 model Team {
@@ -77,7 +78,6 @@ model Team {
   posts                   Post[]
   brands                  Brand[]
   socialMediaIntegrations SocialMediaIntegration[]
-  subscription            Subscription?
 }
 
 model Invitation {
@@ -205,8 +205,8 @@ model File {
 
 model Subscription {
   id                   String                       @id @default(cuid())
-  teamId               String                       @unique
-  team                 Team                         @relation(fields: [teamId], references: [id])
+  userId               String                       @unique
+  user                 User                         @relation(fields: [userId], references: [id])
   stripeCustomerId     String?                      @unique
   stripeSubscriptionId String?                      @unique
   status               SubscriptionStatus?
