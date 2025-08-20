@@ -2,7 +2,6 @@
 
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { useAuth } from "@/lib/auth-context";
 import {
   Archive,
   Blocks,
@@ -21,6 +20,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { InvitationWithRelations } from "@/app/api/team/types";
+import { CleanedUser } from "@/app/api/user/types";
 import { MobileAwareSidebar } from "@/components/MobileAwareSidebar";
 import {
   DropdownMenu,
@@ -45,7 +45,6 @@ import Image from "next/image";
 import config from "../../app.config";
 import { TeamSelect } from "./team/TeamSelect";
 import { Badge } from "./ui/badge";
-import { CleanedUser } from "@/app/api/user/types";
 
 interface DashboardSidebarProps {
   user: CleanedUser;
