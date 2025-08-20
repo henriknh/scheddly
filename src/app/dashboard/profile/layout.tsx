@@ -1,14 +1,11 @@
+"use server";
+
 import { Breadcrumb } from "@/components/common/breadcrumb";
 
-export default function ProfileLayout({
+export default async function ProfileLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div>
-      <Breadcrumb label="Profile" href="/dashboard/profile" />
-      {children}
-    </div>
-  );
+  return <div>{children}</div>;
 }

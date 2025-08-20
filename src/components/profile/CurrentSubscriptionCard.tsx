@@ -16,16 +16,13 @@ import {
   TRIAL_PERIOD_DAYS,
 } from "@/lib/subscription";
 
-import {
-  SubscriptionBillingInterval,
-  SubscriptionStatus,
-} from "@/generated/prisma";
+import { SubscriptionStatus } from "@/generated/prisma";
 import { formatPrice as formatCurrency } from "@/lib/currency";
 import { formatDate } from "@/lib/format-date";
 import { FREE_MONTHS_WHEN_YEARLY, PLANS } from "@/lib/pricing";
+import Link from "next/link";
 import { Header } from "../common/Header";
 import { SubHeader } from "../common/SubHeader";
-import { UpgradePlanModal } from "../subscription/UpgradePlanModal";
 import { Badge } from "../ui/badge";
 
 export function CurrentSubscriptionCard() {
@@ -50,8 +47,6 @@ export function CurrentSubscriptionCard() {
     )
   );
 
-  const currentBillingInterval: SubscriptionBillingInterval | null =
-    stripeSub?.billingInterval ?? null;
   const periodEndDate: Date | null = stripeSub?.currentPeriodEnd
     ? new Date(stripeSub.currentPeriodEnd)
     : null;
@@ -171,19 +166,15 @@ export function CurrentSubscriptionCard() {
             )}
           </div>
 
-          <UpgradePlanModal
-            subscriptionTier={stripeSub?.subscriptionTier ?? null}
-            currentBillingInterval={currentBillingInterval}
-            hasActiveSubscription={hasActiveSubscription}
-          >
-            <Button>
+          <Button asChild>
+            <Link href="/dashboard/profile/change-plan">
               {trialExpired
                 ? "Upgrade Now"
                 : hasActiveSubscription
                 ? "Change Plan"
                 : "Upgrade Plan"}
-            </Button>
-          </UpgradePlanModal>
+            </Link>
+          </Button>
         </div>
       </CardContent>
     </Card>
