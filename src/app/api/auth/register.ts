@@ -67,6 +67,17 @@ export async function register(email: string, name: string, password: string) {
         },
       });
 
+      // Link any pending invitations for this email to the newly created user
+      await tx.invitation.updateMany({
+        where: {
+          email: normalizedEmail,
+          status: "pending",
+        },
+        data: {
+          invitedUserId: user.id,
+        },
+      });
+
       return user;
     });
 

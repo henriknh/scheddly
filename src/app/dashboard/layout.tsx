@@ -8,6 +8,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { getUserFromToken } from "@/lib/user";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getPendingInvitationsForCurrentUser } from "../api/team/get-pending-invitations-for-current-user";
 
 export const dynamic = "force-dynamic";
 
@@ -23,11 +24,13 @@ export default async function DashboardLayout({
 }) {
   // Get user's sidebar preference from database
   const user = await getUserFromToken();
-  const sidebarOpen = user?.sidebarOpen ?? true;
 
   if (!user) {
     redirect("/auth/login");
   }
+
+  const sidebarOpen = user?.sidebarOpen ?? true;
+  const pendingInvitations = await getPendingInvitationsForCurrentUser();
 
   return (
     <AuthProviderWrapper>
@@ -35,7 +38,7 @@ export default async function DashboardLayout({
         <div className="flex w-full min-h-screen flex-col">
           <MobileTopNav />
           <div className="flex flex-1">
-            <DashboardSidebar />
+            <DashboardSidebar pendingInvitations={pendingInvitations} />
             <main className="flex-1 flex justify-center overflow-x-auto">
               <div className="container flex flex-col space-y-6 py-4">
                 <SubscriptionWarningBanner />

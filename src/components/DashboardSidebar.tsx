@@ -1,12 +1,13 @@
 "use client";
 
 import { UserAvatar } from "@/components/common/UserAvatar";
-import { useAuth } from "@/lib/auth-context";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/lib/auth-context";
 import {
   Archive,
   Blocks,
   BugIcon,
+  Building2,
   ChevronLeft,
   HomeIcon,
   ImageIcon,
@@ -15,11 +16,12 @@ import {
   TextIcon,
   Users,
   VideoIcon,
-  Building2,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { InvitationWithRelations } from "@/app/api/team/types";
+import { MobileAwareSidebar } from "@/components/MobileAwareSidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,14 +38,20 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { MobileAwareSidebar } from "@/components/MobileAwareSidebar";
-import config from "../../app.config";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
 import { SubscriptionTier } from "@/generated/prisma";
 import { subscriptionLabel } from "@/lib/subscription";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import config from "../../app.config";
+import { Badge } from "./ui/badge";
 
-export function DashboardSidebar() {
+interface DashboardSidebarProps {
+  pendingInvitations: InvitationWithRelations[];
+}
+
+export function DashboardSidebar({
+  pendingInvitations,
+}: DashboardSidebarProps) {
   const pathname = usePathname();
   const { user } = useAuth();
   const { open, toggleSidebar, isMobile, setOpenMobile } = useSidebar();
@@ -170,8 +178,9 @@ export function DashboardSidebar() {
 
       <SidebarFooter>
         <SidebarMenu>
-          {user?.team?.subscription?.subscriptionTier ===
-            SubscriptionTier.PRO && (
+          {(user?.team?.subscription?.subscriptionTier ===
+            SubscriptionTier.PRO ||
+            pendingInvitations.length > 0) && (
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
@@ -180,11 +189,19 @@ export function DashboardSidebar() {
               >
                 <Link
                   href="/dashboard/team"
-                  className="flex items-center gap-2"
                   onClick={handleLinkClick}
+                  className="flex justify-between items-center"
                 >
-                  <Users className="h-4 w-4" />
-                  <span>Team</span>
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    <span>Team</span>
+                  </div>
+
+                  {pendingInvitations.length > 0 && (
+                    <div>
+                      <Badge>{pendingInvitations.length}</Badge>
+                    </div>
+                  )}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

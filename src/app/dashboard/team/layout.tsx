@@ -3,6 +3,7 @@ import { SubscriptionTier } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/user";
 import { redirect } from "next/navigation";
+import { getPendingInvitationsForCurrentUser } from "../../api/team/get-pending-invitations-for-current-user";
 
 export default async function TeamLayout({
   children,
@@ -10,6 +11,8 @@ export default async function TeamLayout({
   children: React.ReactNode;
 }) {
   const user = await getUserFromToken();
+
+  const pendingInvitations = await getPendingInvitationsForCurrentUser();
 
   let isPro = false;
   if (user?.team?.id) {
@@ -20,7 +23,7 @@ export default async function TeamLayout({
     isPro = stripeSub?.subscriptionTier === SubscriptionTier.PRO;
   }
 
-  if (!isPro) {
+  if (!isPro && pendingInvitations.length === 0) {
     redirect("/dashboard/profile");
   }
 
