@@ -1,7 +1,7 @@
 "use client";
 
 import { UserAvatar } from "@/components/common/UserAvatar";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useAuth } from "@/lib/auth-context";
 import {
   Archive,
@@ -43,6 +43,7 @@ import { subscriptionLabel } from "@/lib/subscription";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import config from "../../app.config";
+import { TeamSelect } from "./team/TeamSelect";
 import { Badge } from "./ui/badge";
 
 interface DashboardSidebarProps {
@@ -54,14 +55,13 @@ export function DashboardSidebar({
 }: DashboardSidebarProps) {
   const pathname = usePathname();
   const { user } = useAuth();
-  const { open, toggleSidebar, isMobile, setOpenMobile } = useSidebar();
-  const isMobileHook = useIsMobile();
+  const { open, toggleSidebar, setOpenMobile } = useSidebar();
+  const isMobile = useIsMobile();
 
   const isDevMode = process.env.NODE_ENV === "development";
-  const isMobileDevice = isMobile || isMobileHook;
 
   const handleLinkClick = () => {
-    if (isMobileDevice) {
+    if (isMobile) {
       setOpenMobile(false);
     }
   };
@@ -178,10 +178,16 @@ export function DashboardSidebar({
 
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <TeamSelect />
+          </SidebarMenuItem>
+
           {(user?.team?.subscription?.subscriptionTier ===
             SubscriptionTier.PRO ||
-            pendingInvitations.length > 0) && (
+            pendingInvitations.length > 0 ||
+            true) && (
             <SidebarMenuItem>
+              {false && console.log("TODO")}
               <SidebarMenuButton
                 asChild
                 tooltip={"Team"}
@@ -275,7 +281,7 @@ export function DashboardSidebar({
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          {!isMobileDevice && (
+          {!isMobile && (
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip={open ? "Collapse" : "Expand"}

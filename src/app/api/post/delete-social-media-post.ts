@@ -2,7 +2,7 @@
 
 import _prisma, { PrismaTransaction } from "@/lib/prisma";
 import { getSocialMediaApiFunctions } from "@/lib/social-media-api-functions/social-media-api-functions";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 
 export interface DeleteSocialMediaPostOptions {
   prismaTx?: PrismaTransaction;

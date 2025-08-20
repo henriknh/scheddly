@@ -1,3 +1,4 @@
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import { AuthProviderWrapper } from "@/components/auth/auth-provider-wrapper";
 import { Breadcrumbs } from "@/components/common/breadcrumbs";
 import { BreadcrumbsProvider } from "@/components/common/breadcrumbs-context";
@@ -5,7 +6,6 @@ import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { MobileTopNav } from "@/components/MobileTopNav";
 import { SubscriptionWarningBanner } from "@/components/subscription-warning-banner";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { getUserFromToken } from "@/lib/user";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getPendingInvitationsForCurrentUser } from "../api/team/get-pending-invitations-for-current-user";

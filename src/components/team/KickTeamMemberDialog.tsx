@@ -12,9 +12,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { UserMinus } from "lucide-react";
 import { TeamWithRelations } from "@/app/api/team/types";
-import { UserWithRelations } from "@/lib/user";
+import { UserWithRelations } from "@/app/api/user/types";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useAuth } from "@/lib/auth-context";
 
 interface KickTeamMemberDialogProps {
@@ -54,27 +54,27 @@ export function KickTeamMemberDialog({
       <DialogTrigger asChild>
         {isMobile ? (
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => onKickMember()}
+                onClick={() => setOpen(true)}
                 disabled={member.id === team.ownerId}
               >
                 <UserMinus />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Yeet user</TooltipContent>
+            <TooltipContent>Uninvite user</TooltipContent>
           </Tooltip>
         ) : (
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => onKickMember()}
+            onClick={() => setOpen(true)}
             disabled={member.id === team.ownerId}
           >
             <UserMinus />
-            Yeet user
+            Uninvite user
           </Button>
         )}
       </DialogTrigger>
@@ -84,8 +84,8 @@ export function KickTeamMemberDialog({
         </DialogHeader>
         <div>
           <p>
-            Are you sure you want to kick <b>{member.name}</b> from the team{" "}
-            <b>{team.name}</b>?
+            Are you sure you want to kick {member.name} from the team{" "}
+            {team.name}?
           </p>
         </div>
         <DialogFooter>

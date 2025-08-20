@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { updateUserTokenWithCleanedUser } from "@/lib/user";
+import { updateUserTokenWithCleanedUser } from "@/app/api/user/helpers";
 import bcrypt from "bcryptjs";
 
 export async function register(email: string, name: string, password: string) {

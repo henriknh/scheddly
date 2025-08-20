@@ -1,6 +1,6 @@
 "use server";
 
-import { CleanedUser } from "@/lib/user";
+import { CleanedUser } from "@/app/api/user/types";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";

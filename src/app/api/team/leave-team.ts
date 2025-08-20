@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 
 export async function leaveTeam(teamId: string) {
   try {
@@ -18,9 +18,35 @@ export async function leaveTeam(teamId: string) {
       throw new Error("Team owners cannot leave their own team");
     }
 
-    await prisma.team.update({
-      where: { id: team.id },
-      data: { members: { disconnect: { id: user.id } } },
+    const fallbackTeam = await prisma.team.findFirst({
+      where: {
+        id: {
+          not: team.id,
+        },
+        members: {
+          some: {
+            id: user.id,
+          },
+        },
+      },
+    });
+
+    if (!fallbackTeam) {
+      throw new Error("No fallback team found");
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.team.update({
+        where: { id: team.id },
+        data: { members: { disconnect: { id: user.id } } },
+      });
+
+      await tx.user.update({
+        where: { id: user.id },
+        data: {
+          teamId: fallbackTeam.id,
+        },
+      });
     });
 
     return { success: true };

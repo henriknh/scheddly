@@ -1,8 +1,9 @@
 import { getTeams } from "@/app/api/team/get-teams";
 import { Breadcrumb } from "@/components/common/breadcrumb";
-import { InvitationCards } from "@/components/profile/InvitationCards";
+import { InvitationCards } from "@/components/team/InvitationCards";
 import { TeamList } from "@/components/team/TeamList";
 import { getPendingInvitationsForCurrentUser } from "@/app/api/team/get-pending-invitations-for-current-user";
+import { CreateTeamDialog } from "@/components/team/CreateTeamDialog";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,10 @@ export default async function TeamPage() {
           content. Invite team members to help create, schedule, and manage
           posts across your brands and integrations.
         </p>
+
+        <div className="flex md:flex-row flex-col justify-end">
+          <CreateTeamDialog />
+        </div>
 
         <InvitationCards pendingInvitations={pendingInvitations} />
 

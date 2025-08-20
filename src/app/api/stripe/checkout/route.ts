@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, getStripePriceId } from "@/lib/stripe";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import prisma from "@/lib/prisma";
 import type Stripe from "stripe";
 

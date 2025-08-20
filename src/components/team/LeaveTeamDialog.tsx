@@ -44,9 +44,7 @@ export function LeaveTeamDialog({ team }: LeaveTeamDialogProps) {
           <DialogTitle>Leave Team</DialogTitle>
         </DialogHeader>
         <div>
-          <p>
-            Are you sure you want to leave the team <b>{team.name}</b>?
-          </p>
+          <p>Are you sure you want to leave the team {team.name}?</p>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>

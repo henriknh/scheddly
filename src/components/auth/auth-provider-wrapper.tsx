@@ -1,5 +1,5 @@
 import { AuthProvider } from "@/lib/auth-context";
-import { CleanedUser } from "@/lib/user";
+import { CleanedUser } from "@/app/api/user/types";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 

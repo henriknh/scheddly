@@ -18,9 +18,10 @@ import { EditTeamNameDialog } from "./EditTeamNameDialog";
 import { InviteMemberDialog } from "./InviteMemberDialog";
 import { KickTeamMemberDialog } from "./KickTeamMemberDialog";
 import { LeaveTeamDialog } from "./LeaveTeamDialog";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { InvitationStatus } from "@/generated/prisma";
+import { DeleteTeamDialog } from "./DeleteTeamDialog";
 
 interface TeamListProps {
   team: TeamWithRelations;
@@ -35,14 +36,14 @@ export function TeamList({ team }: TeamListProps) {
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between">
-          <div className="flex items-center gap-2">
-            <div>{team.name}</div>
-          </div>
+        <div className="flex items-center justify-between gap-4">
+          <div className="truncate">{team.name}</div>
 
           {isOwner ? (
             <div className="flex items-center gap-2">
               <EditTeamNameDialog teamId={team.id} currentName={team.name} />
+
+              <DeleteTeamDialog teamId={team.id} />
 
               <InviteMemberDialog teamId={team.id} />
             </div>

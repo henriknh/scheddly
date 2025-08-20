@@ -1,9 +1,9 @@
 "use client";
 
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Sidebar, useSidebar } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 import * as React from "react";
-import { Sidebar, useSidebar } from "@/components/ui/sidebar";
 
 interface MobileAwareSidebarProps {
   children: React.ReactNode;
@@ -14,13 +14,10 @@ export function MobileAwareSidebar({
   children,
   className,
 }: MobileAwareSidebarProps) {
-  const { isMobile, openMobile, setOpenMobile } = useSidebar();
-  const isMobileHook = useIsMobile();
+  const { openMobile, setOpenMobile } = useSidebar();
+  const isMobile = useIsMobile();
 
-  // Use the hook's mobile detection as fallback
-  const isMobileDevice = isMobile || isMobileHook;
-
-  if (isMobileDevice) {
+  if (isMobile) {
     return (
       <>
         {/* Overlay */}

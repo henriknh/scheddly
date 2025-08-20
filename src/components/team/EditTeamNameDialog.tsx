@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { updateTeamName } from "@/app/api/team/update-team-name";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,9 +11,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useIsMedium } from "@/hooks/use-is-medium";
 import { Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
-import { updateTeamName } from "@/app/api/team/update-team-name";
 
 interface EditTeamNameDialogProps {
   teamId: string;
@@ -29,6 +35,7 @@ export function EditTeamNameDialog({
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(currentName);
   const [loading, setLoading] = useState(false);
+  const isMedium = useIsMedium();
 
   const onSave = async () => {
     try {
@@ -56,10 +63,25 @@ export function EditTeamNameDialog({
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="outline">
-          <Pencil />
-          Edit team
-        </Button>
+        {isMedium ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setOpen(true)}
+              >
+                <Pencil />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Edit team</TooltipContent>
+          </Tooltip>
+        ) : (
+          <Button variant="outline" size="sm">
+            <Pencil />
+            Edit team
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

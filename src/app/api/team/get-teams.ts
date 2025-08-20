@@ -1,9 +1,8 @@
 "use server";
 
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
 import { TeamWithRelations } from "./types";
-import { SubscriptionTier } from "@/generated/prisma";
 
 export async function getTeams(): Promise<TeamWithRelations[]> {
   const user = await getUserFromToken();
@@ -18,9 +17,6 @@ export async function getTeams(): Promise<TeamWithRelations[]> {
         some: {
           id: user.id,
         },
-      },
-      subscription: {
-        subscriptionTier: SubscriptionTier.PRO,
       },
     },
     include: {

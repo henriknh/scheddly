@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import prisma from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {

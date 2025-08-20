@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { UserX } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface CancelInviteDialogProps {
@@ -41,15 +41,15 @@ export function CancelInviteDialog({ invitation }: CancelInviteDialogProps) {
       <DialogTrigger asChild>
         {isMobile ? (
           <Tooltip>
-            <TooltipTrigger>
-              <Button variant="ghost" size="icon">
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
                 <UserX className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Cancel Invitation</TooltipContent>
+            <TooltipContent>Cancel invitation</TooltipContent>
           </Tooltip>
         ) : (
-          <Button variant="ghost" size="default">
+          <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
             <UserX className="h-4 w-4" />
             Cancel invitation
           </Button>
@@ -58,7 +58,7 @@ export function CancelInviteDialog({ invitation }: CancelInviteDialogProps) {
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Cancel Invitation</DialogTitle>
+          <DialogTitle>Cancel invitation</DialogTitle>
         </DialogHeader>
 
         <DialogDescription>
@@ -70,7 +70,7 @@ export function CancelInviteDialog({ invitation }: CancelInviteDialogProps) {
           <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={onCancelInvitation}>Cancel Invitation</Button>
+          <Button onClick={onCancelInvitation}>Cancel invitation</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -57,8 +57,9 @@ model User {
   avatarId             String?      @unique
   avatar               File?        @relation(fields: [avatarId], references: [id])
   teamId               String?
-  team                 Team?        @relation("TeamMember", fields: [teamId], references: [id])
-  ownedTeam            Team?        @relation("TeamOwner")
+  team                 Team?        @relation("SelectedTeam", fields: [teamId], references: [id])
+  ownedTeams           Team[]       @relation("TeamOwner")
+  teams                Team[]       @relation("TeamMembers")
   invitationsInvitedBy Invitation[] @relation("InvitationInvitedBy")
   invitationsReceived  Invitation[] @relation("InvitationInvitedUser")
 }
@@ -68,9 +69,10 @@ model Team {
   name                    String
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
-  ownerId                 String                   @unique
+  ownerId                 String
   owner                   User                     @relation("TeamOwner", fields: [ownerId], references: [id])
-  members                 User[]                   @relation("TeamMember")
+  members                 User[]                   @relation("TeamMembers")
+  selectedUsers           User[]                   @relation("SelectedTeam")
   invitations             Invitation[]
   posts                   Post[]
   brands                  Brand[]

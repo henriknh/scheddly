@@ -1,7 +1,7 @@
 import { Breadcrumb } from "@/components/common/breadcrumb";
 import { SubscriptionTier } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import { redirect } from "next/navigation";
 import { getPendingInvitationsForCurrentUser } from "../../api/team/get-pending-invitations-for-current-user";
 
@@ -23,7 +23,8 @@ export default async function TeamLayout({
     isPro = stripeSub?.subscriptionTier === SubscriptionTier.PRO;
   }
 
-  if (!isPro && pendingInvitations.length === 0) {
+  if (!isPro && pendingInvitations.length === 0 && false) {
+    console.log("TODO");
     redirect("/dashboard/profile");
   }
 

@@ -1,7 +1,8 @@
 "use client";
 
 import config from "@/config";
-import { CleanedUser, getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
+import { CleanedUser } from "@/app/api/user/types";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";

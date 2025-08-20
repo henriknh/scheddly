@@ -11,7 +11,7 @@ import {
   getSubscriptionFromPriceId,
   stripe,
 } from "@/lib/stripe";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import { NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
 

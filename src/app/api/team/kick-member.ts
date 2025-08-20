@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 
 export async function kickMember(teamId: string, memberUserId: string) {
   try {
@@ -18,9 +18,35 @@ export async function kickMember(teamId: string, memberUserId: string) {
       throw new Error("You cannot kick the team owner");
     }
 
-    await prisma.team.update({
-      where: { id: team.id },
-      data: { members: { disconnect: { id: memberUserId } } },
+    const fallbackTeam = await prisma.team.findFirst({
+      where: {
+        id: {
+          not: team.id,
+        },
+        members: {
+          some: {
+            id: memberUserId,
+          },
+        },
+      },
+    });
+
+    if (!fallbackTeam) {
+      throw new Error("No fallback team found");
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.team.update({
+        where: { id: team.id },
+        data: { members: { disconnect: { id: memberUserId } } },
+      });
+
+      await tx.user.update({
+        where: { id: memberUserId },
+        data: {
+          teamId: fallbackTeam.id,
+        },
+      });
     });
 
     return { success: true };

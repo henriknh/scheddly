@@ -15,6 +15,8 @@ import { UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 interface InviteMemberDialogProps {
   teamId: string;
@@ -25,6 +27,7 @@ export function InviteMemberDialog({ teamId }: InviteMemberDialogProps) {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const isMobile = useIsMobile();
 
   const onInvite = async () => {
     try {
@@ -47,10 +50,25 @@ export function InviteMemberDialog({ teamId }: InviteMemberDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <UserPlus />
-          Invite member
-        </Button>
+        {isMobile ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setOpen(true)}
+              >
+                <UserPlus />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Invite member</TooltipContent>
+          </Tooltip>
+        ) : (
+          <Button variant="outline" size="sm">
+            <UserPlus />
+            Invite member
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

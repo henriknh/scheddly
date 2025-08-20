@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import { deleteFile } from "../file/delete-file";
 import { deleteSocialMediaPost } from "./delete-social-media-post";
 import { getPost } from "./get-post";

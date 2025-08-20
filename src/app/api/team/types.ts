@@ -1,5 +1,5 @@
-import { Invitation, Team } from "@/generated/prisma";
-import { UserWithRelations } from "@/lib/user";
+import { Invitation, Subscription, Team } from "@/generated/prisma";
+import { UserWithRelations } from "@/app/api/user/types";
 
 export interface InvitationWithRelations extends Invitation {
   team: Team;
@@ -10,4 +10,5 @@ export interface TeamWithRelations extends Team {
   owner: UserWithRelations;
   members: UserWithRelations[];
   invitations: InvitationWithRelations[];
+  subscription?: Subscription | null;
 }

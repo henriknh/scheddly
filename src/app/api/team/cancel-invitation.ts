@@ -2,7 +2,7 @@
 
 import { InvitationStatus } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 
 export async function cancelInvitation(invitationId: string) {
   const user = await getUserFromToken();

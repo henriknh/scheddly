@@ -16,7 +16,7 @@ export function SubscriptionWarningBanner() {
   }
 
   return (
-    <Alert className="border-destructive bg-destructive/10 text-destructive mt-4 flex items-center gap-2">
+    <Alert variant="destructive">
       <span className="flex items-center justify-center">
         <AlertTriangle className="h-4 w-4" />
       </span>

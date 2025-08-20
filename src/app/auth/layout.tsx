@@ -1,5 +1,5 @@
 import config from "@/config";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
