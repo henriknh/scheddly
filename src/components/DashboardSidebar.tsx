@@ -191,7 +191,7 @@ export function DashboardSidebar({
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                tooltip={"Team"}
+                tooltip={"Teams"}
                 isActive={pathname === "/dashboard/team"}
               >
                 <Link
@@ -201,7 +201,7 @@ export function DashboardSidebar({
                 >
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4" />
-                    <span>Team</span>
+                    <span>Teams</span>
                   </div>
 
                   {pendingInvitations.length > 0 && (
