@@ -47,6 +47,7 @@ export async function register(email: string, name: string, password: string) {
         },
         include: {
           avatar: true,
+          subscription: true,
         },
       });
 

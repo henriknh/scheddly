@@ -20,7 +20,11 @@ export async function getTeams(): Promise<TeamWithRelations[]> {
       },
     },
     include: {
-      owner: true,
+      owner: {
+        include: {
+          avatar: true,
+        },
+      },
       members: {
         include: {
           avatar: true,
@@ -29,11 +33,7 @@ export async function getTeams(): Promise<TeamWithRelations[]> {
       invitations: {
         include: {
           team: true,
-          invitedUser: {
-            include: {
-              avatar: true,
-            },
-          },
+          invitedUser: true,
         },
       },
     },

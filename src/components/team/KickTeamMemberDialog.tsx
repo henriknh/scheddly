@@ -1,4 +1,11 @@
 import { kickMember } from "@/app/api/team/kick-member";
+import { TeamWithRelations } from "@/app/api/team/types";
+import { UserWithLightRelations } from "@/app/api/user/types";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { useAuth } from "@/lib/auth-context";
+import { UserMinus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -8,18 +15,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { UserMinus } from "lucide-react";
-import { TeamWithRelations } from "@/app/api/team/types";
-import { UserWithRelations } from "@/app/api/user/types";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { useIsMobile } from "@/hooks/use-is-mobile";
-import { useAuth } from "@/lib/auth-context";
 
 interface KickTeamMemberDialogProps {
   team: TeamWithRelations;
-  member: UserWithRelations;
+  member: UserWithLightRelations;
 }
 
 export function KickTeamMemberDialog({

@@ -108,6 +108,7 @@ export async function PATCH(request: NextRequest) {
       },
       include: {
         avatar: true,
+        subscription: true,
       },
     });
 

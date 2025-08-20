@@ -2,16 +2,16 @@
 
 import { NextResponse } from "next/server";
 import { createToken, setTokenCookie } from "@/lib/jwt";
-import { CleanedUser, UserWithRelations } from "./types";
+import { CleanedUser, UserWithFullRelations } from "./types";
 
 export const cleanUserData = async (
-  user: UserWithRelations | CleanedUser
+  user: UserWithFullRelations | CleanedUser
 ): Promise<CleanedUser> => {
   return { ...user, password: undefined };
 };
 
 export const updateUserTokenWithCleanedUser = async (
-  user: UserWithRelations | CleanedUser
+  user: UserWithFullRelations | CleanedUser
 ): Promise<CleanedUser> => {
   const cleanedUser = await cleanUserData(user);
 
@@ -22,7 +22,7 @@ export const updateUserTokenWithCleanedUser = async (
 };
 
 export const updateUserTokenAndReturnNextResponse = async (
-  user: UserWithRelations | CleanedUser
+  user: UserWithFullRelations | CleanedUser
 ): Promise<NextResponse<{ user: CleanedUser }>> => {
   const cleanedUser = await updateUserTokenWithCleanedUser(user);
 

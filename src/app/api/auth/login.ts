@@ -22,6 +22,7 @@ export async function login(email: string, password: string) {
     },
     include: {
       avatar: true,
+      subscription: true,
     },
   });
 
