@@ -76,18 +76,18 @@ export function PricingTierCard({
     return `Upgrade to ${label}`;
   };
 
-  const manageButtonDescription = () => {
-    if (isCurrentPlan) return null;
-    if (hasActiveSubscription && subscriptionTier) {
-      const tierValues = { STARTER: 1, CREATOR: 2, PRO: 3 } as const;
-      const currentValue = subscriptionTier ? tierValues[subscriptionTier] : 0;
-      const targetValue = tierValues[plan.subscriptionTier];
-      if (targetValue > currentValue) return "Charged prorated amount today";
-      if (targetValue < currentValue) return "Effective next billing cycle";
-      return "Billing change takes effect immediately";
-    }
-    return null;
-  };
+  // const manageButtonDescription = () => {
+  //   if (isCurrentPlan) return null;
+  //   if (hasActiveSubscription && subscriptionTier) {
+  //     const tierValues = { STARTER: 1, CREATOR: 2, PRO: 3 } as const;
+  //     const currentValue = subscriptionTier ? tierValues[subscriptionTier] : 0;
+  //     const targetValue = tierValues[plan.subscriptionTier];
+  //     if (targetValue > currentValue) return "Charged prorated amount today";
+  //     if (targetValue < currentValue) return "Effective next billing cycle";
+  //     return "Billing change takes effect immediately";
+  //   }
+  //   return null;
+  // };
 
   const priceBlock = (
     <div className="text-3xl font-bold flex items-center gap-2 flex-wrap">
@@ -225,11 +225,11 @@ export function PricingTierCard({
               >
                 {isLoading ? "Processing..." : manageButtonText()}
               </Button>
-              {!isCurrentPlan && manageButtonDescription() && (
+              {/* {!isCurrentPlan && manageButtonDescription() && (
                 <p className="text-xs text-muted-foreground text-center mt-2">
                   {manageButtonDescription()}
                 </p>
-              )}
+              )} */}
             </>
           )}
         </div>
