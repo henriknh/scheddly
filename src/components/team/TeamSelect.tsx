@@ -1,3 +1,5 @@
+"use client";
+
 import { selectTeam } from "@/app/api/team/select-team";
 import { CleanedUser } from "@/app/api/user/types";
 import { useRouter } from "next/navigation";

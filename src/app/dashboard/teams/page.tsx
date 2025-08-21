@@ -11,7 +11,7 @@ export default async function TeamPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Breadcrumb label="Team" href="/dashboard/team" />
+        <Breadcrumb label="Teams" href="/dashboard/teams" />
       </div>
 
       <div className="space-y-4">

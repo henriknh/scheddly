@@ -1,26 +1,9 @@
 "use client";
 
-import { UserAvatar } from "@/components/common/UserAvatar";
-import { useIsMobile } from "@/hooks/use-is-mobile";
-import {
-  Archive,
-  Blocks,
-  BugIcon,
-  Building2,
-  ChevronLeft,
-  HomeIcon,
-  ImageIcon,
-  LayoutDashboard,
-  Plus,
-  TextIcon,
-  Users,
-  VideoIcon,
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-
+import { allowedEmails } from "@/app/api/debug/helpers";
 import { InvitationWithRelations } from "@/app/api/team/types";
 import { CleanedUser } from "@/app/api/user/types";
+import { UserAvatar } from "@/components/common/UserAvatar";
 import { MobileAwareSidebar } from "@/components/MobileAwareSidebar";
 import {
   DropdownMenu,
@@ -39,12 +22,28 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { SubscriptionTier } from "@/generated/prisma";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { subscriptionLabel } from "@/lib/subscription";
 import { cn } from "@/lib/utils";
+import {
+  Archive,
+  Blocks,
+  BugIcon,
+  Building2,
+  ChevronLeft,
+  HomeIcon,
+  ImageIcon,
+  LayoutDashboard,
+  Plus,
+  TextIcon,
+  Users,
+  VideoIcon,
+} from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import config from "../../app.config";
 import { TeamSelect } from "./team/TeamSelect";
-import { Badge } from "./ui/badge";
 
 interface DashboardSidebarProps {
   user: CleanedUser;
@@ -60,13 +59,13 @@ export function DashboardSidebar({
   const { open, toggleSidebar, setOpenMobile } = useSidebar();
   const isMobile = useIsMobile();
 
-  const isDevMode = process.env.NODE_ENV === "development";
-
   const handleLinkClick = () => {
     if (isMobile) {
       setOpenMobile(false);
     }
   };
+
+  const hasDebugMenu = user && allowedEmails.includes(user?.email ?? "");
 
   return (
     <MobileAwareSidebar>
@@ -192,10 +191,10 @@ export function DashboardSidebar({
               <SidebarMenuButton
                 asChild
                 tooltip={"Teams"}
-                isActive={pathname === "/dashboard/team"}
+                isActive={pathname === "/dashboard/teams"}
               >
                 <Link
-                  href="/dashboard/team"
+                  href="/dashboard/teams"
                   onClick={handleLinkClick}
                   className="flex items-center gap-2"
                 >
@@ -232,7 +231,7 @@ export function DashboardSidebar({
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          {isDevMode && (
+          {hasDebugMenu && (
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
