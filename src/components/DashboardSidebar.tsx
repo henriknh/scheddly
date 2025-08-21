@@ -197,18 +197,10 @@ export function DashboardSidebar({
                 <Link
                   href="/dashboard/team"
                   onClick={handleLinkClick}
-                  className="flex justify-between items-center"
+                  className="flex items-center gap-2"
                 >
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    <span>Teams</span>
-                  </div>
-
-                  {pendingInvitations.length > 0 && (
-                    <div>
-                      <Badge>{pendingInvitations.length}</Badge>
-                    </div>
-                  )}
+                  <Users className="h-4 w-4" />
+                  <span>Teams</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
