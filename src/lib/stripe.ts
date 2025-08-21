@@ -13,30 +13,20 @@ if (!process.env.STRIPE_STARTER_YEARLY_PRICE_ID) {
   throw new Error("STRIPE_STARTER_YEARLY_PRICE_ID is not set");
 }
 
-if (
-  !process.env.STRIPE_CREATOR_MONTHLY_PRICE_ID &&
-  !process.env.STRIPE_GROWTH_MONTHLY_PRICE_ID
-) {
-  throw new Error(
-    "STRIPE_GROWTH_MONTHLY_PRICE_ID (or STRIPE_CREATOR_MONTHLY_PRICE_ID) is not set"
-  );
+if (!process.env.STRIPE_GROWTH_MONTHLY_PRICE_ID) {
+  throw new Error("STRIPE_GROWTH_MONTHLY_PRICE_ID is not set");
 }
 
-if (
-  !process.env.STRIPE_CREATOR_YEARLY_PRICE_ID &&
-  !process.env.STRIPE_GROWTH_YEARLY_PRICE_ID
-) {
-  throw new Error(
-    "STRIPE_GROWTH_YEARLY_PRICE_ID (or STRIPE_CREATOR_YEARLY_PRICE_ID) is not set"
-  );
+if (!process.env.STRIPE_GROWTH_YEARLY_PRICE_ID) {
+  throw new Error("STRIPE_GROWTH_YEARLY_PRICE_ID is not set");
 }
 
-if (!process.env.STRIPE_PRO_MONTHLY_PRICE_ID) {
-  throw new Error("STRIPE_PRO_MONTHLY_PRICE_ID is not set");
+if (!process.env.STRIPE_SCALE_MONTHLY_PRICE_ID) {
+  throw new Error("STRIPE_SCALE_MONTHLY_PRICE_ID is not set");
 }
 
-if (!process.env.STRIPE_PRO_YEARLY_PRICE_ID) {
-  throw new Error("STRIPE_PRO_YEARLY_PRICE_ID is not set");
+if (!process.env.STRIPE_SCALE_YEARLY_PRICE_ID) {
+  throw new Error("STRIPE_SCALE_YEARLY_PRICE_ID is not set");
 }
 
 // Initialize Stripe with secret key
@@ -53,13 +43,13 @@ export const STRIPE_PRICE_IDS = {
   },
   GROWTH: {
     monthly: (process.env.STRIPE_GROWTH_MONTHLY_PRICE_ID ||
-      process.env.STRIPE_CREATOR_MONTHLY_PRICE_ID)!,
+      process.env.STRIPE_GROWTH_MONTHLY_PRICE_ID)!,
     yearly: (process.env.STRIPE_GROWTH_YEARLY_PRICE_ID ||
-      process.env.STRIPE_CREATOR_YEARLY_PRICE_ID)!,
+      process.env.STRIPE_GROWTH_YEARLY_PRICE_ID)!,
   },
   SCALE: {
-    monthly: process.env.STRIPE_PRO_MONTHLY_PRICE_ID!,
-    yearly: process.env.STRIPE_PRO_YEARLY_PRICE_ID!,
+    monthly: process.env.STRIPE_SCALE_MONTHLY_PRICE_ID!,
+    yearly: process.env.STRIPE_SCALE_YEARLY_PRICE_ID!,
   },
 } as Record<SubscriptionTier, Record<"monthly" | "yearly", string>>;
 
