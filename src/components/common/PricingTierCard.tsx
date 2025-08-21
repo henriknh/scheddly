@@ -65,7 +65,7 @@ export function PricingTierCard({
       if (subscriptionTier && plan.subscriptionTier === subscriptionTier) {
         return `Switch to ${isYearly ? "Yearly" : "Monthly"}`;
       }
-      const tierValues = { STARTER: 1, CREATOR: 2, PRO: 3 } as const;
+      const tierValues = { STARTER: 1, GROWTH: 2, SCALE: 3 } as const;
       const currentValue = subscriptionTier ? tierValues[subscriptionTier] : 0;
       const targetValue = tierValues[plan.subscriptionTier];
 
@@ -79,7 +79,7 @@ export function PricingTierCard({
   // const manageButtonDescription = () => {
   //   if (isCurrentPlan) return null;
   //   if (hasActiveSubscription && subscriptionTier) {
-  //     const tierValues = { STARTER: 1, CREATOR: 2, PRO: 3 } as const;
+  //     const tierValues = { STARTER: 1, GROWTH: 2, SCALE: 3 } as const;
   //     const currentValue = subscriptionTier ? tierValues[subscriptionTier] : 0;
   //     const targetValue = tierValues[plan.subscriptionTier];
   //     if (targetValue > currentValue) return "Charged prorated amount today";

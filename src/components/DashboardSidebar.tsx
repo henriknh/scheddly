@@ -185,7 +185,7 @@ export function DashboardSidebar({
             </SidebarMenuItem>
           )}
 
-          {(user?.subscription?.subscriptionTier === SubscriptionTier.PRO ||
+          {(user?.subscription?.subscriptionTier === SubscriptionTier.SCALE ||
             pendingInvitations.length > 0) && (
             <SidebarMenuItem>
               <SidebarMenuButton

@@ -24,10 +24,10 @@ export const subscriptionLabel = (
   switch (subscription?.subscriptionTier) {
     case SubscriptionTier.STARTER:
       return "Starter";
-    case SubscriptionTier.CREATOR:
-      return "Creator";
-    case SubscriptionTier.PRO:
-      return "Pro";
+    case SubscriptionTier.GROWTH:
+      return "Growth";
+    case SubscriptionTier.SCALE:
+      return "Scale";
     default:
       return "";
   }

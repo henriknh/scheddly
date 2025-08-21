@@ -47,9 +47,9 @@ export function PricingTiers({
             loadingTier ===
             (plan.subscriptionTier === SubscriptionTier.STARTER
               ? "STARTER"
-              : plan.subscriptionTier === SubscriptionTier.CREATOR
-              ? "CREATOR"
-              : SubscriptionTier.PRO)
+              : plan.subscriptionTier === SubscriptionTier.GROWTH
+              ? "GROWTH"
+              : SubscriptionTier.SCALE)
           }
           onSelect={onSelect}
         />

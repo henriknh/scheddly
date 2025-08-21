@@ -13,13 +13,13 @@ STRIPE_WEBHOOK_SECRET=whsec_... # Your webhook endpoint secret
 # Stripe Price IDs (create these in your Stripe dashboard)
 # Monthly price IDs
 STRIPE_STARTER_MONTHLY_PRICE_ID=price_... # Monthly price ID for Starter plan
-STRIPE_CREATOR_MONTHLY_PRICE_ID=price_... # Monthly price ID for Creator plan
-STRIPE_PRO_MONTHLY_PRICE_ID=price_... # Monthly price ID for Pro plan
+STRIPE_GROWTH_MONTHLY_PRICE_ID=price_... # Monthly price ID for Creator plan
+STRIPE_SCALE_MONTHLY_PRICE_ID=price_... # Monthly price ID for Pro plan
 
 # Yearly price IDs
 STRIPE_STARTER_YEARLY_PRICE_ID=price_... # Yearly price ID for Starter plan
-STRIPE_CREATOR_YEARLY_PRICE_ID=price_... # Yearly price ID for Creator plan
-STRIPE_PRO_YEARLY_PRICE_ID=price_... # Yearly price ID for Pro plan
+STRIPE_GROWTH_YEARLY_PRICE_ID=price_... # Yearly price ID for Creator plan
+STRIPE_SCALE_YEARLY_PRICE_ID=price_... # Yearly price ID for Pro plan
 ```
 
 ## Stripe Dashboard Setup
@@ -38,12 +38,12 @@ In your Stripe Dashboard:
 
    - **Creator Plan**
 
-     - Monthly: $19.99/month → Copy this price ID to `STRIPE_CREATOR_MONTHLY_PRICE_ID`
-     - Yearly: $199.99/year → Copy this price ID to `STRIPE_CREATOR_YEARLY_PRICE_ID`
+     - Monthly: $19.99/month → Copy this price ID to `STRIPE_GROWTH_MONTHLY_PRICE_ID`
+     - Yearly: $199.99/year → Copy this price ID to `STRIPE_GROWTH_YEARLY_PRICE_ID`
 
    - **Pro Plan**
-     - Monthly: $39.99/month → Copy this price ID to `STRIPE_PRO_MONTHLY_PRICE_ID`
-     - Yearly: $399.99/year → Copy this price ID to `STRIPE_PRO_YEARLY_PRICE_ID`
+     - Monthly: $39.99/month → Copy this price ID to `STRIPE_SCALE_MONTHLY_PRICE_ID`
+     - Yearly: $399.99/year → Copy this price ID to `STRIPE_SCALE_YEARLY_PRICE_ID`
 
 3. **Important**: You must create 6 separate price IDs total (3 monthly + 3 yearly)
 4. Copy each price ID to the corresponding environment variable
