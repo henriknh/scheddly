@@ -26,6 +26,10 @@ export const formatPrice = (price: number) => {
   return price % 1 === 0 ? price.toString() : price.toFixed(2);
 };
 
+export const featureUnlimitedPosts: Feature = {
+  label: "Unlimited posts",
+};
+
 export const featureContentScheduling: Feature = {
   label: "Content scheduling",
   tooltip:
@@ -71,6 +75,7 @@ export const PLANS: Plan[] = [
     pricePerMonth: 5,
     features: [
       { label: "5 social media integrations", isBold: true },
+      featureUnlimitedPosts,
       featureContentScheduling,
       featureUnlimitedBrands,
       featureEcommerceIntegration,
@@ -85,6 +90,7 @@ export const PLANS: Plan[] = [
     pricePerMonth: 15,
     features: [
       { label: "15 social media integrations", isBold: true },
+      featureUnlimitedPosts,
       featureContentScheduling,
       featureUnlimitedBrands,
       featureEcommerceIntegration,
@@ -100,6 +106,7 @@ export const PLANS: Plan[] = [
     pricePerMonth: 25,
     features: [
       { label: "Unlimited social media integrations", isBold: true },
+      featureUnlimitedPosts,
       featureContentScheduling,
       featureUnlimitedBrands,
       featureEcommerceIntegration,
