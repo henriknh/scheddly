@@ -15,7 +15,7 @@ export default async function TeamLayout({
   const pendingInvitations = await getPendingInvitationsForCurrentUser();
 
   if (
-    user?.subscription?.subscriptionTier !== SubscriptionTier.PRO &&
+    user?.subscription?.subscriptionTier !== SubscriptionTier.SCALE &&
     pendingInvitations.length === 0
   ) {
     redirect("/dashboard/profile");

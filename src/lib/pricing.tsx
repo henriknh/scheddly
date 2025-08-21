@@ -85,7 +85,7 @@ export const PLANS: Plan[] = [
     bestValue: false,
   },
   {
-    subscriptionTier: SubscriptionTier.CREATOR,
+    subscriptionTier: SubscriptionTier.GROWTH,
     description: "Ideal for content creators",
     pricePerMonth: 15,
     features: [
@@ -101,7 +101,7 @@ export const PLANS: Plan[] = [
     bestValue: false,
   },
   {
-    subscriptionTier: SubscriptionTier.PRO,
+    subscriptionTier: SubscriptionTier.SCALE,
     description: "For teams and agencies",
     pricePerMonth: 25,
     features: [
@@ -120,26 +120,28 @@ export const PLANS: Plan[] = [
   },
 ];
 
-export function getPlanOrder(tier: "STARTER" | "CREATOR" | "PRO"): number {
+export function getPlanOrder(tier: "STARTER" | "GROWTH" | "SCALE"): number {
   switch (tier) {
     case "STARTER":
       return 1;
-    case "CREATOR":
+    case "GROWTH":
       return 2;
-    case "PRO":
+    case "SCALE":
       return 3;
   }
+  return 0;
 }
 
 export function subscriptionTierToLabel(
   subscriptionTier: SubscriptionTier
-): "Starter" | "Creator" | "Pro" {
+): "Starter" | "Growth" | "Scale" {
   switch (subscriptionTier) {
     case SubscriptionTier.STARTER:
       return "Starter";
-    case SubscriptionTier.CREATOR:
-      return "Creator";
-    case SubscriptionTier.PRO:
-      return "Pro";
+    case SubscriptionTier.GROWTH:
+      return "Growth";
+    case SubscriptionTier.SCALE:
+      return "Scale";
   }
+  return "Starter";
 }

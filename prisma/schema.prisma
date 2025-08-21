@@ -170,8 +170,8 @@ enum SocialMedia {
 
 enum SubscriptionTier {
   STARTER
-  CREATOR
-  PRO
+  GROWTH
+  SCALE
 }
 
 enum SubscriptionBillingInterval {

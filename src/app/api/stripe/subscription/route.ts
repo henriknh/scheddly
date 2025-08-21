@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
     // Determine if this is an upgrade or downgrade
     const currentPriceId = subscriptionItem.price.id;
     const currentTier = getSubscriptionFromPriceId(currentPriceId);
-    const tierHierarchy = { STARTER: 1, CREATOR: 2, PRO: 3 };
+    const tierHierarchy = { STARTER: 1, GROWTH: 2, SCALE: 3 };
 
     const currentTierValue = currentTier
       ? tierHierarchy[currentTier as keyof typeof tierHierarchy]

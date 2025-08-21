@@ -136,7 +136,7 @@ export function UpgradePlanModal({
           currentBillingInterval={currentBillingInterval}
           hasActiveSubscription={hasActiveSubscription}
           loadingTier={
-            isLoading ? (isLoading as "STARTER" | "CREATOR" | "PRO") : null
+            isLoading ? (isLoading as "STARTER" | "GROWTH" | "SCALE") : null
           }
           onSelect={(tier) => handlePlanChange(tier)}
           className="gap-6"

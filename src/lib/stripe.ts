@@ -13,12 +13,22 @@ if (!process.env.STRIPE_STARTER_YEARLY_PRICE_ID) {
   throw new Error("STRIPE_STARTER_YEARLY_PRICE_ID is not set");
 }
 
-if (!process.env.STRIPE_CREATOR_MONTHLY_PRICE_ID) {
-  throw new Error("STRIPE_CREATOR_MONTHLY_PRICE_ID is not set");
+if (
+  !process.env.STRIPE_CREATOR_MONTHLY_PRICE_ID &&
+  !process.env.STRIPE_GROWTH_MONTHLY_PRICE_ID
+) {
+  throw new Error(
+    "STRIPE_GROWTH_MONTHLY_PRICE_ID (or STRIPE_CREATOR_MONTHLY_PRICE_ID) is not set"
+  );
 }
 
-if (!process.env.STRIPE_CREATOR_YEARLY_PRICE_ID) {
-  throw new Error("STRIPE_CREATOR_YEARLY_PRICE_ID is not set");
+if (
+  !process.env.STRIPE_CREATOR_YEARLY_PRICE_ID &&
+  !process.env.STRIPE_GROWTH_YEARLY_PRICE_ID
+) {
+  throw new Error(
+    "STRIPE_GROWTH_YEARLY_PRICE_ID (or STRIPE_CREATOR_YEARLY_PRICE_ID) is not set"
+  );
 }
 
 if (!process.env.STRIPE_PRO_MONTHLY_PRICE_ID) {
@@ -41,11 +51,13 @@ export const STRIPE_PRICE_IDS = {
     monthly: process.env.STRIPE_STARTER_MONTHLY_PRICE_ID!,
     yearly: process.env.STRIPE_STARTER_YEARLY_PRICE_ID!,
   },
-  CREATOR: {
-    monthly: process.env.STRIPE_CREATOR_MONTHLY_PRICE_ID!,
-    yearly: process.env.STRIPE_CREATOR_YEARLY_PRICE_ID!,
+  GROWTH: {
+    monthly: (process.env.STRIPE_GROWTH_MONTHLY_PRICE_ID ||
+      process.env.STRIPE_CREATOR_MONTHLY_PRICE_ID)!,
+    yearly: (process.env.STRIPE_GROWTH_YEARLY_PRICE_ID ||
+      process.env.STRIPE_CREATOR_YEARLY_PRICE_ID)!,
   },
-  PRO: {
+  SCALE: {
     monthly: process.env.STRIPE_PRO_MONTHLY_PRICE_ID!,
     yearly: process.env.STRIPE_PRO_YEARLY_PRICE_ID!,
   },
@@ -59,10 +71,10 @@ export const getStripePriceId = (
   switch (subscription) {
     case "STARTER":
       return STRIPE_PRICE_IDS.STARTER[billingInterval];
-    case "CREATOR":
-      return STRIPE_PRICE_IDS.CREATOR[billingInterval];
-    case "PRO":
-      return STRIPE_PRICE_IDS.PRO[billingInterval];
+    case "GROWTH":
+      return STRIPE_PRICE_IDS.GROWTH[billingInterval];
+    case "SCALE":
+      return STRIPE_PRICE_IDS.SCALE[billingInterval];
     default:
       return null;
   }
