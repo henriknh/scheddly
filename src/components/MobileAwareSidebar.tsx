@@ -1,9 +1,9 @@
 "use client";
 
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Sidebar, useSidebar } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 import * as React from "react";
-import { Sidebar, useSidebar } from "@/components/ui/sidebar";
 
 interface MobileAwareSidebarProps {
   children: React.ReactNode;
@@ -14,13 +14,10 @@ export function MobileAwareSidebar({
   children,
   className,
 }: MobileAwareSidebarProps) {
-  const { isMobile, openMobile, setOpenMobile } = useSidebar();
-  const isMobileHook = useIsMobile();
+  const { openMobile, setOpenMobile } = useSidebar();
+  const isMobile = useIsMobile();
 
-  // Use the hook's mobile detection as fallback
-  const isMobileDevice = isMobile || isMobileHook;
-
-  if (isMobileDevice) {
+  if (isMobile) {
     return (
       <>
         {/* Overlay */}
@@ -34,7 +31,7 @@ export function MobileAwareSidebar({
         {/* Sidebar */}
         <div
           className={cn(
-            "fixed inset-y-0 z-50 h-svh w-[--sidebar-width] transition-all duration-300 ease-out",
+            "fixed inset-y-0 z-50 h-dvh w-[--sidebar-width] transition-all duration-300 ease-out",
             "left-0 border-r border-sidebar-border",
             openMobile ? "translate-x-0" : "-translate-x-full",
             className
@@ -47,7 +44,7 @@ export function MobileAwareSidebar({
         >
           <div
             data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-sidebar p-4"
+            className="flex h-full w-full flex-col bg-sidebar p-4 pt-sat pb-sab"
           >
             {children}
           </div>

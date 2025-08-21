@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 
 export async function disconnectIntegrationFromBrand(integrationId: string) {
   try {

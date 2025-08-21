@@ -1,7 +1,8 @@
 "use client";
 
 import config from "@/config";
-import { CleanedUser, getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
+import { CleanedUser } from "@/app/api/user/types";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
@@ -169,7 +170,7 @@ export function TopNav() {
 
       <div
         className={cn(
-          "fixed flex flex-col gap-4 inset-0 z-[60] transition-all duration-300 bg-background",
+          "fixed flex flex-col gap-4 inset-0 z-[60] transition-all duration-300 bg-background pb-sab pt-sat",
           open ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
       >

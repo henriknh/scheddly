@@ -1,25 +1,10 @@
 "use client";
 
+import { allowedEmails } from "@/app/api/debug/helpers";
+import { InvitationWithRelations } from "@/app/api/team/types";
+import { CleanedUser } from "@/app/api/user/types";
 import { UserAvatar } from "@/components/common/UserAvatar";
-import { useAuth } from "@/lib/auth-context";
-import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  Archive,
-  Blocks,
-  BugIcon,
-  ChevronLeft,
-  HomeIcon,
-  ImageIcon,
-  LayoutDashboard,
-  Plus,
-  TextIcon,
-  Users,
-  VideoIcon,
-  Building2,
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-
+import { MobileAwareSidebar } from "@/components/MobileAwareSidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,29 +21,51 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { MobileAwareSidebar } from "@/components/MobileAwareSidebar";
-import config from "../../app.config";
+import { SubscriptionTier } from "@/generated/prisma";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { subscriptionLabel } from "@/lib/subscription";
 import { cn } from "@/lib/utils";
+import {
+  Archive,
+  Blocks,
+  BugIcon,
+  Building2,
+  ChevronLeft,
+  HomeIcon,
+  ImageIcon,
+  LayoutDashboard,
+  Plus,
+  TextIcon,
+  Users,
+  VideoIcon,
+} from "lucide-react";
 import Image from "next/image";
-import { PricingTier } from "@/generated/prisma";
-import { pricingTierLabel } from "@/lib/pricing-tier";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import config from "../../app.config";
+import { TeamSelect } from "./team/TeamSelect";
 
-export function DashboardSidebar() {
+interface DashboardSidebarProps {
+  user: CleanedUser;
+  pendingInvitations: InvitationWithRelations[];
+}
+
+export function DashboardSidebar({
+  user,
+  pendingInvitations,
+}: DashboardSidebarProps) {
   const pathname = usePathname();
-  const { user } = useAuth();
-  const { open, toggleSidebar, isMobile, setOpenMobile } = useSidebar();
-  const isMobileHook = useIsMobile();
-
-  const isDevMode = process.env.NODE_ENV === "development";
-  const isMobileDevice = isMobile || isMobileHook;
+  // const { user } = useAuth();
+  const { open, toggleSidebar, setOpenMobile } = useSidebar();
+  const isMobile = useIsMobile();
 
   const handleLinkClick = () => {
-    if (isMobileDevice) {
+    if (isMobile) {
       setOpenMobile(false);
     }
   };
 
-  console.log(open);
+  const hasDebugMenu = user && allowedEmails.includes(user?.email ?? "");
 
   return (
     <MobileAwareSidebar>
@@ -172,20 +179,27 @@ export function DashboardSidebar() {
 
       <SidebarFooter>
         <SidebarMenu>
-          {user?.pricingTier === PricingTier.PRO && (
+          {user?.teams && user.teams.length > 1 && (
+            <SidebarMenuItem>
+              <TeamSelect user={user} />
+            </SidebarMenuItem>
+          )}
+
+          {(user?.subscription?.subscriptionTier === SubscriptionTier.PRO ||
+            pendingInvitations.length > 0) && (
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                tooltip={"Team"}
-                isActive={pathname === "/dashboard/team"}
+                tooltip={"Teams"}
+                isActive={pathname === "/dashboard/teams"}
               >
                 <Link
-                  href="/dashboard/team"
-                  className="flex items-center gap-2"
+                  href="/dashboard/teams"
                   onClick={handleLinkClick}
+                  className="flex items-center gap-2"
                 >
                   <Users className="h-4 w-4" />
-                  <span>Team</span>
+                  <span>Teams</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -217,7 +231,7 @@ export function DashboardSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          {isDevMode && (
+          {hasDebugMenu && (
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
@@ -252,14 +266,14 @@ export function DashboardSidebar() {
                   <span className="truncate">{user?.name || "User"}</span>
 
                   <span className="text-xs text-muted-foreground">
-                    {pricingTierLabel(user?.pricingTier)}
+                    {subscriptionLabel(user?.subscription)}
                   </span>
                 </div>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          {!isMobileDevice && (
+          {!isMobile && (
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip={open ? "Collapse" : "Expand"}

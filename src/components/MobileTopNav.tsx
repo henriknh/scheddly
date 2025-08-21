@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

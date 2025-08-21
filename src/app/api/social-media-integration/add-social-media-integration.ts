@@ -3,7 +3,7 @@
 import { SocialMedia } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 
 export async function addSocialMediaIntegration(
   platform: SocialMedia,

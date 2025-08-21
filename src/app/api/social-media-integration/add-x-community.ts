@@ -2,7 +2,7 @@
 
 import { SocialMedia } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 
 /**
  * Add an X community to a specific social media integration.

@@ -14,7 +14,7 @@ const post: BlogPost = {
       <p>
         If you handle your own social, you need tools that stay out of the way.
         Scheddly focuses on speed and clarity so you can spend more time making
-        great content &ndash; and less time clicking through menus.
+        great content — and less time clicking through menus.
       </p>
 
       <h2 className="text-xl font-semibold">Built for momentum</h2>
@@ -29,7 +29,7 @@ const post: BlogPost = {
         </li>
         <li>
           <span className="font-medium">Visual calendar:</span> See what&apos;s
-          going out and when &ndash; no spreadsheets required.
+          going out and when — no spreadsheets required.
         </li>
       </ul>
 
@@ -49,7 +49,7 @@ const post: BlogPost = {
       <h2 className="text-xl font-semibold">Why individuals choose Scheddly</h2>
       <ul className="list-disc pl-6 space-y-2">
         <li>Fast to learn, faster to use.</li>
-        <li>No clutter &ndash; just what you need to ship content.</li>
+        <li>No clutter — just what you need to ship content.</li>
         <li>Brand-first structure scales with you as you grow.</li>
       </ul>
 

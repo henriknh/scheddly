@@ -2,7 +2,7 @@
 
 import { PostType, SocialMedia } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import { PostWithRelations } from "./types";
 
 export interface GetTomorrowsPostsFilter {
@@ -16,15 +16,31 @@ export async function getTomorrowsPosts(
 ): Promise<PostWithRelations[]> {
   try {
     const user = await getUserFromToken();
-    if (!user || !user.id || !user.teamId) {
+    if (!user || !user.id) {
       throw new Error("Unauthorized");
+    }
+
+    if (!user.teamId) {
+      return [];
     }
 
     // Get tomorrow's date range (start of day to end of day)
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const startOfDay = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
-    const endOfDay = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 23, 59, 59, 999);
+    const startOfDay = new Date(
+      tomorrow.getFullYear(),
+      tomorrow.getMonth(),
+      tomorrow.getDate()
+    );
+    const endOfDay = new Date(
+      tomorrow.getFullYear(),
+      tomorrow.getMonth(),
+      tomorrow.getDate(),
+      23,
+      59,
+      59,
+      999
+    );
 
     const posts = await prisma.post.findMany({
       where: {

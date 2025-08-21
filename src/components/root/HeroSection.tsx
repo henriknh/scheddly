@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
+import { TRIAL_PERIOD_DAYS } from "@/lib/subscription";
+import { NoCardCancelNote } from "@/components/common/NoCardCancelNote";
 
 export function HeroSection() {
   return (
@@ -32,7 +34,9 @@ export function HeroSection() {
 
           <div className="flex flex-col sm:flex-row gap-y-2 gap-x-4">
             <Button size="lg" asChild>
-              <Link href="/auth/register">Start Free 7-Day Trial</Link>
+              <Link href="/auth/register">
+                Start Free {TRIAL_PERIOD_DAYS}-Day Trial
+              </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
               <Link href="#how-it-works">See How It Works</Link>
@@ -45,9 +49,7 @@ export function HeroSection() {
             ))}
           </p>
 
-          <p className="text-sm text-muted-foreground">
-            No credit card required • Cancel anytime
-          </p>
+          <NoCardCancelNote />
         </div>
       </div>
     </section>

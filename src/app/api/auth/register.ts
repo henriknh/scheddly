@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { updateUserTokenWithCleanedUser } from "@/lib/user";
+import { updateUserTokenWithCleanedUser } from "@/app/api/user/helpers";
 import bcrypt from "bcryptjs";
 
 export async function register(email: string, name: string, password: string) {
@@ -47,6 +47,7 @@ export async function register(email: string, name: string, password: string) {
         },
         include: {
           avatar: true,
+          subscription: true,
         },
       });
 
@@ -64,6 +65,17 @@ export async function register(email: string, name: string, password: string) {
               id: user.id,
             },
           },
+        },
+      });
+
+      // Link any pending invitations for this email to the newly created user
+      await tx.invitation.updateMany({
+        where: {
+          email: normalizedEmail,
+          status: "pending",
+        },
+        data: {
+          invitedUserId: user.id,
         },
       });
 

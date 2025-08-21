@@ -1,6 +1,32 @@
-import { getUser } from "@/lib/user";
+"use server";
 
-export async function getUserFromToken() {
-  const user = await getUser();
-  return user;
+import prisma from "@/lib/prisma";
+import { getUserFromToken } from "./get-user-from-token";
+import { updateUserTokenWithCleanedUser } from "./helpers";
+import { CleanedUser } from "./types";
+
+export async function getUser(): Promise<CleanedUser | null> {
+  const payload = await getUserFromToken();
+  if (!payload || !payload.id) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: payload.id as string,
+    },
+    include: {
+      avatar: true,
+      team: true,
+      teams: true,
+      subscription: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const cleanedUser = await updateUserTokenWithCleanedUser(user);
+
+  return cleanedUser;
 }

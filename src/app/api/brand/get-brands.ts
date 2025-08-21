@@ -1,14 +1,18 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import { BrandWithRelations } from "./types";
 
 export async function getBrands(): Promise<BrandWithRelations[]> {
   try {
     const user = await getUserFromToken();
-    if (!user || !user.id || !user.teamId) {
+    if (!user || !user.id) {
       throw new Error("Unauthorized");
+    }
+
+    if (!user.teamId) {
+      return [];
     }
 
     const brands = await prisma.brand.findMany({

@@ -7,7 +7,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import { CleanedUser, getUser } from "./user";
+import { getUser } from "../app/api/user/get-user";
+import { CleanedUser } from "../app/api/user/types";
 
 interface AuthContextType {
   user: CleanedUser | null;

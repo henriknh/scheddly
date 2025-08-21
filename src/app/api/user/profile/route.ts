@@ -1,7 +1,7 @@
 import { getTokenData } from "@/lib/jwt";
 import { deleteFromMinio, uploadAvatar } from "@/lib/minio";
 import prisma from "@/lib/prisma";
-import { updateUserTokenAndReturnNextResponse } from "@/lib/user";
+import { updateUserTokenAndReturnNextResponse } from "@/app/api/user/helpers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(request: NextRequest) {
@@ -108,6 +108,7 @@ export async function PATCH(request: NextRequest) {
       },
       include: {
         avatar: true,
+        subscription: true,
       },
     });
 

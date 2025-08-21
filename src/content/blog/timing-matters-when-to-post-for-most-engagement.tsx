@@ -2,9 +2,9 @@ import { BlogPost } from "./posts";
 
 const post: BlogPost = {
   slug: "timing-matters-when-to-post-for-most-engagement",
-  title: "Timing matters &ndash; When to post to get the most engagement",
+  title: "Timing matters — When to post to get the most engagement",
   description:
-    "General posting windows that work across platforms &ndash; and how to use scheduling to hit them consistently.",
+    "General posting windows that work across platforms — and how to use scheduling to hit them consistently.",
   publishedAt: "2025-08-11T09:15:00.000Z",
   tags: ["Content Strategy", "Timing", "Engagement"],
   readTimeMinutes: 6,
@@ -20,16 +20,15 @@ const post: BlogPost = {
 
       <h2 className="text-xl font-semibold">Reliable starting windows</h2>
       <ul className="list-disc pl-6 space-y-2">
-        <li>Weekdays: 8&ndash;10am and 4&ndash;6pm local time</li>
-        <li>Weekends: 9&ndash;11am local time</li>
+        <li>Weekdays: 8—10am and 4—6pm local time</li>
+        <li>Weekends: 9—11am local time</li>
         <li>Avoid late nights unless your audience skews nocturnal</li>
       </ul>
 
       <h2 className="text-xl font-semibold">Make timing work for you</h2>
       <ol className="list-decimal pl-6 space-y-2">
         <li>
-          Pick two primary windows and schedule consistently for 3&ndash;4
-          weeks.
+          Pick two primary windows and schedule consistently for 3—4 weeks.
         </li>
         <li>Track leading signals: saves, shares, and early comments.</li>
         <li>Iterate your schedule by +/− 30 minutes based on engagement.</li>
@@ -38,8 +37,8 @@ const post: BlogPost = {
       <h2 className="text-xl font-semibold">How Scheddly helps</h2>
       <p>
         With Scheddly, you can plan content by brand and schedule posts into
-        your chosen windows across platforms &ndash; so you never miss the
-        moments that matter for your audience.
+        your chosen windows across platforms — so you never miss the moments
+        that matter for your audience.
       </p>
 
       <div className="pt-2">

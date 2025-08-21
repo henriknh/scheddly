@@ -46,20 +46,23 @@ model Post {
 }
 
 model User {
-  id            String       @id @default(cuid())
-  name          String?
-  email         String       @unique
-  emailVerified DateTime?
-  password      String?
-  pricingTier   PricingTier?
-  sidebarOpen   Boolean      @default(true)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  avatarId      String?      @unique
-  avatar        File?        @relation(fields: [avatarId], references: [id])
-  teamId        String?
-  team          Team?        @relation("TeamMember", fields: [teamId], references: [id])
-  ownedTeam     Team?        @relation("TeamOwner")
+  id                   String        @id @default(cuid())
+  name                 String?
+  email                String        @unique
+  emailVerified        DateTime?
+  password             String?
+  sidebarOpen          Boolean       @default(true)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  avatarId             String?       @unique
+  avatar               File?         @relation(fields: [avatarId], references: [id])
+  teamId               String?
+  team                 Team?         @relation("SelectedTeam", fields: [teamId], references: [id])
+  ownedTeams           Team[]        @relation("TeamOwner")
+  teams                Team[]        @relation("TeamMembers")
+  invitationsInvitedBy Invitation[]  @relation("InvitationInvitedBy")
+  invitationsReceived  Invitation[]  @relation("InvitationInvitedUser")
+  subscription         Subscription?
 }
 
 model Team {
@@ -67,12 +70,39 @@ model Team {
   name                    String
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
-  ownerId                 String                   @unique
+  ownerId                 String
   owner                   User                     @relation("TeamOwner", fields: [ownerId], references: [id])
-  members                 User[]                   @relation("TeamMember")
+  members                 User[]                   @relation("TeamMembers")
+  selectedUsers           User[]                   @relation("SelectedTeam")
+  invitations             Invitation[]
   posts                   Post[]
   brands                  Brand[]
   socialMediaIntegrations SocialMediaIntegration[]
+}
+
+model Invitation {
+  id            String           @id @default(cuid())
+  email         String
+  status        InvitationStatus @default(pending)
+  teamId        String
+  team          Team             @relation(fields: [teamId], references: [id])
+  invitedById   String
+  invitedBy     User             @relation("InvitationInvitedBy", fields: [invitedById], references: [id])
+  invitedUserId String?
+  invitedUser   User?            @relation("InvitationInvitedUser", fields: [invitedUserId], references: [id])
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([email])
+  @@index([teamId])
+  @@index([invitedUserId])
+}
+
+enum InvitationStatus {
+  pending
+  accepted
+  declined
+  canceled
 }
 
 model SocialMediaIntegration {
@@ -138,10 +168,26 @@ enum SocialMedia {
   LINKEDIN
 }
 
-enum PricingTier {
+enum SubscriptionTier {
   STARTER
   CREATOR
   PRO
+}
+
+enum SubscriptionBillingInterval {
+  monthly
+  yearly
+}
+
+enum SubscriptionStatus {
+  incomplete
+  incomplete_expired
+  trialing
+  active
+  past_due
+  canceled
+  unpaid
+  paused
 }
 
 model File {
@@ -155,4 +201,20 @@ model File {
   postId         String?
   postVideo      Post?    @relation("PostVideo")
   postVideoCover Post?    @relation("PostVideoCover")
+}
+
+model Subscription {
+  id                   String                       @id @default(cuid())
+  userId               String                       @unique
+  user                 User                         @relation(fields: [userId], references: [id])
+  stripeCustomerId     String?                      @unique
+  stripeSubscriptionId String?                      @unique
+  status               SubscriptionStatus?
+  subscriptionTier     SubscriptionTier?
+  billingInterval      SubscriptionBillingInterval?
+  cancelAtPeriodEnd    Boolean                      @default(false)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime                     @default(now())
+  updatedAt            DateTime                     @updatedAt
 }

@@ -7,7 +7,7 @@ import {
   uploadPostVideoCover,
 } from "@/lib/minio";
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import { PostWithRelations } from "./types";
 import { postPost } from "./post-post";
 

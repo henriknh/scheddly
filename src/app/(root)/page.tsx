@@ -11,7 +11,7 @@ export default function LandingPage() {
     <div className="flex flex-col items-center">
       <HeroSection />
 
-      <div className="container px-4">
+      <div className="container">
         <PlatformsSection />
         <FeaturesSection />
         {/* <StatisticsSection /> */}

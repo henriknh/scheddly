@@ -15,8 +15,8 @@ const post: BlogPost = {
       <p>
         Your brand is not a logo. It is the promise you make, the experience you
         deliver, and the memory people keep. Strong brands reduce friction,
-        increase trust, and compound results across every channel &ndash;
-        especially on social.
+        increase trust, and compound results across every channel — especially
+        on social.
       </p>
 
       <h2 className="text-xl font-semibold">Key takeaways</h2>
@@ -43,8 +43,8 @@ const post: BlogPost = {
         </li>
         <li>
           <span className="font-medium">Personality and voice:</span> Set tone
-          rules that are easy to apply &ndash; three do&apos;s and three
-          don&apos;ts are enough.
+          rules that are easy to apply — three do&apos;s and three don&apos;ts
+          are enough.
         </li>
         <li>
           <span className="font-medium">Visual identity:</span> Logo, color,
@@ -56,7 +56,7 @@ const post: BlogPost = {
         </li>
         <li>
           <span className="font-medium">Experience:</span> How you keep the
-          promise &ndash; product quality, service, support, and social content.
+          promise — product quality, service, support, and social content.
         </li>
       </ul>
 
@@ -109,7 +109,7 @@ const post: BlogPost = {
       <p>
         Scheddly is built to keep brands consistent. Organize integrations,
         assets, team rules, and posting defaults by brand so every post reflects
-        your positioning and voice &ndash; without extra coordination.
+        your positioning and voice — without extra coordination.
       </p>
 
       <div className="pt-2">

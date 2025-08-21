@@ -68,13 +68,15 @@ export function AddXCommunityModal({ integration }: AddXCommunityModalProps) {
 
         <div className="space-y-4">
           <Alert variant="destructive">
-            <AlertCircleIcon className="!top-3.5" />
+            <span className="flex items-center justify-center">
+              <AlertCircleIcon className="h-4 w-4" />
+            </span>
+
             <AlertTitle className="mb-0">
               Due to limited support for communities in the official X API you
               need to manually add your communities.
             </AlertTitle>
           </Alert>
-
           <Caption>
             Enter the name and ID of the X community you want to add. Your
             communities can be found{" "}
@@ -88,7 +90,6 @@ export function AddXCommunityModal({ integration }: AddXCommunityModalProps) {
             and the ID can be found in the URL after /i/communities/ after
             you&apos;ve clicked on the community.
           </Caption>
-
           <div className="space-y-2">
             <Input ref={inputNameRef} placeholder="Community name" />
 

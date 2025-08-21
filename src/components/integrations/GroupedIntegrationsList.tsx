@@ -4,7 +4,7 @@ import { BrandWithRelations } from "@/app/api/brand/types";
 import { disconnectIntegrationFromBrand } from "@/app/api/social-media-integration/disconnect-integration-from-brand";
 import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { Unlink } from "lucide-react";
 import { useState } from "react";

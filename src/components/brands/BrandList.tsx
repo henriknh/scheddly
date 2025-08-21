@@ -52,13 +52,13 @@ export function BrandList({ brands }: BrandListProps) {
           onClick={() => setIsAddModalOpen(true)}
         >
           <Plus className="h-4 w-4" />
-          Add brand
+          Create brand
         </Button>
       </div>
 
       {brands.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          <p>No brands found. Create your first brand to get started.</p>
+          No brands. Create your first brand to get started.
         </div>
       ) : (
         <Table>

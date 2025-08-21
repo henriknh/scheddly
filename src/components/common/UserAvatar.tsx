@@ -23,14 +23,14 @@ export function UserAvatar({ src, size = "sm" }: UserAvatarProps) {
   return (
     <ShadcnAvatar
       className={cn(
-        size === "sm" ? "h-4 w-4" : size === "md" ? "h-8 w-8" : "h-16 w-16"
+        size === "sm" ? "h-5 w-5" : size === "md" ? "h-8 w-8" : "h-16 w-16"
       )}
     >
       <AvatarImage src={url!} alt="user avatar" />
       <AvatarFallback>
         <User
           className={cn(
-            size === "sm" ? "h-4 w-4" : size === "md" ? "h-8 w-8" : "h-16 w-16"
+            size === "sm" ? "h-5 w-5" : size === "md" ? "h-8 w-8" : "h-16 w-16"
           )}
         />
       </AvatarFallback>

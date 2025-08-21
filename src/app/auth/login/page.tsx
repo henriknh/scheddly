@@ -47,50 +47,55 @@ export default function LoginPage() {
     }
   }
 
+  const loginForm = (
+    <form onSubmit={onSubmit} className="w-full">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl text-center">Login</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="m@example.com"
+            disabled={isLoading}
+            required
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            disabled={isLoading}
+            required
+          />
+        </div>
+      </CardContent>
+      <CardFooter className="flex flex-col gap-4">
+        <Button className="w-full" type="submit" disabled={isLoading}>
+          {isLoading ? "Loading..." : "Login"}
+        </Button>
+        <div className="text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link href="/auth/register" className="text-primary hover:underline">
+            Register
+          </Link>
+        </div>
+      </CardFooter>
+    </form>
+  );
   return (
-    <Card className="w-[440px] max-w-[calc(100vw-2rem)]">
-      <form onSubmit={onSubmit}>
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center">Login</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="m@example.com"
-              disabled={isLoading}
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              disabled={isLoading}
-              required
-            />
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-4">
-          <Button className="w-full" type="submit" disabled={isLoading}>
-            {isLoading ? "Loading..." : "Login"}
-          </Button>
-          <div className="text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/auth/register"
-              className="text-primary hover:underline"
-            >
-              Register
-            </Link>
-          </div>
-        </CardFooter>
-      </form>
-    </Card>
+    <>
+      <div className="flex md:hidden flex-col items-center justify-center h-full w-full">
+        {loginForm}
+      </div>
+      <Card className="hidden md:block w-[440px] max-w-[calc(100vw-2rem)]">
+        {loginForm}
+      </Card>
+    </>
   );
 }

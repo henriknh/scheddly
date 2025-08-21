@@ -72,7 +72,7 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section className="container pt-32">
+    <section className="pt-32">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold mb-4">
           Loved by Creators and Businesses

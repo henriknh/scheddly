@@ -2,7 +2,7 @@
 
 import { deleteFromMinio } from "@/lib/minio";
 import _prisma, { PrismaTransaction } from "@/lib/prisma";
-import { getUserFromToken } from "@/lib/user";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 
 export interface DeleteFileOptions {
   prismaTx?: PrismaTransaction;
