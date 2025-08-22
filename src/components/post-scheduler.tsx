@@ -15,18 +15,19 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Input } from "./ui/input";
+import { useEffect, useState } from "react";
 
 interface PostSchedulerProps {
   initialDate?: Date | null;
   onScheduleChange: (date: Date | null) => void;
+  alreadyScheduledDates: Date[];
 }
 
 export function PostScheduler({
   initialDate,
   onScheduleChange,
+  alreadyScheduledDates = [],
 }: PostSchedulerProps) {
   const [date, setDate] = useState<Date | null>(
     initialDate ? new Date(initialDate) : null
@@ -93,7 +94,7 @@ export function PostScheduler({
               today.setHours(0, 0, 0, 0);
               return date < today;
             }}
-            classNames={{}}
+            highlightedDates={alreadyScheduledDates}
           />
           <div className="flex items-center justify-center gap-2 p-3 border-t">
             <Select

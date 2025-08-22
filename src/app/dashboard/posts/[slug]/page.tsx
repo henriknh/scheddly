@@ -1,3 +1,4 @@
+import { getAlreadyScheduledDates } from "@/app/api/post/get-already-scheduled-dates";
 import { getPost } from "@/app/api/post/get-post";
 import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/get-social-media-integrations";
 import { Header } from "@/components/common/Header";
@@ -21,9 +22,10 @@ export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
 
   try {
-    const [post, integrations] = await Promise.all([
+    const [post, integrations, alreadyScheduledDates] = await Promise.all([
       getPost(slug),
       getSocialMediaIntegrations(),
+      getAlreadyScheduledDates(),
     ]);
 
     const postTypeLabel =
@@ -40,13 +42,25 @@ export default async function PostPage({ params }: PostPageProps) {
         {postIsEditable(post) ? (
           <>
             {post.postType === PostType.TEXT && (
-              <TextPostForm post={post} integrations={integrations} />
+              <TextPostForm
+                post={post}
+                alreadyScheduledDates={alreadyScheduledDates}
+                integrations={integrations}
+              />
             )}
             {post.postType === PostType.IMAGE && (
-              <ImagePostForm post={post} integrations={integrations} />
+              <ImagePostForm
+                post={post}
+                alreadyScheduledDates={alreadyScheduledDates}
+                integrations={integrations}
+              />
             )}
             {post.postType === PostType.VIDEO && (
-              <VideoPostForm post={post} integrations={integrations} />
+              <VideoPostForm
+                post={post}
+                alreadyScheduledDates={alreadyScheduledDates}
+                integrations={integrations}
+              />
             )}
           </>
         ) : (

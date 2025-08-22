@@ -23,12 +23,14 @@ import { SocialMediaSelector } from "../social-media-selector";
 interface VideoPostFormProps {
   post?: PostWithRelations;
   integrations: SocialMediaIntegrationWithRelations[];
+  alreadyScheduledDates: Date[];
   initialDate?: string;
 }
 
 export function VideoPostForm({
   post,
   integrations,
+  alreadyScheduledDates = [],
   initialDate,
 }: VideoPostFormProps) {
   const router = useRouter();
@@ -298,6 +300,7 @@ export function VideoPostForm({
         <PostScheduler
           initialDate={post?.scheduledAt}
           onScheduleChange={setScheduledDate}
+          alreadyScheduledDates={alreadyScheduledDates}
         />
       </div>
 

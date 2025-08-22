@@ -7,12 +7,15 @@ import { DayPicker } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+  highlightedDates?: Date[];
+};
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  highlightedDates = [],
   ...props
 }: CalendarProps) {
   return (
@@ -52,6 +55,14 @@ function Calendar({
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
         ...classNames,
+      }}
+      modifiers={{
+        highlighted: highlightedDates,
+        ...props.modifiers,
+      }}
+      modifiersClassNames={{
+        highlighted: "border-2 border-primary rounded-md",
+        ...props.modifiersClassNames,
       }}
       components={{
         IconLeft: () => <ChevronLeft className="h-4 w-4" />,
