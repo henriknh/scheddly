@@ -1,48 +1,47 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { DataTable, DataTableColumnDef } from "@/components/ui/data-table";
-
-interface DebugUserRow {
-  id: string;
-  name: string | null;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { CleanedUser } from "@/app/api/user/types";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { UserAvatar } from "../common/UserAvatar";
 
 interface DebugUsersListProps {
-  users: Array<{
-    id: string;
-    name: string | null;
-    email: string;
-    createdAt: Date | string;
-    updatedAt: Date | string;
-  }>;
+  users: CleanedUser[];
 }
 
 export function DebugUsersList({ users }: DebugUsersListProps) {
-  const data: DebugUserRow[] = (users || []).map((u) => ({
-    id: u.id,
-    name: u.name ?? null,
-    email: u.email,
-    createdAt: new Date(u.createdAt).toLocaleString(),
-    updatedAt: new Date(u.updatedAt).toLocaleString(),
-  }));
-
-  const columns: DataTableColumnDef<DebugUserRow, unknown>[] = [
-    { accessorKey: "id", header: "ID", width: 280 },
-    { accessorKey: "name", header: "Name", width: 180 },
-    { accessorKey: "email", header: "Email", width: 220 },
-    { accessorKey: "createdAt", header: "Created", width: 200 },
-    { accessorKey: "updatedAt", header: "Updated", width: 200 },
-  ];
-
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <DataTable columns={columns} data={data} />
-      </CardContent>
-    </Card>
+    <Table>
+      <TableHeader>
+        <TableRow>Name</TableRow>
+        <TableRow>Email</TableRow>
+        <TableRow>Joined at</TableRow>
+        <TableRow>Last seen at</TableRow>
+        <TableRow>Subscription</TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {users.map((user) => (
+          <TableRow key={user.id}>
+            <TableCell className="flex items-center gap-2">
+              <UserAvatar src={user.avatar?.path} />
+
+              {user.name}
+            </TableCell>
+            <TableCell>{user.email}</TableCell>
+            <TableCell>{user.createdAt.toLocaleString()}</TableCell>
+            <TableCell>{user.updatedAt.toLocaleString()}</TableCell>
+            <TableCell>
+              {user.subscription?.status || "No subscription"}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }

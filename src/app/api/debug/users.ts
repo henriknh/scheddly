@@ -1,18 +1,12 @@
 "use server";
 
-import prisma from "@/lib/prisma";
 import { getUserFromToken } from "@/app/api/user/get-user-from-token";
+import prisma from "@/lib/prisma";
+import { cleanUserData } from "../user/helpers";
 import { allowedEmails } from "./helpers";
+import { CleanedUser } from "../user/types";
 
-export interface DebugUserDTO {
-  id: string;
-  name: string | null;
-  email: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export async function getDebugUsers(): Promise<DebugUserDTO[]> {
+export async function getDebugUsers(): Promise<CleanedUser[]> {
   const currentUser = await getUserFromToken();
 
   if (!currentUser || !allowedEmails.includes(currentUser.email || "")) {
@@ -20,15 +14,12 @@ export async function getDebugUsers(): Promise<DebugUserDTO[]> {
   }
 
   const users = await prisma.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      createdAt: true,
-      updatedAt: true,
+    include: {
+      avatar: true,
+      subscription: true,
     },
     orderBy: { createdAt: "desc" },
   });
 
-  return users;
+  return Promise.all(users.map((user) => cleanUserData(user)));
 }
