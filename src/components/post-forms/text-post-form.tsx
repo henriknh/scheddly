@@ -21,12 +21,14 @@ import { SocialMediaSelector } from "../social-media-selector";
 interface TextPostFormProps {
   post?: PostWithRelations;
   integrations: SocialMediaIntegrationWithRelations[];
+  alreadyScheduledDates: Date[];
   initialDate?: string;
 }
 
 export function TextPostForm({
   post,
   integrations,
+  alreadyScheduledDates = [],
   initialDate,
 }: TextPostFormProps) {
   const router = useRouter();
@@ -141,6 +143,7 @@ export function TextPostForm({
         <PostScheduler
           initialDate={post?.scheduledAt}
           onScheduleChange={setScheduledDate}
+          alreadyScheduledDates={alreadyScheduledDates}
         />
       </div>
 

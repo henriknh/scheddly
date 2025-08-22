@@ -23,12 +23,14 @@ import { toast } from "sonner";
 interface ImagePostFormProps {
   post?: PostWithRelations;
   integrations: SocialMediaIntegrationWithRelations[];
+  alreadyScheduledDates: Date[];
   initialDate?: string;
 }
 
 export function ImagePostForm({
   post,
   integrations,
+  alreadyScheduledDates = [],
   initialDate,
 }: ImagePostFormProps) {
   const router = useRouter();
@@ -203,6 +205,7 @@ export function ImagePostForm({
         <PostScheduler
           initialDate={post?.scheduledAt}
           onScheduleChange={setScheduledDate}
+          alreadyScheduledDates={alreadyScheduledDates}
         />
       </div>
 
