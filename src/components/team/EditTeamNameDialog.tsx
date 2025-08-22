@@ -16,7 +16,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useIsMedium } from "@/hooks/use-is-medium";
+import { useIsTablet } from "@/hooks/use-is-tablet";
 import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -35,7 +35,7 @@ export function EditTeamNameDialog({
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(currentName);
   const [loading, setLoading] = useState(false);
-  const isMedium = useIsMedium();
+  const isTablet = useIsTablet();
 
   const onSave = async () => {
     try {
@@ -63,7 +63,7 @@ export function EditTeamNameDialog({
       }}
     >
       <DialogTrigger asChild>
-        {isMedium ? (
+        {isTablet ? (
           <Tooltip>
             <TooltipTrigger asChild>
               <Button

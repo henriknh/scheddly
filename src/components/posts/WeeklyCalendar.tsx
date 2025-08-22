@@ -2,88 +2,104 @@
 
 import { PostWithRelations } from "@/app/api/post/types";
 import { Brand } from "@/generated/prisma";
-import { addDays, format, isSameDay } from "date-fns";
+import { useScreenSize } from "@/hooks/use-screen-size";
+import { addDays, format, isSameDay, subDays } from "date-fns";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PostFilters } from "./PostFilters";
 import { WeekdayCell } from "./WeekdayCell";
+import { Button } from "../ui/button";
+import { ChevronLeft } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 interface WeeklyCalendarProps {
   posts?: PostWithRelations[];
   brands: Brand[];
-  onDateSelect?: (date: Date) => void;
 }
 
-// Custom hook to detect screen size
-function useScreenSize() {
-  const [screenSize, setScreenSize] = useState<"mobile" | "tablet" | "desktop">(
-    "desktop"
+const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+export function WeeklyCalendar({ posts = [], brands }: WeeklyCalendarProps) {
+  const searchParams = useSearchParams();
+  const screenSize = useScreenSize();
+  const router = useRouter();
+
+  const viewIsXDaysWide = useMemo(() => {
+    if (screenSize === "mobile") {
+      return 1;
+    } else if (screenSize === "tablet") {
+      return 2;
+    } else {
+      return 7;
+    }
+  }, [screenSize]);
+
+  const getNumberOfDaysBackward = useMemo(() => {
+    if (screenSize === "mobile") {
+      return -1;
+    } else if (screenSize === "tablet") {
+      return -2;
+    } else {
+      return -7 - new Date().getDay() + 1;
+    }
+  }, [screenSize]);
+
+  const getNumberOfDaysForward = useMemo(() => {
+    if (screenSize === "mobile") {
+      return 7;
+    } else if (screenSize === "tablet") {
+      return 13;
+    } else {
+      return 7 - new Date().getDay() + 14;
+    }
+  }, [screenSize]);
+
+  const [currentDate, setCurrentDate] = useState<Date>(() => {
+    const currentDate = searchParams.get("currentDate");
+    if (currentDate) {
+      return new Date(currentDate);
+    }
+    return new Date();
+  });
+
+  const updateQueryParams = useCallback(
+    (params: Record<string, string | null | undefined>) => {
+      const newParams = new URLSearchParams(searchParams.toString());
+      Object.entries(params).forEach(([key, value]) => {
+        if (value) {
+          newParams.set(key, value);
+        } else {
+          newParams.delete(key);
+        }
+      });
+      router.push(`?${newParams.toString()}`);
+    },
+    [router, searchParams]
   );
 
   useEffect(() => {
-    const updateScreenSize = () => {
-      const width = window.innerWidth;
-      if (width <= 768) {
-        setScreenSize("mobile");
-      } else if (width <= 1024) {
-        setScreenSize("tablet");
-      } else {
-        setScreenSize("desktop");
-      }
-    };
+    updateQueryParams({
+      currentDate: format(currentDate, "yyyy-MM-dd"),
+    });
+  }, [currentDate, router, searchParams, updateQueryParams]);
 
-    updateScreenSize();
-    window.addEventListener("resize", updateScreenSize);
-    return () => window.removeEventListener("resize", updateScreenSize);
-  }, []);
-
-  return screenSize;
-}
-
-export function WeeklyCalendar({
-  posts = [],
-  brands,
-  onDateSelect,
-}: WeeklyCalendarProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const screenSize = useScreenSize();
-
-  // Generate dates based on screen size
-  const generateCalendarDates = () => {
+  const dates = useMemo(() => {
     const dates: Date[] = [];
-    const today = new Date();
 
-    if (screenSize === "mobile") {
-      // Mobile (<640px): 1 day back + 7 days forward (8 days total)
-      const startDate = addDays(today, -1);
-      for (let i = 0; i < 8; i++) {
-        dates.push(addDays(startDate, i));
-      }
-    } else if (screenSize === "tablet") {
-      // Tablet (<1024px): 2-3 days back + 13-14 days forward (16 days total)
-      const startDate = addDays(today, -2);
-      for (let i = 0; i < 16; i++) {
-        dates.push(addDays(startDate, i));
-      }
-    } else {
-      // Desktop (≥1024px): 7-13 days back + good number forward (21 days total)
-      const startDate = addDays(today, -7 - new Date().getDay() + 1);
-      for (let i = 0; i < 7 * 4; i++) {
-        dates.push(addDays(startDate, i));
-      }
+    for (let i = getNumberOfDaysBackward; i <= getNumberOfDaysForward; i++) {
+      dates.push(addDays(currentDate, i));
     }
 
     return dates;
-  };
+  }, [currentDate, getNumberOfDaysBackward, getNumberOfDaysForward]);
 
-  const dates = generateCalendarDates();
-  const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-  const handleDateClick = (date: Date) => {
-    onDateSelect?.(date);
-  };
+  useEffect(() => {
+    if (screenSize === "desktop") {
+      if (dates[0].getDay() !== 1) {
+        setCurrentDate(subDays(currentDate, dates[0].getDay() - 1));
+      }
+    }
+  }, [dates, screenSize, currentDate]);
 
   const getPostsForDate = (date: Date) => {
     return posts.filter((post) => {
@@ -95,28 +111,55 @@ export function WeeklyCalendar({
     });
   };
 
-  useEffect(() => {
-    const newDateFrom = format(dates[0], "yyyy-MM-dd");
-    const newDateTo = format(dates[dates.length - 1], "yyyy-MM-dd");
+  const handleToday = useCallback(() => {
+    const newDate = new Date();
 
-    const dateFrom = searchParams.get("dateFrom");
-    const dateTo = searchParams.get("dateTo");
+    setCurrentDate(newDate);
+    updateQueryParams({
+      currentDate: format(newDate, "yyyy-MM-dd"),
+    });
+  }, [updateQueryParams]);
 
-    if (dateFrom !== newDateFrom || dateTo !== newDateTo) {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("dateFrom", newDateFrom);
-      params.set("dateTo", newDateTo);
-      router.push(`?${params.toString()}`);
-    }
-  }, [dates, router, searchParams]);
+  const handlePrevious = useCallback(() => {
+    const newDate = addDays(currentDate, -viewIsXDaysWide);
+
+    setCurrentDate(newDate);
+    updateQueryParams({
+      currentDate: format(newDate, "yyyy-MM-dd"),
+    });
+  }, [currentDate, updateQueryParams, viewIsXDaysWide]);
+
+  const handleNext = useCallback(() => {
+    const newDate = addDays(currentDate, viewIsXDaysWide);
+
+    setCurrentDate(newDate);
+    updateQueryParams({
+      currentDate: format(newDate, "yyyy-MM-dd"),
+    });
+  }, [currentDate, updateQueryParams, viewIsXDaysWide]);
 
   return (
     <div className="space-y-4">
-      <PostFilters
-        brands={brands}
-        currentDate={currentDate}
-        onCurrentDateChange={setCurrentDate}
-      />
+      <div className="flex items-center justify-end gap-2">
+        <Button
+          variant="outline"
+          onClick={handleToday}
+          className="flex-1 md:flex-none"
+        >
+          Today
+        </Button>
+
+        <Button variant="outline" size="icon" onClick={handlePrevious}>
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+
+        <Button variant="outline" size="icon" onClick={handleNext}>
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+
+        <PostFilters brands={brands} />
+      </div>
+
       <div className="space-y-2">
         {/* Week day headers - only show on desktop */}
         <div className="grid-cols-7 gap-2 bg-card rounded-md hidden lg:grid">
@@ -140,7 +183,6 @@ export function WeeklyCalendar({
                 key={index}
                 date={date}
                 posts={postsForDate}
-                onDateClick={handleDateClick}
                 screenSize={screenSize}
               />
             );
