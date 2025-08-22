@@ -1,6 +1,8 @@
 "use client";
 
 import { selectTeam } from "@/app/api/team/select-team";
+import { TeamWithRelations } from "@/app/api/team/types";
+import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -11,8 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { TeamWithRelations } from "@/app/api/team/types";
-import { useAuth } from "@/lib/auth-context";
 
 interface TeamSelectProps {
   teams: TeamWithRelations[];
@@ -20,12 +20,13 @@ interface TeamSelectProps {
 
 export function TeamSelect({ teams }: TeamSelectProps) {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, reloadUser } = useAuth();
 
   const onChange = async (value: string) => {
     try {
       await selectTeam(value);
       router.refresh();
+      reloadUser();
     } catch (error) {
       console.error(error);
       toast.error("Failed to select team");
