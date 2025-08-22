@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useAuth } from "@/lib/auth-context";
+import { PricingBillingToggle } from "@/components/common/PricingBillingToggle";
+import { PricingTiers } from "@/components/common/PricingTiers";
 import {
   SubscriptionBillingInterval,
   SubscriptionStatus,
   type SubscriptionTier,
 } from "@/generated/prisma";
-import { PricingBillingToggle } from "@/components/common/PricingBillingToggle";
-import { PricingTiers } from "@/components/common/PricingTiers";
+import { useAuth } from "@/lib/auth-context";
 import { redirectToCheckout } from "@/lib/stripe-client";
-import { Breadcrumb } from "@/components/common/breadcrumb";
+import { useState } from "react";
 
 export default function ChangePlanPage() {
   const { user } = useAuth();
@@ -82,29 +81,24 @@ export default function ChangePlanPage() {
   };
 
   return (
-    <>
-      <Breadcrumb label="Profile" href="/dashboard/profile" />
-      <Breadcrumb label="Change Plan" href="/dashboard/profile/change-plan" />
-
-      <div className="mx-auto max-w-5xl space-y-8">
-        <div className="flex items-center justify-center gap-4">
-          <PricingBillingToggle
-            isYearly={billingInterval === "yearly"}
-            onChange={(val) => setBillingInterval(val ? "yearly" : "monthly")}
-          />
-        </div>
-
-        <PricingTiers
+    <div className="mx-auto max-w-5xl space-y-8">
+      <div className="flex items-center justify-center gap-4">
+        <PricingBillingToggle
           isYearly={billingInterval === "yearly"}
-          variant="manage"
-          subscriptionTier={stripeSub?.subscriptionTier ?? null}
-          currentBillingInterval={currentBillingInterval}
-          hasActiveSubscription={hasActiveSubscription}
-          loadingTier={loadingTier}
-          onSelect={(tier) => handlePlanChange(tier)}
-          className="gap-6"
+          onChange={(val) => setBillingInterval(val ? "yearly" : "monthly")}
         />
       </div>
-    </>
+
+      <PricingTiers
+        isYearly={billingInterval === "yearly"}
+        variant="manage"
+        subscriptionTier={stripeSub?.subscriptionTier ?? null}
+        currentBillingInterval={currentBillingInterval}
+        hasActiveSubscription={hasActiveSubscription}
+        loadingTier={loadingTier}
+        onSelect={(tier) => handlePlanChange(tier)}
+        className="gap-6"
+      />
+    </div>
   );
 }

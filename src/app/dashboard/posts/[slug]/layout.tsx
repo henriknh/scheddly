@@ -12,9 +12,10 @@ export default async function PostLayout({
   const { slug } = await params;
 
   return (
-    <div>
+    <>
       <Breadcrumb label="Post" href={`/dashboard/posts/${slug}`} />
+
       {children}
-    </div>
+    </>
   );
 }

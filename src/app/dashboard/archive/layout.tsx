@@ -6,9 +6,10 @@ export default function ArchiveLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <>
       <Breadcrumb label="Archive" href="/dashboard/archive" />
+
       {children}
-    </div>
+    </>
   );
 }

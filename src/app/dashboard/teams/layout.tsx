@@ -22,9 +22,10 @@ export default async function TeamLayout({
   }
 
   return (
-    <div>
+    <>
       <Breadcrumb label="Teams" href="/dashboard/teams" />
+
       {children}
-    </div>
+    </>
   );
 }

@@ -60,12 +60,10 @@ export function PostScheduler({
   const handleTimeChange = (newHour: string, newMinute: string) => {
     setHour(newHour);
     setMinute(newMinute);
-    if (date) {
-      const newDate = new Date(date);
-      newDate.setHours(parseInt(newHour), parseInt(newMinute));
-      setDate(newDate);
-      onScheduleChange(newDate);
-    }
+    const newDate = date ? new Date(date) : new Date();
+    newDate.setHours(parseInt(newHour), parseInt(newMinute));
+    setDate(newDate);
+    onScheduleChange(newDate);
   };
 
   return (
@@ -95,14 +93,14 @@ export function PostScheduler({
               return date < today;
             }}
           />
-          <div className="flex items-center gap-2 p-3 border-t">
+          <div className="flex items-center justify-center gap-2 p-3 border-t">
             <Select
               value={hour}
               onValueChange={(value) => {
                 handleTimeChange(value, minute);
               }}
             >
-              <SelectTrigger className="w-[70px]">
+              <SelectTrigger className="w-[65px]">
                 <SelectValue placeholder="Hour" />
               </SelectTrigger>
               <SelectContent>
@@ -121,17 +119,19 @@ export function PostScheduler({
                 handleTimeChange(hour, value);
               }}
             >
-              <SelectTrigger className="w-[70px]">
+              <SelectTrigger className="w-[65px]">
                 <SelectValue placeholder="Min" />
               </SelectTrigger>
               <SelectContent>
                 {Array.from({ length: 60 }, (_, i) =>
                   i.toString().padStart(2, "0")
-                ).map((m) => (
-                  <SelectItem key={m} value={m}>
-                    {m}
-                  </SelectItem>
-                ))}
+                )
+                  .filter((m) => parseInt(m) % 5 === 0)
+                  .map((m) => (
+                    <SelectItem key={m} value={m}>
+                      {m}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>

@@ -29,7 +29,7 @@ export default async function DashboardPage() {
             <PlusButton targetDate={today} />
           </div>
           {todaysPosts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-4">
               {todaysPosts.map((post) => (
                 <PostCell key={post.id} post={post} isCurrentDay={true} />
               ))}
@@ -48,7 +48,7 @@ export default async function DashboardPage() {
             <PlusButton targetDate={tomorrow} />
           </div>
           {tomorrowsPosts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-4">
               {tomorrowsPosts.map((post) => (
                 <PostCell key={post.id} post={post} isCurrentDay={false} />
               ))}
