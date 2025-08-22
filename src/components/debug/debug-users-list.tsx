@@ -34,7 +34,7 @@ export function DebugUsersList({ users }: DebugUsersListProps) {
           <TableRow key={user.id}>
             <TableCell>
               <div className="flex items-center gap-2">
-                <UserAvatar src={user.avatar?.path} />
+                <UserAvatar src={user.avatar?.id} />
 
                 {user.name}
               </div>

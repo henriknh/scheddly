@@ -27,6 +27,9 @@ export function DebugTabs() {
         <Link href="/dashboard/debug/users">
           <TabsTrigger value="users">Users</TabsTrigger>
         </Link>
+        <Link href="/dashboard/debug/teams">
+          <TabsTrigger value="teams">Teams</TabsTrigger>
+        </Link>
         <Link href="/dashboard/debug/actions">
           <TabsTrigger value="actions">Actions</TabsTrigger>
         </Link>
