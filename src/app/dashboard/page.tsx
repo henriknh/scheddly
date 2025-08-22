@@ -31,7 +31,7 @@ export default async function DashboardPage() {
           {todaysPosts.length > 0 ? (
             <div className="flex flex-col gap-4">
               {todaysPosts.map((post) => (
-                <PostCell key={post.id} post={post} isCurrentDay={true} />
+                <PostCell key={post.id} post={post} isCurrentDay={false} />
               ))}
             </div>
           ) : (
