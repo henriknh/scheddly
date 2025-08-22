@@ -36,6 +36,7 @@ export function CurrentSubscriptionCard() {
   const label = subscriptionLabel(stripeSub);
   const trialExpired = isTrialExpired(user);
   const isOnTrial = !user.subscription;
+  const hasTrialExpired = isTrialExpired(user);
   const hasActiveSubscription = stripeSub?.status === SubscriptionStatus.active;
 
   const trialEndDate = new Date(user.createdAt);
@@ -93,18 +94,26 @@ export function CurrentSubscriptionCard() {
             <div>
               <Badge
                 variant={
-                  stripeSub?.status === SubscriptionStatus.active
+                  isOnTrial
+                    ? hasTrialExpired
+                      ? "destructive"
+                      : "success"
+                    : hasActiveSubscription
                     ? stripeSub.cancelAtPeriodEnd
                       ? "outline"
                       : "success"
                     : "destructive"
                 }
               >
-                {stripeSub?.status === SubscriptionStatus.active
+                {isOnTrial
+                  ? hasTrialExpired
+                    ? "Expired"
+                    : "Active"
+                  : hasActiveSubscription
                   ? stripeSub.cancelAtPeriodEnd
                     ? "Cancelled"
                     : "Active"
-                  : "Cancelled"}
+                  : "Expired"}
               </Badge>
             </div>
           </div>
