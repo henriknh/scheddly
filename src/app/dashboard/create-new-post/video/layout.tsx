@@ -6,9 +6,10 @@ export default function VideoLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <>
       <Breadcrumb label="Video" href="/dashboard/create-new-post/video" />
+
       {children}
-    </div>
+    </>
   );
 }

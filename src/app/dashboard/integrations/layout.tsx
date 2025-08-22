@@ -6,9 +6,10 @@ export default function IntegrationsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <>
       <Breadcrumb label="Integrations" href="/dashboard/integrations" />
+
       {children}
-    </div>
+    </>
   );
 }

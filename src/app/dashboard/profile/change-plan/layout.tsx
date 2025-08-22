@@ -8,11 +8,10 @@ export default async function ChangePlanLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <Breadcrumb label="Profile" href="/dashboard/profile" />
+    <>
       <Breadcrumb label="Change Plan" href="/dashboard/profile/change-plan" />
 
       {children}
-    </div>
+    </>
   );
 }

@@ -6,9 +6,10 @@ export default function TextLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <>
       <Breadcrumb label="Text" href="/dashboard/create-new-post/text" />
+
       {children}
-    </div>
+    </>
   );
 }

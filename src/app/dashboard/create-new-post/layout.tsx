@@ -6,9 +6,10 @@ export default function CreateNewPostLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <>
       <Breadcrumb label="Create New Post" href="/dashboard/create-new-post" />
+
       {children}
-    </div>
+    </>
   );
 }

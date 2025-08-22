@@ -6,9 +6,10 @@ export default function BrandsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <>
       <Breadcrumb label="Brands" href="/dashboard/brands" />
+
       {children}
-    </div>
+    </>
   );
 }

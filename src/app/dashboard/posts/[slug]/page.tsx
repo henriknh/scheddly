@@ -10,7 +10,6 @@ import { VideoPostForm } from "@/components/post-forms/video-post-form";
 import { PostType } from "@/generated/prisma";
 import { postIsEditable } from "@/lib/post";
 import { notFound } from "next/navigation";
-import { Breadcrumb } from "@/components/common/breadcrumb";
 
 interface PostPageProps {
   params: Promise<{
@@ -27,18 +26,16 @@ export default async function PostPage({ params }: PostPageProps) {
       getSocialMediaIntegrations(),
     ]);
 
-    const postTypeLabel = post.postType === PostType.TEXT
-      ? "Text Post"
-      : post.postType === PostType.IMAGE
-      ? "Image Post"
-      : "Video Post";
+    const postTypeLabel =
+      post.postType === PostType.TEXT
+        ? "Text Post"
+        : post.postType === PostType.IMAGE
+        ? "Image Post"
+        : "Video Post";
 
     return (
       <div className="space-y-4">
-        <Breadcrumb label={postTypeLabel} href={`/dashboard/posts/${slug}`} />
-        <Header>
-          {postTypeLabel}
-        </Header>
+        <Header>{postTypeLabel}</Header>
 
         {postIsEditable(post) ? (
           <>
