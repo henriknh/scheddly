@@ -24,8 +24,8 @@
     --muted-foreground: 260 10% 45%;
     --accent: 260 20% 96%;
     --accent-foreground: 260 20% 20%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: var(--error);
+    --destructive-foreground: var(--error-foreground);
     --border: 260 10% 90%;
     --input: 260 10% 90%;
     --ring: 270 45% 45%;
@@ -43,7 +43,7 @@
     --warning-foreground: 48 96% 98%;
     --error: 0 84% 60%;
     --error-foreground: 0 0% 98%;
-    --info: 260 95% 48%;
+    --info: 200 75% 48%;
     --info-foreground: 260 94% 98%;
   }
 
@@ -68,8 +68,8 @@
     --muted-foreground: 260 10% 70%;
     --accent: 260 20% 25%;
     --accent-foreground: 260 10% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: var(--error);
+    --destructive-foreground: var(--error-foreground);
     --border: 260 20% 25%;
     --input: 260 20% 25%;
     --ring: 270 45% 65%;
@@ -86,7 +86,7 @@
     --warning-foreground: 48 96% 98%;
     --error: 0 84% 60%;
     --error-foreground: 0 0% 98%;
-    --info: 260 95% 48%;
+    --info: 200 95% 48%;
     --info-foreground: 260 94% 98%;
   }
 }
@@ -98,7 +98,7 @@
   body {
     @apply bg-background text-foreground;
   }
-  
+
   /* Safe area handling for iOS devices */
   :root {
     --sat: env(safe-area-inset-top);
@@ -106,7 +106,7 @@
     --sal: env(safe-area-inset-left);
     --sar: env(safe-area-inset-right);
   }
-  
+
   /* Ensure body respects safe areas */
   body {
     padding-top: var(--sat);
@@ -114,12 +114,12 @@
     padding-left: var(--sal);
     padding-right: var(--sar);
   }
-  
+
   /* For full-height layouts, ensure content doesn't overlap with safe areas */
   html {
     height: 100%;
   }
-  
+
   body {
     min-height: 100vh;
     min-height: 100dvh; /* Dynamic viewport height for mobile */
@@ -129,10 +129,10 @@
 @layer utilities {
   /* Hide scrollbar while maintaining scroll functionality */
   .scrollbar-hide {
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
   }
   .scrollbar-hide::-webkit-scrollbar {
-    display: none;  /* Safari and Chrome */
+    display: none; /* Safari and Chrome */
   }
 }
