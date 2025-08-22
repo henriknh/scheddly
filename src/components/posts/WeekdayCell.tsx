@@ -16,22 +16,12 @@ import { PostCell } from "./PostCell";
 interface WeekdayCellProps {
   date: Date;
   posts: PostWithRelations[];
-  onDateClick?: (date: Date) => void;
   screenSize: "mobile" | "tablet" | "desktop";
 }
 
-export function WeekdayCell({
-  date,
-  posts,
-  onDateClick,
-  screenSize,
-}: WeekdayCellProps) {
+export function WeekdayCell({ date, posts, screenSize }: WeekdayCellProps) {
   const isCurrentDay = isToday(date);
   const isPastDate = isPast(date) && !isToday(date);
-
-  const handleCellClick = () => {
-    onDateClick?.(date);
-  };
 
   return (
     <div
@@ -40,7 +30,6 @@ export function WeekdayCell({
         isCurrentDay && "bg-accent text-accent-foreground",
         (date.getDay() === 6 || date.getDay() === 0) && "bg-destructive/5"
       )}
-      onClick={handleCellClick}
     >
       {/* Date header */}
       <div className="flex justify-between items-start w-full">
