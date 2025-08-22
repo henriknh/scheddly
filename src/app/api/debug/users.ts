@@ -1,17 +1,12 @@
 "use server";
 
-import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import prisma from "@/lib/prisma";
 import { cleanUserData } from "../user/helpers";
-import { allowedEmails } from "./helpers";
 import { CleanedUser } from "../user/types";
+import { assertDebugUser } from "./helpers";
 
 export async function getDebugUsers(): Promise<CleanedUser[]> {
-  const currentUser = await getUserFromToken();
-
-  if (!currentUser || !allowedEmails.includes(currentUser.email || "")) {
-    throw new Error("Forbidden");
-  }
+  await assertDebugUser();
 
   const users = await prisma.user.findMany({
     include: {

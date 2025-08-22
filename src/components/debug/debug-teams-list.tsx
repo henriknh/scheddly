@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import Link from "next/link";
 
 interface DebugTeamsListProps {
   teams: TeamWithRelations[];
@@ -29,7 +30,11 @@ export function DebugTeamsList({ teams }: DebugTeamsListProps) {
       <TableBody>
         {teams.map((team) => (
           <TableRow key={team.id}>
-            <TableCell>{team.name}</TableCell>
+            <TableCell>
+              <Link href={`/dashboard/debug/teams/${team.id}`}>
+                {team.name}
+              </Link>
+            </TableCell>
             <TableCell>
               <div className="flex items-center gap-2">
                 <UserAvatar src={team.owner.avatar?.id} />

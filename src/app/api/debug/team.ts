@@ -1,13 +1,22 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { assertDebugUser } from "./helpers";
 import { TeamWithRelations } from "../team/types";
+import { assertDebugUser } from "./helpers";
 
-export async function getDebugTeams(): Promise<TeamWithRelations[]> {
+export async function getDebugTeam(
+  teamId: string
+): Promise<TeamWithRelations | null> {
+  if (!teamId) {
+    throw new Error("Team ID is required");
+  }
+
   await assertDebugUser();
 
-  const teams = await prisma.team.findMany({
+  const team = await prisma.team.findUnique({
+    where: {
+      id: teamId,
+    },
     include: {
       owner: {
         include: {
@@ -28,5 +37,5 @@ export async function getDebugTeams(): Promise<TeamWithRelations[]> {
     },
   });
 
-  return teams;
+  return team;
 }

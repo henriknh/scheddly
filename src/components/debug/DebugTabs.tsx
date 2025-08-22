@@ -8,7 +8,12 @@ import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 export function DebugTabs() {
   const pathname = usePathname();
   const getCurrentTab = useCallback(() => {
-    return pathname.split("/").pop() || "debug";
+    if (pathname.endsWith("/debug")) {
+      return "debug";
+    }
+
+    const afterDebug = pathname.split("/debug/").pop();
+    return afterDebug?.split("/").shift() || "debug";
   }, [pathname]);
 
   const [tab, setTab] = useState<string | undefined>(getCurrentTab);

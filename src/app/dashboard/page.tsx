@@ -1,10 +1,9 @@
-import { CreateNewPost } from "@/components/dashboard/create-new-post";
-import { PostCell } from "@/components/posts/PostCell";
 import { getTodaysPosts } from "@/app/api/post/get-todays-posts";
 import { getTomorrowsPosts } from "@/app/api/post/get-tomorrows-posts";
 import { Header } from "@/components/common/Header";
+import { CreateNewPost } from "@/components/dashboard/create-new-post";
 import { PlusButton } from "@/components/dashboard/plus-button";
-import { Breadcrumb } from "@/components/common/breadcrumb";
+import { PostCell } from "@/components/posts/PostCell";
 import { format } from "date-fns";
 
 export default async function DashboardPage() {
@@ -20,7 +19,6 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <Breadcrumb label="Dashboard" href="/dashboard" />
       <CreateNewPost />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">

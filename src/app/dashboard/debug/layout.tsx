@@ -1,6 +1,6 @@
 "use server";
 
-import { allowedEmails } from "@/app/api/debug/helpers";
+import { isDebugUser } from "@/app/api/debug/helpers";
 import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import { Breadcrumb } from "@/components/common/breadcrumb";
 import { DebugTabs } from "@/components/debug/DebugTabs";
@@ -11,19 +11,13 @@ export default async function DebugLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isDevMode = process.env.NODE_ENV === "development";
-
   const user = await getUserFromToken();
 
   if (!user) {
     redirect("/login");
   }
 
-  if (!allowedEmails.includes(user?.email ?? "")) {
-    redirect("/dashboard");
-  }
-
-  if (!isDevMode) {
+  if (!(await isDebugUser())) {
     redirect("/dashboard");
   }
 
