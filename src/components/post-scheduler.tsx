@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { Input } from "./ui/input";
 
 interface PostSchedulerProps {
   initialDate?: Date | null;
@@ -92,6 +93,7 @@ export function PostScheduler({
               today.setHours(0, 0, 0, 0);
               return date < today;
             }}
+            classNames={{}}
           />
           <div className="flex items-center justify-center gap-2 p-3 border-t">
             <Select
