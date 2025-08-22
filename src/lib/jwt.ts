@@ -1,7 +1,6 @@
 "use server";
 
-import { CleanedUser } from "@/app/api/user/types";
-import { SignJWT, jwtVerify } from "jose";
+import { JWTPayload, SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
@@ -17,8 +16,8 @@ if (!rawSecret) {
 }
 const JWT_SECRET = new TextEncoder().encode(rawSecret || "insecure_dev_secret");
 
-export async function createToken(user: CleanedUser) {
-  return await new SignJWT(user)
+export async function createToken(jwtPayload: JWTPayload) {
+  return await new SignJWT(jwtPayload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("24h")

@@ -34,7 +34,7 @@ export async function deleteTeam(teamId: string) {
     throw new Error("Team is not empty. Please remove all members first.");
   }
 
-  if (team.id === user.team?.id || !user.team?.id) {
+  if (team.id === user.teamId || !user.teamId) {
     const fallbackTeam = await prisma.team.findFirst({
       where: {
         ownerId: user.id,

@@ -1,9 +1,9 @@
 "use server";
 
-import { allowedEmails } from "@/app/api/debug/helpers";
-import { getUser } from "@/app/api/user/get-user";
+import { isDebugUser } from "@/app/api/debug/helpers";
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import { Breadcrumb } from "@/components/common/breadcrumb";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DebugTabs } from "@/components/debug/DebugTabs";
 import { redirect } from "next/navigation";
 
 export default async function DebugLayout({
@@ -11,35 +11,25 @@ export default async function DebugLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isDevMode = process.env.NODE_ENV === "development";
-
-  const user = await getUser();
+  const user = await getUserFromToken();
 
   if (!user) {
     redirect("/login");
   }
 
-  if (!allowedEmails.includes(user?.email ?? "")) {
-    redirect("/dashboard");
-  }
-
-  if (!isDevMode) {
+  if (!(await isDebugUser())) {
     redirect("/dashboard");
   }
 
   return (
-    <div>
+    <>
       <Breadcrumb label="Debug" href="/dashboard/debug" />
 
-      <Tabs defaultValue="overview">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="actions">Actions</TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <div className="flex flex-col gap-4">
+        <DebugTabs />
 
-      {children}
-    </div>
+        {children}
+      </div>
+    </>
   );
 }

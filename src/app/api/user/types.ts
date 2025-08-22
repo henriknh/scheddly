@@ -1,4 +1,4 @@
-import { File, Team, User, Subscription } from "@/generated/prisma";
+import { File, Subscription, User } from "@/generated/prisma";
 
 export interface UserWithLightRelations extends User {
   avatar?: File | null;
@@ -6,8 +6,6 @@ export interface UserWithLightRelations extends User {
 
 export interface UserWithFullRelations extends User {
   avatar?: File | null;
-  team?: Team | null;
-  teams?: Team[] | null;
   subscription: Subscription | null;
 }
 

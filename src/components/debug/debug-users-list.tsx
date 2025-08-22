@@ -1,48 +1,55 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { DataTable, DataTableColumnDef } from "@/components/ui/data-table";
-
-interface DebugUserRow {
-  id: string;
-  name: string | null;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { CleanedUser } from "@/app/api/user/types";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { UserAvatar } from "../common/UserAvatar";
+import { formatDate, formatDateAgo } from "@/lib/format-date";
+import { subscriptionTierToLabel } from "@/lib/pricing";
 
 interface DebugUsersListProps {
-  users: Array<{
-    id: string;
-    name: string | null;
-    email: string;
-    createdAt: Date | string;
-    updatedAt: Date | string;
-  }>;
+  users: CleanedUser[];
 }
 
 export function DebugUsersList({ users }: DebugUsersListProps) {
-  const data: DebugUserRow[] = (users || []).map((u) => ({
-    id: u.id,
-    name: u.name ?? null,
-    email: u.email,
-    createdAt: new Date(u.createdAt).toLocaleString(),
-    updatedAt: new Date(u.updatedAt).toLocaleString(),
-  }));
-
-  const columns: DataTableColumnDef<DebugUserRow, unknown>[] = [
-    { accessorKey: "id", header: "ID", width: 280 },
-    { accessorKey: "name", header: "Name", width: 180 },
-    { accessorKey: "email", header: "Email", width: 220 },
-    { accessorKey: "createdAt", header: "Created", width: 200 },
-    { accessorKey: "updatedAt", header: "Updated", width: 200 },
-  ];
-
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <DataTable columns={columns} data={data} />
-      </CardContent>
-    </Card>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableCell>Name</TableCell>
+          <TableCell>Email</TableCell>
+          <TableCell>Joined at</TableCell>
+          <TableCell>Last seen at</TableCell>
+          <TableCell>Subscription</TableCell>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {users.map((user) => (
+          <TableRow key={user.id}>
+            <TableCell>
+              <div className="flex items-center gap-2">
+                <UserAvatar src={user.avatar?.id} />
+
+                {user.name}
+              </div>
+            </TableCell>
+            <TableCell>{user.email}</TableCell>
+            <TableCell>{formatDate(user.createdAt)}</TableCell>
+            <TableCell>{formatDateAgo(user.updatedAt)}</TableCell>
+            <TableCell>
+              {user.subscription?.subscriptionTier
+                ? subscriptionTierToLabel(user.subscription.subscriptionTier)
+                : "No subscription"}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }

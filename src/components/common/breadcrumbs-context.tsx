@@ -58,11 +58,16 @@ export function BreadcrumbsProvider({
 
   useEffect(() => {
     // Reset breadcrumbs on every pathname change
-    resetBreadcrumbs();
+    // resetBreadcrumbs();
   }, [pathname, resetBreadcrumbs]);
 
   const value = useMemo(
-    () => ({ items, registerBreadcrumb, deregisterBreadcrumb, resetBreadcrumbs }),
+    () => ({
+      items,
+      registerBreadcrumb,
+      deregisterBreadcrumb,
+      resetBreadcrumbs,
+    }),
     [items, registerBreadcrumb, deregisterBreadcrumb, resetBreadcrumbs]
   );
 
