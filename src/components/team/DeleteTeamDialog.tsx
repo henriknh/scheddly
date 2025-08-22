@@ -1,5 +1,5 @@
 import { deleteTeam } from "@/app/api/team/delete-team";
-import { useIsMedium } from "@/hooks/use-is-medium";
+import { useIsTablet } from "@/hooks/use-is-tablet";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -21,7 +21,7 @@ interface DeleteTeamDialogProps {
 
 export function DeleteTeamDialog({ teamId }: DeleteTeamDialogProps) {
   const router = useRouter();
-  const isMedium = useIsMedium();
+  const isTablet = useIsTablet();
   const [isOpen, setIsOpen] = useState(false);
 
   const onDelete = async () => {
@@ -39,7 +39,7 @@ export function DeleteTeamDialog({ teamId }: DeleteTeamDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        {isMedium ? (
+        {isTablet ? (
           <Button variant="outline" size="icon">
             <Trash className="h-4 w-4" />
           </Button>

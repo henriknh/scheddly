@@ -1,16 +1,16 @@
 import * as React from "react";
 
-const MEDIUM_BREAKPOINT = 1024;
+const TABLET_BREAKPOINT = 1024;
 
-export function useIsMedium(): boolean {
-  const checkIsMedium = () => {
+export function useIsTablet(): boolean {
+  const checkIsTablet = () => {
     if (typeof window === "undefined" || typeof navigator === "undefined") {
       // Default to false during SSR
       return false;
     }
 
     // Check screen width
-    const isMediumScreen = window.innerWidth < MEDIUM_BREAKPOINT;
+    const isTabletScreen = window.innerWidth < TABLET_BREAKPOINT;
 
     // Check for touch capabilities
     const hasTouchScreen =
@@ -24,20 +24,20 @@ export function useIsMedium(): boolean {
       );
 
     // Consider it mobile if any of these conditions are true
-    return isMediumScreen || (hasTouchScreen && isMobileUserAgent);
+    return isTabletScreen || (hasTouchScreen && isMobileUserAgent);
   };
 
-  const [isMedium, setIsMedium] = React.useState<boolean>(false);
+  const [isTablet, setIsTablet] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
 
     // Set initial value
-    setIsMedium(checkIsMedium());
+    setIsTablet(checkIsTablet());
 
-    const mql = window.matchMedia(`(max-width: ${MEDIUM_BREAKPOINT - 1}px)`);
+    const mql = window.matchMedia(`(max-width: ${TABLET_BREAKPOINT - 1}px)`);
     const onChange = () => {
-      setIsMedium(checkIsMedium());
+      setIsTablet(checkIsTablet());
     };
 
     mql.addEventListener("change", onChange);
@@ -45,5 +45,5 @@ export function useIsMedium(): boolean {
     return () => mql.removeEventListener("change", onChange);
   }, []);
 
-  return isMedium;
+  return isTablet;
 }

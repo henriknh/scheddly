@@ -1,8 +1,9 @@
 "use server";
 
+import { getUserFromToken } from "@/app/api/user/get-user-from-token";
 import { PostType, SocialMedia } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
-import { getUserFromToken } from "@/app/api/user/get-user-from-token";
+import { addDays } from "date-fns";
 import { PostWithRelations } from "./types";
 
 export interface GetPostsFilter {
@@ -116,15 +117,22 @@ export async function getPosts(
               {
                 scheduledAt: {
                   gte: new Date(filter.dateFrom),
-                  lt: new Date(filter.dateTo),
+                  lt: new Date(addDays(filter.dateTo, 1)),
                   not: null,
                 },
               },
               {
-                updatedAt: {
-                  gte: new Date(filter.dateFrom),
-                  lt: new Date(filter.dateTo),
-                },
+                AND: [
+                  {
+                    scheduledAt: null,
+                  },
+                  {
+                    updatedAt: {
+                      gte: new Date(filter.dateFrom),
+                      lt: new Date(addDays(filter.dateTo, 1)),
+                    },
+                  },
+                ],
               },
             ],
           }),
