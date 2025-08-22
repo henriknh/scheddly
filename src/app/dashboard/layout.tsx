@@ -10,6 +10,7 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getPendingInvitationsForCurrentUser } from "../api/team/get-pending-invitations-for-current-user";
 import { TeamInvitations } from "@/components/team/TeamInvitations";
+import { getTeams } from "../api/team/get-teams";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,8 @@ export default async function DashboardLayout({
     redirect("/auth/login");
   }
 
+  const teams = await getTeams();
+
   const sidebarOpen = user?.sidebarOpen ?? true;
   const pendingInvitations = await getPendingInvitationsForCurrentUser();
 
@@ -41,6 +44,7 @@ export default async function DashboardLayout({
           <div className="flex flex-1">
             <DashboardSidebar
               user={user}
+              teams={teams}
               pendingInvitations={pendingInvitations}
             />
             <main className="flex-1 flex justify-center overflow-x-auto">

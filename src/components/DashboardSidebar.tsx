@@ -1,7 +1,10 @@
 "use client";
 
 import { allowedEmails } from "@/app/api/debug/helpers";
-import { InvitationWithRelations } from "@/app/api/team/types";
+import {
+  InvitationWithRelations,
+  TeamWithRelations,
+} from "@/app/api/team/types";
 import { CleanedUser } from "@/app/api/user/types";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { MobileAwareSidebar } from "@/components/MobileAwareSidebar";
@@ -47,11 +50,13 @@ import { TeamSelect } from "./team/TeamSelect";
 
 interface DashboardSidebarProps {
   user: CleanedUser;
+  teams: TeamWithRelations[];
   pendingInvitations: InvitationWithRelations[];
 }
 
 export function DashboardSidebar({
   user,
+  teams,
   pendingInvitations,
 }: DashboardSidebarProps) {
   const pathname = usePathname();
@@ -179,9 +184,9 @@ export function DashboardSidebar({
 
       <SidebarFooter>
         <SidebarMenu>
-          {user?.teams && user.teams.length > 1 && (
+          {teams.length > 1 && (
             <SidebarMenuItem>
-              <TeamSelect user={user} />
+              <TeamSelect teams={teams} />
             </SidebarMenuItem>
           )}
 
