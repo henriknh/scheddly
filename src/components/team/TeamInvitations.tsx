@@ -8,6 +8,10 @@ interface TeamInvitationsProps {
 }
 
 export function TeamInvitations({ pendingInvitations }: TeamInvitationsProps) {
+  if (pendingInvitations.length === 0) {
+    return null;
+  }
+
   return (
     <div className="space-y-4">
       {pendingInvitations.map((inv) => (
