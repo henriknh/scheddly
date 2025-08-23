@@ -118,7 +118,7 @@ export default function PrivacyPolicyPage() {
           <CardHeader>
             <CardTitle>5. Your Rights</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             <p className="text-muted-foreground mb-4">You have the right to:</p>
             <ul className="list-disc list-inside text-muted-foreground space-y-1">
               <li>Access and update your personal information</li>
@@ -127,6 +127,81 @@ export default function PrivacyPolicyPage() {
               <li>Opt out of marketing communications</li>
               <li>Request a copy of your data</li>
             </ul>
+
+            <div>
+              <h3 className="font-semibold mb-2">5.1 Account Deletion</h3>
+              <p className="text-muted-foreground mb-3">
+                You may request deletion of your account at any time through
+                your account settings or by contacting us directly. When you
+                delete your account:
+              </p>
+              <ul className="list-disc list-inside text-muted-foreground ml-4 space-y-1">
+                <li>
+                  Your profile information and account data will be permanently
+                  deleted
+                </li>
+                <li>
+                  All scheduled posts will be cancelled and cannot be recovered
+                </li>
+                <li>
+                  Uploaded media files (images, videos) will be permanently
+                  removed
+                </li>
+                <li>
+                  Social media integrations will be automatically disconnected
+                </li>
+                <li>
+                  Team memberships will be revoked (team ownership may need to
+                  be transferred)
+                </li>
+                <li>
+                  Your subscription will be cancelled effective immediately
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-2">
+                5.2 Data Retention After Deletion
+              </h3>
+              <p className="text-muted-foreground mb-3">
+                After account deletion:
+              </p>
+              <ul className="list-disc list-inside text-muted-foreground ml-4 space-y-1">
+                <li>
+                  Most personal data is deleted within 30 days of your deletion
+                  request
+                </li>
+                <li>
+                  Some data may be retained for legal compliance (e.g., billing
+                  records, audit logs)
+                </li>
+                <li>
+                  Anonymized usage analytics may be retained for service
+                  improvement
+                </li>
+                <li>
+                  Content posted to social media platforms before deletion will
+                  remain on those platforms according to their policies
+                </li>
+                <li>
+                  We cannot delete data from third-party platforms after it has
+                  been posted
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-2">
+                5.3 Requesting Account Deletion
+              </h3>
+              <p className="text-muted-foreground">
+                To delete your account, you can either use the account deletion
+                option in your dashboard settings or contact our support team at
+                privacy@scheddly.com. Please note that account deletion is
+                irreversible and cannot be undone.
+              </p>
+            </div>
           </CardContent>
         </Card>
 
