@@ -1,13 +1,13 @@
 import { Breadcrumb } from "@/components/common/breadcrumb";
 
-export default function TextLayout({
+export default function VideoLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <>
-      <Breadcrumb label="Text" href="/dashboard/create-new-post/text" />
+      <Breadcrumb label="New Video Post" href="/dashboard/new-video-post" />
 
       {children}
     </>

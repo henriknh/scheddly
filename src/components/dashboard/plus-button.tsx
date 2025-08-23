@@ -17,30 +17,32 @@ interface PlusButtonProps {
 
 export function PlusButton({ targetDate }: PlusButtonProps) {
   const formattedDate = format(targetDate, "yyyy-MM-dd");
-  
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <PlusIcon className="h-4 w-4" />
-          <span className="sr-only">Create post for {format(targetDate, "MMM d")}</span>
+          <span className="sr-only">
+            Create post for {format(targetDate, "MMM d")}
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem asChild>
-          <Link href={`/dashboard/create-new-post/text?date=${formattedDate}`}>
+          <Link href={`/dashboard/new-text-post?date=${formattedDate}`}>
             <TextIcon className="mr-2 h-4 w-4" />
             Text Post
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={`/dashboard/create-new-post/image?date=${formattedDate}`}>
+          <Link href={`/dashboard/new-image-post?date=${formattedDate}`}>
             <ImageIcon className="mr-2 h-4 w-4" />
             Image Post
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={`/dashboard/create-new-post/video?date=${formattedDate}`}>
+          <Link href={`/dashboard/new-video-post?date=${formattedDate}`}>
             <VideoIcon className="mr-2 h-4 w-4" />
             Video Post
           </Link>

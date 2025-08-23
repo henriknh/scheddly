@@ -104,7 +104,7 @@ export function DashboardSidebar({
             <DropdownMenuContent side="right" align="start" className="w-48">
               <DropdownMenuItem asChild>
                 <Link
-                  href="/dashboard/create-new-post/text"
+                  href="/dashboard/new-text-post"
                   className="flex items-center gap-2"
                   onClick={handleLinkClick}
                 >
@@ -114,7 +114,7 @@ export function DashboardSidebar({
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  href="/dashboard/create-new-post/image"
+                  href="/dashboard/new-image-post"
                   className="flex items-center gap-2"
                   onClick={handleLinkClick}
                 >
@@ -124,7 +124,7 @@ export function DashboardSidebar({
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  href="/dashboard/create-new-post/video"
+                  href="/dashboard/new-video-post"
                   className="flex items-center gap-2"
                   onClick={handleLinkClick}
                 >

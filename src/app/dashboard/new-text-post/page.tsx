@@ -1,6 +1,5 @@
 import { getAlreadyScheduledDates } from "@/app/api/post/get-already-scheduled-dates";
 import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/get-social-media-integrations";
-import { Header } from "@/components/common/Header";
 import { TextPostForm } from "@/components/post-forms/text-post-form";
 
 interface TextPostPageProps {
@@ -15,13 +14,10 @@ export default async function TextPostPage({
   const alreadyScheduledDates = await getAlreadyScheduledDates();
 
   return (
-    <div className="space-y-4">
-      <Header>Create new text post</Header>
-      <TextPostForm
-        integrations={integrations}
-        alreadyScheduledDates={alreadyScheduledDates}
-        initialDate={date}
-      />
-    </div>
+    <TextPostForm
+      integrations={integrations}
+      alreadyScheduledDates={alreadyScheduledDates}
+      initialDate={date}
+    />
   );
 }

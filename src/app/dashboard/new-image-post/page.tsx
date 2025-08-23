@@ -1,6 +1,5 @@
 import { getAlreadyScheduledDates } from "@/app/api/post/get-already-scheduled-dates";
 import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/get-social-media-integrations";
-import { Header } from "@/components/common/Header";
 import { ImagePostForm } from "@/components/post-forms/image-post-form";
 
 interface ImagePostPageProps {
@@ -16,13 +15,10 @@ export default async function ImagePostPage({
   const alreadyScheduledDates = await getAlreadyScheduledDates();
 
   return (
-    <div className="space-y-4">
-      <Header>Create new image post</Header>
-      <ImagePostForm
-        integrations={integrations}
-        alreadyScheduledDates={alreadyScheduledDates}
-        initialDate={date}
-      />
-    </div>
+    <ImagePostForm
+      integrations={integrations}
+      alreadyScheduledDates={alreadyScheduledDates}
+      initialDate={date}
+    />
   );
 }
