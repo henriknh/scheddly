@@ -122,7 +122,7 @@ export function ImagePostForm({
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
             1
           </div>
-          <span className="font-medium">Post</span>
+          <span className="font-medium">Content</span>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

@@ -99,7 +99,7 @@ export function TextPostForm({
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
             1
           </div>
-          <span className="font-medium">Post</span>
+          <span className="font-medium">Content</span>
         </div>
 
         <Textarea

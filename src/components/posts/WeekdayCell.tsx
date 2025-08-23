@@ -51,7 +51,7 @@ export function WeekdayCell({ date, posts, screenSize }: WeekdayCellProps) {
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/dashboard/create-new-post/text?date=${format(
+                  href={`/dashboard/new-text-post?date=${format(
                     date,
                     "yyyy-MM-dd"
                   )}`}
@@ -62,7 +62,7 @@ export function WeekdayCell({ date, posts, screenSize }: WeekdayCellProps) {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/dashboard/create-new-post/image?date=${format(
+                  href={`/dashboard/new-image-post?date=${format(
                     date,
                     "yyyy-MM-dd"
                   )}`}
@@ -73,7 +73,7 @@ export function WeekdayCell({ date, posts, screenSize }: WeekdayCellProps) {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/dashboard/create-new-post/video?date=${format(
+                  href={`/dashboard/new-video-post?date=${format(
                     date,
                     "yyyy-MM-dd"
                   )}`}

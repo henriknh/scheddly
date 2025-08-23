@@ -1,6 +1,5 @@
 import { getAlreadyScheduledDates } from "@/app/api/post/get-already-scheduled-dates";
 import { getSocialMediaIntegrations } from "@/app/api/social-media-integration/get-social-media-integrations";
-import { Header } from "@/components/common/Header";
 import { VideoPostForm } from "@/components/post-forms/video-post-form";
 
 interface VideoPostPageProps {
@@ -15,13 +14,10 @@ export default async function VideoPostPage({
   const alreadyScheduledDates = await getAlreadyScheduledDates();
 
   return (
-    <div className="space-y-4">
-      <Header>Create new video post</Header>
-      <VideoPostForm
-        integrations={integrations}
-        initialDate={date}
-        alreadyScheduledDates={alreadyScheduledDates}
-      />
-    </div>
+    <VideoPostForm
+      integrations={integrations}
+      initialDate={date}
+      alreadyScheduledDates={alreadyScheduledDates}
+    />
   );
 }

@@ -1,13 +1,13 @@
 import { Breadcrumb } from "@/components/common/breadcrumb";
 
-export default function ImageLayout({
+export default function TextLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <>
-      <Breadcrumb label="Image" href="/dashboard/create-new-post/image" />
+      <Breadcrumb label="New Text Post" href="/dashboard/new-text-post" />
 
       {children}
     </>
