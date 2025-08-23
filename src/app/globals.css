@@ -11,7 +11,7 @@
     --foreground: var(--black-text);
     --card: 0 0% 99%;
     --card-foreground: var(--black-text);
-    --sidebar: var(--white-text)
+    --sidebar: var(--white-text);
     --sidebar-foreground: var(--black-text);
     --sidebar-border: 260 10% 90%;
     --sidebar-accent: 260 20% 96%;
@@ -20,7 +20,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: var(--black-text);
     --primary: 270 45% 45%;
-    --primary-foreground: var(--white-text)
+    --primary-foreground: var(--white-text);
     --secondary: 260 20% 96%;
     --secondary-foreground: var(--black-text);
     --muted: 260 10% 96%;
