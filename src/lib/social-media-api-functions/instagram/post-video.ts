@@ -5,9 +5,41 @@ import {
   SocialMediaPostWithRelations,
 } from "@/app/api/post/types";
 import prisma from "@/lib/prisma";
-import { getValidAccessToken } from "../social-media-api-functions";
+import {
+  getValidAccessToken,
+  SocialMediaApiErrors,
+} from "../social-media-api-functions";
 import { instagramGraphUrl } from ".";
 import { InstagramPostType } from "@/generated/prisma";
+import { getFileUrl } from "@/app/api/file/get-file-url";
+
+// Helper function to wait for media to be ready
+async function waitForMediaReady(
+  mediaId: string,
+  accessToken: string,
+  maxAttempts = 30,
+  intervalMs = 2000
+): Promise<boolean> {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const statusResponse = await fetch(
+      `${instagramGraphUrl}/${mediaId}?fields=status_code&access_token=${accessToken}`
+    );
+
+    if (statusResponse.ok) {
+      const statusData = await statusResponse.json();
+      if (statusData.status_code === "FINISHED") {
+        return true;
+      } else if (statusData.status_code === "ERROR") {
+        throw new Error(SocialMediaApiErrors.MEDIA_PROCESSING_FAILED);
+      }
+      // Status is "IN_PROGRESS", wait and retry
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+  }
+
+  throw new Error(SocialMediaApiErrors.MEDIA_PROCESSING_TIMEOUT);
+}
 
 export async function postVideo(
   post: PostWithRelations,
@@ -18,15 +50,14 @@ export async function postVideo(
     socialMediaPost.socialMediaIntegrationId
   );
   if (!post.video) throw new Error("No video found in post");
-  const videoUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/file/${post.video.id}`;
+  const videoUrl = await getFileUrl(post.video.id);
   const coverUrl = post.videoCover
-    ? `${process.env.NEXT_PUBLIC_API_URL}/api/file/${post.videoCover.id}`
+    ? await getFileUrl(post.videoCover.id)
     : undefined;
 
   // Determine the media type based on instagramPostType
   const getVideoMediaTypeParams = () => {
     const baseParams = {
-      media_type: "VIDEO",
       video_url: videoUrl,
       caption: post.description,
       ...(coverUrl && { cover_url: coverUrl }),
@@ -43,10 +74,15 @@ export async function postVideo(
         return {
           ...baseParams,
           media_type: "REELS",
+          share_to_feed: "false",
         };
       case InstagramPostType.POST:
       default:
-        return baseParams; // Standard video post
+        return {
+          ...baseParams,
+          media_type: "REELS", // Instagram now requires REELS for video posts
+          share_to_feed: "true",
+        };
     }
   };
 
@@ -66,7 +102,11 @@ export async function postVideo(
   }
   const mediaData = await createMediaResponse.json();
   const mediaId = mediaData.id;
-  // Step 2: Publish the video
+
+  // Step 2: Wait for media to be ready (only for videos, not stories)
+  await waitForMediaReady(mediaId, accessToken);
+
+  // Step 3: Publish the video
   const publishResponse = await fetch(
     `${instagramGraphUrl}/me/media_publish?access_token=${accessToken}`,
     {

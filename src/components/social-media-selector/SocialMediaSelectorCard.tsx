@@ -4,7 +4,7 @@ import { SocialMediaPostParams } from "@/app/api/post/create-post";
 import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { SocialMedia, InstagramPostType } from "@/generated/prisma";
+import { SocialMedia, InstagramPostType, PostType } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { UserAvatar } from "../common/UserAvatar";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -18,12 +18,14 @@ import {
 } from "../ui/select";
 
 interface SocialMediaSelectorCardProps {
+  postType: PostType;
   integration: SocialMediaIntegrationWithRelations;
   socialMediaPost?: SocialMediaPostParams;
   onChange: (socialMediaPost?: SocialMediaPostParams) => void;
 }
 
 export function SocialMediaSelectorCard({
+  postType,
   integration,
   socialMediaPost,
   onChange,
@@ -116,12 +118,14 @@ export function SocialMediaSelectorCard({
                 >
                   Story
                 </ToggleGroupItem>
-                <ToggleGroupItem
-                  value={InstagramPostType.REEL}
-                  aria-label="Toggle reel"
-                >
-                  Reel
-                </ToggleGroupItem>
+                {postType === PostType.VIDEO && (
+                  <ToggleGroupItem
+                    value={InstagramPostType.REEL}
+                    aria-label="Toggle reel"
+                  >
+                    Reel
+                  </ToggleGroupItem>
+                )}
               </ToggleGroup>
             )}
             {integration.socialMedia === SocialMedia.X && (

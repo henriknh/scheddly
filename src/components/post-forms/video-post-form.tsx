@@ -34,6 +34,7 @@ export function VideoPostForm({
   initialDate,
 }: VideoPostFormProps) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [description, setDescription] = useState(post?.description || "");
   const [video, setVideo] = useState<File | null>(null);
   const [videoCover, setVideoCover] = useState<File | null>(null);
@@ -141,6 +142,7 @@ export function VideoPostForm({
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       if (!video) return;
 
@@ -171,6 +173,8 @@ export function VideoPostForm({
         });
     } catch (error) {
       console.error("Failed to create post:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -281,9 +285,9 @@ export function VideoPostForm({
 
         <div className="space-y-2">
           <SocialMediaSelector
+            postType={PostType.VIDEO}
             socialMediaPosts={socialMediaPosts}
             onChangeSocialMediaPosts={setSocialMediaPosts}
-            postType="VIDEO"
             integrations={integrations}
           />
         </div>
@@ -308,7 +312,12 @@ export function VideoPostForm({
         {post && <ArchivePostButton post={post} />}
         <Button
           onClick={handleSubmit}
-          disabled={!video || socialMediaPosts.length === 0 || !!post?.archived}
+          disabled={
+            isLoading ||
+            !video ||
+            socialMediaPosts.length === 0 ||
+            !!post?.archived
+          }
         >
           {post
             ? scheduledDate

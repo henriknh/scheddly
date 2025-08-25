@@ -8,6 +8,7 @@ import prisma from "@/lib/prisma";
 import { getValidAccessToken } from "../social-media-api-functions";
 import { instagramGraphUrl } from ".";
 import { InstagramPostType } from "@/generated/prisma";
+import { getFileUrl } from "@/app/api/file/get-file-url";
 
 export async function postImage(
   post: PostWithRelations,
@@ -20,7 +21,7 @@ export async function postImage(
   if (!post.images || post.images.length === 0)
     throw new Error("No images found in post");
   const image = post.images[0];
-  const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/file/${image.id}`;
+  const imageUrl = await getFileUrl(image.id);
 
   // Determine the media type based on instagramPostType
   const getMediaTypeParams = () => {

@@ -2,15 +2,15 @@
 
 import { SocialMediaPostParams } from "@/app/api/post/create-post";
 import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
-import { Brand } from "@/generated/prisma";
+import { Brand, PostType } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { SocialMediaSelectorCard } from "./social-media-selector/SocialMediaSelectorCard";
 
 interface SocialMediaSelectorProps {
+  postType: PostType;
   socialMediaPosts?: SocialMediaPostParams[];
   integrations: SocialMediaIntegrationWithRelations[];
   onChangeSocialMediaPosts: (socialMediaData: SocialMediaPostParams[]) => void;
-  postType?: "TEXT" | "IMAGE" | "VIDEO";
 }
 
 export function SocialMediaSelector({
@@ -100,6 +100,7 @@ export function SocialMediaSelector({
               {integrationsByBrand.map((integration) => {
                 return (
                   <SocialMediaSelectorCard
+                    postType={postType}
                     key={integration.id}
                     integration={integration}
                     socialMediaPost={socialMediaPosts?.find(
