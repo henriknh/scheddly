@@ -52,7 +52,7 @@ export async function register(email: string, name: string, password: string) {
       });
 
       // Create a team for the user
-      await tx.team.create({
+      const team = await tx.team.create({
         data: {
           name: `${name}'s Team`,
           owner: {
@@ -65,6 +65,15 @@ export async function register(email: string, name: string, password: string) {
               id: user.id,
             },
           },
+        },
+      });
+
+      await tx.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          teamId: team.id,
         },
       });
 

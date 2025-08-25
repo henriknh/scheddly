@@ -1,6 +1,10 @@
 "use server";
 
-import { PostType, SocialMediaIntegration } from "@/generated/prisma";
+import {
+  PostType,
+  SocialMediaIntegration,
+  InstagramPostType,
+} from "@/generated/prisma";
 import {
   uploadPostImages,
   uploadPostVideo,
@@ -15,6 +19,7 @@ export interface SocialMediaPostParams {
   socialMediaIntegration: SocialMediaIntegration;
   xCommunityId?: string | null;
   xShareWithFollowers?: boolean;
+  instagramPostType?: InstagramPostType | null;
 }
 
 export interface CreatePostParams {
@@ -63,11 +68,13 @@ export async function createPost({
               socialMediaIntegration,
               xCommunityId,
               xShareWithFollowers,
+              instagramPostType,
             }) => ({
               socialMedia: socialMediaIntegration.socialMedia,
               socialMediaIntegrationId: socialMediaIntegration.id,
               xCommunityId,
               xShareWithFollowers: xShareWithFollowers ?? true,
+              instagramPostType,
             })
           ),
         },

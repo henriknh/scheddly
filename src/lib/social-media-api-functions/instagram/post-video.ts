@@ -7,6 +7,7 @@ import {
 import prisma from "@/lib/prisma";
 import { getValidAccessToken } from "../social-media-api-functions";
 import { instagramGraphUrl } from ".";
+import { InstagramPostType } from "@/generated/prisma";
 
 export async function postVideo(
   post: PostWithRelations,
@@ -21,19 +22,41 @@ export async function postVideo(
   const coverUrl = post.videoCover
     ? `${process.env.NEXT_PUBLIC_API_URL}/api/file/${post.videoCover.id}`
     : undefined;
+
+  // Determine the media type based on instagramPostType
+  const getVideoMediaTypeParams = () => {
+    const baseParams = {
+      media_type: "VIDEO",
+      video_url: videoUrl,
+      caption: post.description,
+      ...(coverUrl && { cover_url: coverUrl }),
+      access_token: accessToken,
+    };
+
+    switch (socialMediaPost.instagramPostType) {
+      case InstagramPostType.STORY:
+        return {
+          ...baseParams,
+          media_type: "STORIES",
+        };
+      case InstagramPostType.REEL:
+        return {
+          ...baseParams,
+          media_type: "REELS",
+        };
+      case InstagramPostType.POST:
+      default:
+        return baseParams; // Standard video post
+    }
+  };
+
   // Step 1: Create media container for video
   const createMediaResponse = await fetch(
     `${instagramGraphUrl}/me/media?access_token=${accessToken}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        media_type: "VIDEO",
-        video_url: videoUrl,
-        caption: post.description,
-        ...(coverUrl && { cover_url: coverUrl }),
-        access_token: accessToken,
-      }).toString(),
+      body: new URLSearchParams(getVideoMediaTypeParams()).toString(),
     }
   );
   if (!createMediaResponse.ok) {

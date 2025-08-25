@@ -24,6 +24,7 @@ model SocialMediaPost {
   updatedAt                DateTime               @updatedAt
   xCommunityId             String?
   xShareWithFollowers      Boolean?               @default(true)
+  instagramPostType        InstagramPostType?
 }
 
 model Post {
@@ -166,6 +167,12 @@ enum SocialMedia {
   X
   FACEBOOK
   LINKEDIN
+}
+
+enum InstagramPostType {
+  POST
+  STORY
+  REEL
 }
 
 enum SubscriptionTier {
