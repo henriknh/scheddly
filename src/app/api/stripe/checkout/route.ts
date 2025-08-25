@@ -41,6 +41,21 @@ export async function POST(request: NextRequest) {
     });
     customerId = existingSub?.stripeCustomerId ?? undefined;
 
+    // Validate customer exists in Stripe if we have a customer ID
+    if (customerId) {
+      try {
+        const customer = await stripe.customers.retrieve(customerId);
+        if (customer.deleted) {
+          // Customer was deleted, we need to create a new one
+          customerId = undefined;
+        }
+      } catch (error) {
+        // Customer doesn't exist or other error, create a new one
+        console.error("Error retrieving Stripe customer:", error);
+        customerId = undefined;
+      }
+    }
+
     if (!customerId) {
       // Create a new Stripe customer tied to the user
       const customer = await stripe.customers.create({
