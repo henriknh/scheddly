@@ -7,6 +7,8 @@ import {
 import prisma from "@/lib/prisma";
 import { getValidAccessToken } from "../social-media-api-functions";
 import { instagramGraphUrl } from ".";
+import { InstagramPostType } from "@/generated/prisma";
+import { getFileUrl } from "@/app/api/file/get-file-url";
 
 export async function postImage(
   post: PostWithRelations,
@@ -19,18 +21,40 @@ export async function postImage(
   if (!post.images || post.images.length === 0)
     throw new Error("No images found in post");
   const image = post.images[0];
-  const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/file/${image.id}`;
+  const imageUrl = await getFileUrl(image.id);
+
+  // Determine the media type based on instagramPostType
+  const getMediaTypeParams = () => {
+    const baseParams = {
+      image_url: imageUrl,
+      caption: post.description,
+      access_token: accessToken,
+    };
+
+    switch (socialMediaPost.instagramPostType) {
+      case InstagramPostType.STORY:
+        return {
+          ...baseParams,
+          media_type: "STORIES",
+        };
+      case InstagramPostType.REEL:
+        return {
+          ...baseParams,
+          media_type: "REELS",
+        };
+      case InstagramPostType.POST:
+      default:
+        return baseParams; // Standard post
+    }
+  };
+
   // Step 1: Create media container
   const createMediaResponse = await fetch(
     `${instagramGraphUrl}/me/media?access_token=${accessToken}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        image_url: imageUrl,
-        caption: post.description,
-        access_token: accessToken,
-      }).toString(),
+      body: new URLSearchParams(getMediaTypeParams()).toString(),
     }
   );
   if (!createMediaResponse.ok) {

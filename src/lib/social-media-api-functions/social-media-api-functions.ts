@@ -12,6 +12,8 @@ import prisma from "@/lib/prisma";
 
 export const SocialMediaApiErrors = {
   INVALID_TOKEN: "Invalid token",
+  MEDIA_PROCESSING_FAILED: "Media processing failed",
+  MEDIA_PROCESSING_TIMEOUT: "Media processing timeout",
 };
 
 export interface Tokens {

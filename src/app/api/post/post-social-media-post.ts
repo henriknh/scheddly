@@ -61,6 +61,13 @@ export async function postSocialMediaPost(
         case SocialMediaApiErrors.INVALID_TOKEN:
           failedReason = SocialMediaApiErrors.INVALID_TOKEN;
           break;
+        case SocialMediaApiErrors.MEDIA_PROCESSING_FAILED:
+          failedReason = SocialMediaApiErrors.MEDIA_PROCESSING_FAILED;
+          break;
+        case SocialMediaApiErrors.MEDIA_PROCESSING_TIMEOUT:
+          failedReason = SocialMediaApiErrors.MEDIA_PROCESSING_TIMEOUT;
+          break;
+        default:
       }
     }
 

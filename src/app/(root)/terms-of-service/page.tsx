@@ -71,11 +71,52 @@ export default function TermsOfServicePage() {
             </div>
 
             <div>
-              <h3 className="font-semibold mb-2">3.3 Account Termination</h3>
+              <h3 className="font-semibold mb-2">
+                3.3 Account Termination by Scheddly
+              </h3>
               <p className="text-muted-foreground">
                 We reserve the right to terminate or suspend your account at any
                 time for violations of these terms or for any other reason at
                 our sole discretion.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-2">
+                3.4 Account Deletion by User
+              </h3>
+              <p className="text-muted-foreground mb-3">
+                You may delete your account at any time through your account
+                settings or by contacting our support team. By deleting your
+                account, you acknowledge and agree that:
+              </p>
+              <ul className="list-disc list-inside text-muted-foreground ml-4 space-y-1">
+                <li>Account deletion is permanent and cannot be reversed</li>
+                <li>
+                  All your data, including posts, media, and settings, will be
+                  permanently deleted
+                </li>
+                <li>
+                  Scheduled posts will be cancelled and cannot be recovered
+                </li>
+                <li>
+                  Active subscriptions will be cancelled immediately without
+                  refund for unused time
+                </li>
+                <li>
+                  You will lose access to all team accounts and shared content
+                </li>
+                <li>Social media integrations will be disconnected</li>
+                <li>
+                  Content already posted to social media platforms will remain
+                  on those platforms
+                </li>
+              </ul>
+              <p className="text-muted-foreground mt-3">
+                If you are a team owner, you must transfer ownership or delete
+                the team before deleting your personal account. We may retain
+                certain information as required by law or for legitimate
+                business purposes as outlined in our Privacy Policy.
               </p>
             </div>
           </CardContent>

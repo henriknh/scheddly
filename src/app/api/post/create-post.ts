@@ -1,6 +1,10 @@
 "use server";
 
-import { PostType, SocialMediaIntegration } from "@/generated/prisma";
+import {
+  PostType,
+  SocialMediaIntegration,
+  InstagramPostType,
+} from "@/generated/prisma";
 import {
   uploadPostImages,
   uploadPostVideo,
@@ -15,6 +19,7 @@ export interface SocialMediaPostParams {
   socialMediaIntegration: SocialMediaIntegration;
   xCommunityId?: string | null;
   xShareWithFollowers?: boolean;
+  instagramPostType?: InstagramPostType | null;
 }
 
 export interface CreatePostParams {
@@ -54,113 +59,120 @@ export async function createPost({
     throw new Error("Video is required for video posts");
   }
 
-  const post = await prisma.$transaction(async (tx) => {
-    const newPost = await tx.post.create({
-      data: {
-        socialMediaPosts: {
-          create: socialMediaPosts.map(
-            ({
-              socialMediaIntegration,
-              xCommunityId,
-              xShareWithFollowers,
-            }) => ({
-              socialMedia: socialMediaIntegration.socialMedia,
-              socialMediaIntegrationId: socialMediaIntegration.id,
-              xCommunityId,
-              xShareWithFollowers: xShareWithFollowers ?? true,
-            })
-          ),
+  const post = await prisma.$transaction(
+    async (tx) => {
+      const newPost = await tx.post.create({
+        data: {
+          socialMediaPosts: {
+            create: socialMediaPosts.map(
+              ({
+                socialMediaIntegration,
+                xCommunityId,
+                xShareWithFollowers,
+                instagramPostType,
+              }) => ({
+                socialMedia: socialMediaIntegration.socialMedia,
+                socialMediaIntegrationId: socialMediaIntegration.id,
+                xCommunityId,
+                xShareWithFollowers: xShareWithFollowers ?? true,
+                instagramPostType,
+              })
+            ),
+          },
+          teamId: user.teamId!,
+          description,
+          postType,
+          scheduledAt,
         },
-        teamId: user.teamId!,
-        description,
-        postType,
-        scheduledAt,
-      },
-    });
+      });
 
-    if (images?.length) {
-      const uploadResults = await uploadPostImages(images, newPost.id);
+      if (images?.length) {
+        const uploadResults = await uploadPostImages(images, newPost.id);
 
-      await Promise.all(
-        uploadResults?.map(async (uploadResult) => {
-          const { path, mimeType, size } = uploadResult;
+        await Promise.all(
+          uploadResults?.map(async (uploadResult) => {
+            const { path, mimeType, size } = uploadResult;
 
-          return tx.file.create({
+            return tx.file.create({
+              data: {
+                path,
+                mimeType,
+                size,
+                postId: newPost.id,
+              },
+            });
+          })
+        );
+      }
+
+      if (videoCover && video) {
+        const handleVideoCover = async () => {
+          const { path, mimeType, size } = await uploadPostVideoCover(
+            videoCover,
+            newPost.id
+          );
+
+          return await tx.file.create({
             data: {
               path,
               mimeType,
               size,
-              postId: newPost.id,
+              postVideoCover: {
+                connect: {
+                  id: newPost.id,
+                },
+              },
             },
           });
-        })
-      );
-    }
+        };
 
-    if (videoCover && video) {
-      const handleVideoCover = async () => {
-        const { path, mimeType, size } = await uploadPostVideoCover(
-          videoCover,
-          newPost.id
-        );
+        const handleVideo = async () => {
+          const { path, mimeType, size } = await uploadPostVideo(
+            video,
+            newPost.id
+          );
 
-        return await tx.file.create({
-          data: {
-            path,
-            mimeType,
-            size,
-            postVideoCover: {
-              connect: {
-                id: newPost.id,
+          return await tx.file.create({
+            data: {
+              path,
+              mimeType,
+              size,
+              postVideo: {
+                connect: {
+                  id: newPost.id,
+                },
+              },
+            },
+          });
+        };
+
+        await Promise.all([handleVideoCover(), handleVideo()]);
+      }
+
+      const postWithRelations = await tx.post.findUnique({
+        where: { id: newPost.id },
+        include: {
+          socialMediaPosts: {
+            include: {
+              socialMediaIntegration: {
+                include: {
+                  brand: true,
+                },
               },
             },
           },
-        });
-      };
-
-      const handleVideo = async () => {
-        const { path, mimeType, size } = await uploadPostVideo(
-          video,
-          newPost.id
-        );
-
-        return await tx.file.create({
-          data: {
-            path,
-            mimeType,
-            size,
-            postVideo: {
-              connect: {
-                id: newPost.id,
-              },
-            },
-          },
-        });
-      };
-
-      await Promise.all([handleVideoCover(), handleVideo()]);
-    }
-
-    const postWithRelations = await tx.post.findUnique({
-      where: { id: newPost.id },
-      include: {
-        socialMediaPosts: {
-          include: {
-            socialMediaIntegration: {
-              include: {
-                brand: true,
-              },
-            },
-          },
+          images: true,
+          video: true,
+          videoCover: true,
         },
-        images: true,
-        video: true,
-        videoCover: true,
-      },
-    });
+      });
 
-    return postWithRelations!;
-  });
+      return postWithRelations!;
+    },
+    {
+      timeout: 60000,
+    }
+  );
 
   if (!post.scheduledAt) {
     await postPost(post);

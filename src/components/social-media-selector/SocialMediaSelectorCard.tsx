@@ -2,12 +2,13 @@
 
 import { SocialMediaPostParams } from "@/app/api/post/create-post";
 import { SocialMediaIntegrationWithRelations } from "@/app/api/social-media-integration/types";
-import { SocialMedia } from "@/generated/prisma";
+import { Label } from "@/components/ui/label";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { SocialMedia, InstagramPostType, PostType } from "@/generated/prisma";
 import { socialMediaPlatforms } from "@/lib/social-media-platforms";
 import { UserAvatar } from "../common/UserAvatar";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
-import { Label } from "../ui/label";
 import {
   Select,
   SelectContent,
@@ -17,12 +18,14 @@ import {
 } from "../ui/select";
 
 interface SocialMediaSelectorCardProps {
+  postType: PostType;
   integration: SocialMediaIntegrationWithRelations;
   socialMediaPost?: SocialMediaPostParams;
   onChange: (socialMediaPost?: SocialMediaPostParams) => void;
 }
 
 export function SocialMediaSelectorCard({
+  postType,
   integration,
   socialMediaPost,
   onChange,
@@ -69,6 +72,10 @@ export function SocialMediaSelectorCard({
                         socialMediaIntegration: integration,
                         xShareWithFollowers: true,
                         xCommunityId: null,
+                        instagramPostType:
+                          integration.socialMedia === SocialMedia.INSTAGRAM
+                            ? InstagramPostType.POST
+                            : null,
                       }
                     : undefined
                 );
@@ -78,54 +85,101 @@ export function SocialMediaSelectorCard({
         </CardTitle>
       </CardHeader>
 
-      {hasXCommunities && (
+      {(hasXCommunities ||
+        integration.socialMedia === SocialMedia.INSTAGRAM) && (
         <CardContent>
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id={`share-with-followers-${integration.id}`}
-                checked={socialMediaPost?.xShareWithFollowers}
-                onCheckedChange={() => {
-                  onChange({
-                    socialMediaIntegration: integration,
-                    xShareWithFollowers: !socialMediaPost?.xShareWithFollowers,
-                    xCommunityId: socialMediaPost?.xCommunityId,
-                  });
+            {integration.socialMedia === SocialMedia.INSTAGRAM && (
+              <ToggleGroup
+                type="single"
+                value={
+                  socialMediaPost?.instagramPostType || InstagramPostType.POST
+                }
+                onValueChange={(value: InstagramPostType) => {
+                  if (socialMediaPost) {
+                    onChange({
+                      ...socialMediaPost,
+                      instagramPostType: value,
+                    });
+                  }
                 }}
-                disabled={!socialMediaPost || !socialMediaPost?.xCommunityId}
-              />
-              <Label htmlFor={`share-with-followers-${integration.id}`}>
-                Share with followers
-              </Label>
-            </div>
-
-            {hasXCommunities && (
-              <Select
-                value={socialMediaPost?.xCommunityId ?? "no-community"}
-                onValueChange={(value) => {
-                  onChange({
-                    socialMediaIntegration: integration,
-                    xShareWithFollowers:
-                      value === "no-community"
-                        ? true
-                        : socialMediaPost?.xShareWithFollowers,
-                    xCommunityId: value === "no-community" ? null : value,
-                  });
-                }}
+                variant="outline"
                 disabled={!socialMediaPost}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a community" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="no-community">No community</SelectItem>
-                  {integration.xCommunities?.map((community) => (
-                    <SelectItem key={community.xId} value={community.xId}>
-                      {community.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <ToggleGroupItem
+                  value={InstagramPostType.POST}
+                  aria-label="Toggle post"
+                >
+                  Post
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  value={InstagramPostType.STORY}
+                  aria-label="Toggle story"
+                >
+                  Story
+                </ToggleGroupItem>
+                {postType === PostType.VIDEO && (
+                  <ToggleGroupItem
+                    value={InstagramPostType.REEL}
+                    aria-label="Toggle reel"
+                  >
+                    Reel
+                  </ToggleGroupItem>
+                )}
+              </ToggleGroup>
+            )}
+            {integration.socialMedia === SocialMedia.X && (
+              <>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id={`share-with-followers-${integration.id}`}
+                    checked={socialMediaPost?.xShareWithFollowers}
+                    onCheckedChange={() => {
+                      onChange({
+                        socialMediaIntegration: integration,
+                        xShareWithFollowers:
+                          !socialMediaPost?.xShareWithFollowers,
+                        xCommunityId: socialMediaPost?.xCommunityId,
+                      });
+                    }}
+                    disabled={
+                      !socialMediaPost || !socialMediaPost?.xCommunityId
+                    }
+                  />
+                  <Label htmlFor={`share-with-followers-${integration.id}`}>
+                    Share with followers
+                  </Label>
+                </div>
+
+                {hasXCommunities && (
+                  <Select
+                    value={socialMediaPost?.xCommunityId ?? "no-community"}
+                    onValueChange={(value) => {
+                      onChange({
+                        socialMediaIntegration: integration,
+                        xShareWithFollowers:
+                          value === "no-community"
+                            ? true
+                            : socialMediaPost?.xShareWithFollowers,
+                        xCommunityId: value === "no-community" ? null : value,
+                      });
+                    }}
+                    disabled={!socialMediaPost}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a community" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="no-community">No community</SelectItem>
+                      {integration.xCommunities?.map((community) => (
+                        <SelectItem key={community.xId} value={community.xId}>
+                          {community.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </>
             )}
           </div>
         </CardContent>

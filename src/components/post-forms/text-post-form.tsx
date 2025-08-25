@@ -32,6 +32,7 @@ export function TextPostForm({
   initialDate,
 }: TextPostFormProps) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [content, setContent] = useState(post?.description || "");
   const [scheduledDate, setScheduledDate] = useState<Date | null>(() => {
     if (post?.scheduledAt) return post.scheduledAt;
@@ -63,6 +64,7 @@ export function TextPostForm({
   }, [post, integrations]);
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       const data: CreatePostParams = {
         description: content,
@@ -89,6 +91,8 @@ export function TextPostForm({
         });
     } catch (error) {
       console.error("Failed to create post:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -124,9 +128,9 @@ export function TextPostForm({
 
         <div className="space-y-2">
           <SocialMediaSelector
+            postType={PostType.TEXT}
             socialMediaPosts={socialMediaPosts}
             onChangeSocialMediaPosts={setSocialMediaPosts}
-            postType="TEXT"
             integrations={integrations}
           />
         </div>
@@ -152,7 +156,10 @@ export function TextPostForm({
         <Button
           onClick={handleSubmit}
           disabled={
-            !content || socialMediaPosts.length === 0 || !!post?.archived
+            isLoading ||
+            !content ||
+            socialMediaPosts.length === 0 ||
+            !!post?.archived
           }
         >
           {post
